@@ -67,9 +67,29 @@ Use the formats in `PROPOSAL-TEMPLATES.md`; the merger parses them, so freestyle
 
 ## 8. Project architecture
 
-Wepop is (fill in a short factual description of what is being built and its key invariants as the
-project takes shape). Keep this section short and factual; DECISIONS.md is the source of truth for
-anything contested.
+Wepop is an invite-first, location-based events and meetup app. Its purpose is to get people
+together in the real world around shared activities, positioned deliberately as a meetup app and
+not a dating app. It is being rebuilt on top of an existing Wepop codebase (salvage and extend with
+AI), design led by Elvis and technical build led by Deepak. This repo holds the docs, decisions,
+and delivery record only; the app code lives in separate repos.
+
+Core objects: Events (a concrete activity at a place and time), Ideas (something a user wants to do
+without hosting it, which others can rally around and spin into an event), and Business /
+Organization profiles (multi-member accounts, university clubs first, promotional accounts later).
+
+Key invariants as the project stands:
+- Invite-first. Invites are always to a specific event or idea, never generic, from Elvis or
+  existing members, to defeat the cold-start problem. Non-invited users join a waitlist (email,
+  phone, location, university).
+- Location-centric. Discovery, recommendations, and the explore map hinge on location. Focus
+  markets are Korea and the US.
+- Privacy by design / anti-stalking. Pre-join, show only mutual friends plus aggregate signals, not
+  full attendee lists. No in-app AI image or video generation.
+- Phone OTP verifies every user; optional password and biometrics are additive.
+
+Contested points are governed by decisions; `shared/DECISIONS.md` is the source of truth. See
+`shared/PROJECT_STRATEGY.md` for the commercial narrative and `architecture/` for design and
+technical detail (product overview at `architecture/phase-plan/wepop-product-overview.md`).
 
 ## 9. Key references
 

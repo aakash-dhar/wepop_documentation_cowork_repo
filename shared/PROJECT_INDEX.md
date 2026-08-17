@@ -7,20 +7,42 @@
 ## State snapshot (2026-08-17)
 
 - **Project:** WEP001 - Wepop
-- **Phase:** Setup / Phase 1 kickoff
-- **RAG:** Green - repo just scaffolded, no blockers
-- **Last decision:** none yet (DEC-001 pending)
+- **What it is:** An invite-first, location-based events and meetup app (a meetup app, not a dating
+  app) for getting people together in the real world around shared activities. Being rebuilt on top
+  of an existing Wepop codebase, salvaged and extended with AI. Focus markets Korea and the US.
+- **Phase:** Setup / Phase 1 kickoff. First full design walkthrough done 2026-08-17.
+- **RAG:** Green - design walkthrough complete, decisions landed, coordination moving to a shared repo, no blockers.
+- **Last decision:** DEC-009 (phase-1 scope boundaries), 2026-08-17. DEC-001 to DEC-009 all landed
+  from the 2026-08-17 walkthrough.
 - **Team:** Aakash (PM/merger/financials), Elvis (client and designer), Deepak (tech lead and developer)
 
-## What exists
+## What is being built
 
-- The documentation-and-delivery repo scaffold (this repo): rulebook, `shared/`, `comms/`,
-  `architecture/`, `contracts/`, `workspaces/`, `skills/`, `docs/`, `research/`, `reference/`.
-- Code repos: referenced separately, not built here.
+- Core objects: Events (activity at a place and time), Ideas (something a user wants to do without
+  hosting, which others can spin into an event), and Business / Organization profiles (multi-member;
+  university clubs first, promotional accounts later).
+- Invite-first onboarding (invite to a specific event or idea), a waitlist for non-invited users, a
+  location-centric explore / map experience, event and idea creation with polls, event chat,
+  notifications, a later-phase calendar, and user plus organization profiles with "moments"
+  (post-event photo reflections).
+- Full feature map: `architecture/phase-plan/wepop-product-overview.md`.
 
 ## What has been decided
 
-_Nothing locked yet. See `shared/DECISIONS.md`._
+Landed in `shared/DECISIONS.md` (DEC-001 to DEC-009, all 2026-08-17):
+
+- DEC-001 Central GitHub repo as source of truth plus Cowork harness.
+- DEC-002 Age gating tied to country legal age (provisional, pending legal counsel).
+- DEC-003 Event location picker uses Google-Maps-style select.
+- DEC-004 Auth: OTP required, optional password, biometrics if feasible.
+- DEC-005 Replace MBTI with an extensible tag list.
+- DEC-006 Anti-stalking visibility model.
+- DEC-007 No in-app AI image or video generation for now.
+- DEC-008 Salvage and build on the existing Wepop code.
+- DEC-009 Phase-1 scope boundaries.
+
+Still open (not decisions): location at registration (optional vs required), the remaining map
+picker interaction detail, and how much legacy code is reused vs rebuilt. See `shared/HOTSHEET.md`.
 
 ## Where everything lives
 
@@ -28,8 +50,9 @@ _Nothing locked yet. See `shared/DECISIONS.md`._
 |------|------|-------|
 | Decisions | `shared/DECISIONS.md` | Source of truth |
 | Running summary and risks | `shared/HOTSHEET.md` | |
-| Strategy | `shared/PROJECT_STRATEGY.md` | |
+| Strategy | `shared/PROJECT_STRATEGY.md` | Commercial narrative |
 | Merge queue | `shared/MERGE-REVIEW.md` | |
+| Product overview | `architecture/phase-plan/wepop-product-overview.md` | App feature map and phase-1 scope |
 | Emails | `comms/emails/` | `NN_YYYY-MM-DD_kebab-subject.md` |
 | Meeting notes | `comms/meeting-notes/` | summary + `_TRANSCRIPT.md` |
 | Design docs | `architecture/elvis/`, `architecture/technical/` | No code |

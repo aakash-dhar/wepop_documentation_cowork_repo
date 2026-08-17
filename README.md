@@ -6,6 +6,11 @@
 **Client:** Elvis (embedded as client and designer)
 **Team:** Aakash (principal PM, project owner, merger, financials), Elvis (client and designer), Deepak (tech lead and developer)
 
+**About the product:** Wepop is an invite-first, location-based events and meetup app for getting
+people together in the real world around shared activities. It is a meetup app, not a dating app.
+See `CLAUDE.md` section 8 for the architecture and `shared/PROJECT_STRATEGY.md` for the commercial
+narrative.
+
 This is a **team documentation and delivery repo**, not a code repo. Code lives in separate
 repos. Several people each run their own Cowork (or Claude Code) session against this same
 GitHub repo, and share one record without stepping on each other. Three mechanisms make that
