@@ -10,11 +10,14 @@ Say this -> what it does. Skills are read as a plain `skills/` folder; confirm a
 - "archive this email" / pasted email -> **archive-email** (files it by number, extracts decisions)
 - "process this transcript" / pasted transcript -> **process-transcript** (dual-file meeting record)
 - "intake document [file]" / "client sent a document" -> **intake-document** (files to reference/ or research/)
+- "design intake" / "Elvis pushed designs" / design drop -> **design-intake** (version, catalog screens, diff, flag gaps)
 
 ## Tracking and decisions
 - "propose this decision" / "log this decision" -> **propose-decision** (DEC-NNN proposal)
 - "add a risk" / "retire risk N" -> **risk-register** (proposed risk change)
 - "track this question" / "open questions" -> **track-open-questions** (routed-question tracker)
+- "scope tracker" / "what's in phase 1?" / "is this in scope?" -> **scope-tracker** (phase / feature matrix)
+- "spec sync" / "refresh the product overview" -> **spec-sync** (overview + PROJECT_INDEX kept in sync with DECISIONS)
 
 ## Communicating out
 - "draft a reply to Elvis" / "reply to email NN" -> **draft-elvis-reply** (chat-only client reply)
@@ -24,6 +27,7 @@ Say this -> what it does. Skills are read as a plain `skills/` folder; confirm a
 ## Reporting
 - "status report" / "mgmt update" -> **status-report** (RAG report)
 - "weekly digest" / "what happened this week" -> **weekly-digest** (last 7 days)
+- "build status" / "is the build green?" -> **build-status** (reflect code-repo build state on the dashboard)
 
 ## Maintaining the shared record
 - "update hotsheet" -> **update-hotsheet** (proposed HOTSHEET change)
