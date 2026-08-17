@@ -6,6 +6,9 @@ Say this -> what it does. Skills are read as a plain `skills/` folder; confirm a
 - "start session" / "good morning" / "catch me up" -> **session-start** (reads the governing layer, briefs you)
 - "end session" / "done for today" / "wrap up" -> **session-end** (dual-file log, prepares a commit)
 
+## Merging (merger only, run as Aakash)
+- "run the merge" / "merge proposals" / "land the proposals" -> **run-merge** (preview a merge plan, land clean proposals into shared/ on your OK, park conflicts in MERGE-REVIEW, empty landed proposals; no git)
+
 ## Capturing what comes in
 - "archive this email" / pasted email -> **archive-email** (files it by number, extracts decisions)
 - "process this transcript" / pasted transcript -> **process-transcript** (dual-file meeting record)
@@ -26,6 +29,7 @@ Say this -> what it does. Skills are read as a plain `skills/` folder; confirm a
 
 ## Reporting
 - "status report" / "mgmt update" -> **status-report** (RAG report)
+- "project tracker" / "update the tracker" / "where does the project stand?" -> **update-tracker** (regenerate the one-screen shared/PROJECT_TRACKER.md roll-up)
 - "weekly digest" / "what happened this week" -> **weekly-digest** (last 7 days)
 - "build status" / "is the build green?" -> **build-status** (reflect code-repo build state on the dashboard)
 
@@ -35,5 +39,5 @@ Say this -> what it does. Skills are read as a plain `skills/` folder; confirm a
 - "update the dashboard" -> **dashboard-update** (refresh + snapshot docs/index.html)
 
 ## Two reminders
-1. Skills that touch the record go through **proposals** - the merger (Aakash) lands them.
+1. Skills that touch the record go through **proposals** - the merger (Aakash) lands them via **run-merge**. The only skill that writes `shared/` directly is **run-merge**, and only when run as Aakash.
 2. **Nothing auto-pushes.** The human syncs via GitHub Desktop.
