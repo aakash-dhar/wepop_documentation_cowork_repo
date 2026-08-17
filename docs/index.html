@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wepop - Delivery Dashboard</title>
+<style>
+  :root {
+    --bg: #0f1420;
+    --panel: #171d2b;
+    --panel-2: #1e2637;
+    --border: #2a3346;
+    --text: #e6ebf4;
+    --muted: #93a0b8;
+    --accent: #5b8cff;
+    --green: #37c281;
+    --amber: #e7b04a;
+    --red: #e5675f;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .container { max-width: 1320px; margin: 0 auto; padding: 32px 24px 64px; }
+  header.masthead { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid var(--border); padding-bottom: 18px; margin-bottom: 28px; }
+  .brand { font-size: 22px; font-weight: 700; letter-spacing: 0.2px; }
+  .brand span { color: var(--accent); }
+  .sub { color: var(--muted); font-size: 13px; }
+  .rag { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .dot.green { background: var(--green); }
+  .dot.amber { background: var(--amber); }
+  .dot.red { background: var(--red); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; }
+  .card h2 { margin: 0 0 14px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); font-weight: 700; }
+  .kv { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--panel-2); }
+  .kv:last-child { border-bottom: 0; }
+  .kv .k { color: var(--muted); }
+  ul.clean { margin: 0; padding-left: 18px; }
+  ul.clean li { margin: 6px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--panel-2); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .pill.green { background: rgba(55,194,129,0.15); color: var(--green); }
+  .pill.amber { background: rgba(231,176,74,0.15); color: var(--amber); }
+  .pill.red { background: rgba(229,103,95,0.15); color: var(--red); }
+  .full { grid-column: 1 / -1; }
+  footer { margin-top: 36px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--border); padding-top: 16px; }
+  .empty { color: var(--muted); font-style: italic; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="masthead">
+    <div>
+      <div class="brand">We<span>pop</span> - Delivery Dashboard</div>
+      <div class="sub">WEP001 - client-facing delivery view</div>
+    </div>
+    <div class="rag" data-section="rag">
+      <span class="dot green"></span> On track
+    </div>
+  </header>
+
+  <!-- SECTION: snapshot -->
+  <div class="grid">
+    <div class="card" data-section="snapshot">
+      <h2>Project snapshot</h2>
+      <div class="kv"><span class="k">Phase</span><span>Phase 1 - kickoff</span></div>
+      <div class="kv"><span class="k">Status</span><span class="rag"><span class="dot green"></span> Green</span></div>
+      <div class="kv"><span class="k">Last updated</span><span>2026-08-17</span></div>
+      <div class="kv"><span class="k">Last decision</span><span class="empty">none yet</span></div>
+    </div>
+
+    <!-- SECTION: milestones -->
+    <div class="card" data-section="milestones">
+      <h2>Milestones</h2>
+      <p class="empty">Milestones will appear here once the SOW / phase plan is set.</p>
+    </div>
+
+    <!-- SECTION: watch -->
+    <div class="card" data-section="watch">
+      <h2>What we are watching</h2>
+      <p class="empty">Nothing flagged yet.</p>
+    </div>
+  </div>
+
+  <!-- SECTION: recent -->
+  <div class="grid" style="margin-top:18px;">
+    <div class="card full" data-section="recent">
+      <h2>Recent decisions</h2>
+      <table>
+        <thead><tr><th>ID</th><th>Decision</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td colspan="4" class="empty">No decisions logged yet.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION: open -->
+  <div class="grid" style="margin-top:18px;">
+    <div class="card full" data-section="open">
+      <h2>Open items</h2>
+      <table>
+        <thead><tr><th>Item</th><th>Owner</th><th>Since</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td colspan="4" class="empty">No open items.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    Wepop delivery dashboard. Generated from the project record by the dashboard-update skill.
+    Content is refreshed in place; styling and branding stay fixed. Served via GitHub Pages from /docs.
+  </footer>
+
+</div>
+</body>
+</html>
