@@ -4,14 +4,17 @@
 
 ---
 
-## 2026-08-17 (session 2) - Walkthrough ingest, project fill-in, merger, skills
+## 2026-08-17 (session 2) - Walkthrough ingest, project fill-in, merger, skills, code hygiene
 Ingested the 2026-08-17 Wepop progress walkthrough (verbatim + summary; non-Wepop Reflex/voice-tutor
-tail set aside). Filed and then landed DEC-001 to DEC-009, risks R1-R3, and the hotsheet entry.
-Filled the project identity across CLAUDE.md section 8, README, PROJECT_STRATEGY, PROJECT_INDEX, and
-a new architecture/phase-plan/wepop-product-overview.md. Ran the merger and cleared the proposal
-queues. Added four skills (design-intake, scope-tracker, spec-sync, build-status), toolkit now 20.
-Open: location-required unresolved, DEC-002 pending lawyer, map picker detail, action items in
-comms/todos.md. Sync pending via GitHub Desktop.
+tail set aside). Filed and landed DEC-001 to DEC-009, risks R1-R3, and the hotsheet entry. Filled the
+project identity across CLAUDE.md section 8, README, PROJECT_STRATEGY, PROJECT_INDEX, and a new
+architecture/phase-plan/wepop-product-overview.md. Ran the merger and cleared the proposal queues.
+Added four skills (design-intake, scope-tracker, spec-sync, build-status); toolkit now 20. Analyzed
+the added code/ folder (admin backend, admin dashboard, RN Phase 2 mobile) read-only, filed nothing
+by decision. Added root .gitignore for .DS_Store and /code/.
+Open: location-required unresolved; DEC-002 pending lawyer; map picker detail; action items in
+comms/todos.md. Parked (awaiting Elvis's definitive details): design version ledger, reference
+code-map, Quick/Plan/Idea modes reconciliation. Sync pending via GitHub Desktop.
 Detail: session_log_2026-08-17_session2.md
 
 ---
