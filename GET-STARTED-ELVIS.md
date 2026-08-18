@@ -114,7 +114,36 @@ There are more (28 in total). For the full list with trigger phrases, open **REA
 
 ---
 
-## Part 5 - Changing something in the shared files
+## Part 5 - Pushing your designs and documents
+
+This is how your Claude Design work and your documents get into the repo. Short version: you export,
+drop the file into your own folder, and push. There is no live link between Claude Design and the
+repo yet, so a design is not "in the repo" until you export and push it.
+
+Two folders are already set up for you. They appear as soon as you clone or pull, and each has a
+short README inside with these same steps:
+
+| What | Where it goes |
+|------|---------------|
+| Design exports (Standalone HTML) | `architecture/elvis/designs/` |
+| Documents (specs, briefs, PDFs, Word) | `architecture/elvis/documents/` |
+
+To push a design:
+
+1. In Claude Design, open the finished design and Export -> Standalone HTML.
+2. Save it into a dated subfolder under `architecture/elvis/designs/`, for example `2026-08-20_moments/`.
+3. In GitHub Desktop: Commit with an `[elvis] ...` message, then Push.
+4. Tell Aakash, or just say *"design intake"* in your Claude session, and it gets versioned and catalogued.
+
+Documents work the same way: export to PDF, Word, or PowerPoint (or write them in Claude with the
+repo open), save into `architecture/elvis/documents/`, then Commit and Push.
+
+If you ever need a new folder inside your area, just ask your Claude to create it and push it. Keep
+everything inside `architecture/elvis/`, and Aakash merges anything that affects the shared docs.
+
+---
+
+## Part 6 - Changing something in the shared files
 
 Sometimes you will want to change a shared file, like recording a decision or flagging a risk. You do not edit those files yourself. Instead you tell Claude what you want, and it writes a short *proposal* in your own workspace. Next time Aakash runs his session, he folds the clean proposals into the shared record. If two people proposed something about the same thing, it gets set aside for Aakash to decide, so nothing collides.
 
@@ -122,7 +151,7 @@ You do not have to remember any of this. Just say what you want ("let us record 
 
 ---
 
-## Part 6 - If you get stuck or need help
+## Part 7 - If you get stuck or need help
 
 Two things make this painless:
 
@@ -133,7 +162,7 @@ Nothing you do in Claude is final until you Push in GitHub Desktop, so you can a
 
 ---
 
-## Part 7 - Your to-do checklist
+## Part 8 - Your to-do checklist
 
 Tick these off as you go. The numbers match the steps above, so you can point to exactly where you are.
 
@@ -153,6 +182,7 @@ Tick these off as you go. The numbers match the steps above, so you can point to
 - [ ] C - Tried one skill, for example shared a design with "design intake", or said "propose this decision"
 - [ ] D - Typed "end session" in Claude
 - [ ] E - In GitHub Desktop, committed with an `[elvis] ...` message and clicked Push
+- [ ] F - (when you have one) dropped a design export into `architecture/elvis/designs/` or a document into `architecture/elvis/documents/` and pushed it
 
 Once you have ticked every box, you are fully set up and running the same way Aakash and Deepak are. Welcome aboard.
 
