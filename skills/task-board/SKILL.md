@@ -3,10 +3,11 @@ name: task-board
 category: maintenance
 description: >
   Maintains the Wepop delivery board. Data in shared/TASK-BOARD.md (per-task: owner, status, started,
-  ended, pushed, notes). team/board-render.py regenerates a light-mode, non-kanban board with five
-  tabs (Delivery digest, Timeline, Journal, Now / Next / Later, Scope vs Built), Bootstrap widths, and
-  a right-side detail drawer. It is written to team/board.html (shown inline in Claude as the
-  wepop-task-board artifact) and to docs/board-public.html (published on GitHub Pages). Adds and moves
+  ended, pushed, notes). team/board-render.py regenerates a light-mode, non-kanban board with six
+  tabs (Delivery digest, Timeline, Journal, Now / Next / Later, Scope vs Built, Decisions), KPI cards,
+  charts, and a right-side detail drawer. It writes team/board.html (shown inline as the
+  wepop-task-board artifact), docs/index.html (the GitHub Pages root), and docs/board-public.html.
+  Going live needs a human commit and push in GitHub Desktop. Adds and moves
   tasks (stamping Started and Ended) and fills Pushed from git log. Aakash (the merger) owns the board;
   Elvis and Deepak propose tasks via workspaces/[you]/proposed-tasks.md. Does no git. Triggers on
   "show the task board", "add a task", "start task NNN", "finish task NNN", "update the board",
@@ -27,17 +28,21 @@ description: >
 ## The pieces
 - `shared/TASK-BOARD.md` - the data (the table of tasks).
 - `team/board-template.html` - the HTML shell for the internal board (styling lives here).
-- `team/board-render.py` - regenerates BOTH boards from the data.
+- `team/board-render.py` - regenerates all board outputs from the data. It reads tasks from
+  `shared/TASK-BOARD.md`, per-task detail from `team/tasks/`, decisions from `shared/DECISIONS.md`,
+  and risks from `shared/HOTSHEET.md`, and writes `docs/index.html` (Pages root),
+  `docs/board-public.html`, and `team/board.html`.
 - `team/tasks/TASK-NNN.md` - per-task DETAIL (Overview, Linked sources, Activity, Definition of
   done, Blockers). This is what the task side panel shows in full. Format in `team/tasks/_TEMPLATE.md`.
   The ingestion skills (archive-email, process-transcript) append Source and Activity lines here as
   calls, emails, and Slack arrive, so the panel gets richer over time. Merger writes; others propose.
 - `team/board.html` - the INTERNAL full board (all tasks, owners, notes). Under `team/` so GitHub
   Pages does NOT publish it. Shown to the team inline as the `wepop-task-board` artifact.
-- `docs/board-public.html` - the board published on GitHub Pages. Per Aakash's decision it is the
-  FULL board (same content as `team/board.html`), not a sanitized subset. `docs/` is public, so this
-  board is world-readable while the repo is public. Revisit if the repo goes private and a client-only
-  view is wanted again (a `render_public` function is kept in `team/board-render.py` for that case).
+- `docs/index.html` - the board served at the GitHub Pages ROOT url. Per Aakash's decision it is the
+  FULL board (owners, notes, detail, decisions, risks), not a sanitized subset. `docs/board-public.html`
+  is a copy kept so older links resolve. `docs/` is public, so this board is world-readable while the
+  repo is public. If the repo goes private, switch to the sanitized `render_public` kept in
+  `team/board-render.py`.
 
 ## Board columns (the data)
 `ID | Task | Owner | Status | Started | Ended | Committed | Notes`. Status is
@@ -47,6 +52,19 @@ description: >
 - Regenerate if anything changed, then render `team/board.html` INLINE in the Cowork side panel:
   update the persisted **wepop-task-board** artifact (or send it with an inline render). Never tell
   the person to open or download the file.
+
+## Publishing to GitHub Pages (making an update go live)
+Regenerating (Step 6) refreshes the files on disk and the inline artifact, but the PUBLIC board at the
+GitHub Pages URL only changes after a human pushes. The agent never runs git. Finish an update like this:
+1. Regenerate: `python3 team/board-render.py`. This rewrites `docs/index.html` (the Pages root),
+   `docs/board-public.html`, and `team/board.html`.
+2. Tell Aakash to open **GitHub Desktop**, review the changed files, and commit with a name-prefixed
+   message. Put any finished task's `TASK-NNN` in the message so the next reconcile (Step 5) fills its
+   Pushed date, for example `[aakash] TASK-016 handoff + board refresh`.
+3. Push in GitHub Desktop. GitHub Pages rebuilds in a minute or two, then the live URL shows the update.
+   Nothing is live until this push happens.
+The Wednesday "board refresh" scheduled task runs this same hygiene and flags uncommitted changes. The
+board can only be regenerated while the Claude desktop app is open with the repo folder connected.
 
 ## Steps (when changing the board)
 ### Step 1 - Identify the change: add a task, move a status, block/unblock, edit notes, or land proposed tasks.
@@ -64,14 +82,14 @@ panel from its Notes, so this is optional but recommended for anything real.
 ### Step 3 - Land proposed tasks (Aakash only): scan `workspaces/*/proposed-tasks.md`, assign each the next `TASK-NNN`, add rows to `shared/TASK-BOARD.md`, and replace the landed block with a dated "Landed" note.
 ### Step 4 - Move status: `To Do -> In progress` stamps Started; `-> Done` stamps Ended; `-> Blocked` records what it waits on. Use today's date (ask if the date is not today).
 ### Step 5 - Reconcile Pushed: read `git log --date=short --pretty="%ad | %s"`; for any Done task whose commit message contains its `TASK-NNN`, set Committed to that date. Leave blank if not pushed. Never invent a date.
-### Step 6 - Regenerate and show: run `python3 team/board-render.py` (it writes the full board to both `team/board.html` and the published `docs/board-public.html`), then refresh the inline `wepop-task-board` artifact.
+### Step 6 - Regenerate and show: run `python3 team/board-render.py` (it writes `docs/index.html` [Pages root], `docs/board-public.html`, and `team/board.html`), then refresh the inline `wepop-task-board` artifact.
 ### Step 7 - Report what changed and suggest a commit. Remind that putting the `TASK-NNN` in the commit message lets the next reconcile fill the Pushed date.
 
 ## Never
 - Tell the person to download or open the board file; always show it inline.
 - Build a kanban or a dark theme; this board is the five-view, light-mode delivery view.
-- Forget that `docs/board-public.html` is published publicly while the repo is public; that is
-  Aakash's current choice. If the repo goes private, switch it back to the sanitized `render_public`.
+- Forget that `docs/index.html` (and `docs/board-public.html`) is published publicly while the repo
+  is public; that is Aakash's current choice. If the repo goes private, switch to the sanitized `render_public`.
 - Reuse or renumber a task id; invent a Started, Ended, or Committed date (today's, stated, or from git log only).
 - Let the boards drift from the data or the detail files; always regenerate with `team/board-render.py`.
 - Put client-unsafe detail in `team/tasks/` while `docs/` is public: the full board (with detail) is
