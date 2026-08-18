@@ -56,6 +56,8 @@ picker interaction detail, and how much legacy code is reused vs rebuilt. See `s
 | Product overview | `architecture/phase-plan/wepop-product-overview.md` | App feature map and phase-1 scope |
 | Emails | `comms/emails/` | `NN_YYYY-MM-DD_kebab-subject.md` |
 | Meeting notes | `comms/meeting-notes/` | summary + `_TRANSCRIPT.md` |
+| Elvis draft docs (received) | `comms/attachments/2026-08-18_elvis-draft-docs/` | Brief v2 + Moments v0.9, provisional; reviewed version pending; see `_NOTES.md` |
+| Walkthrough vs drafts review aid | `comms/attachments/2026-08-18_elvis-draft-docs/` | PM cross-check (md + pdf) |
 | Design docs | `architecture/elvis/`, `architecture/technical/` | No code |
 | Contracts | `contracts/phase-N/` | Financials owner |
 | Dashboard | `docs/index.html` | Client-facing |

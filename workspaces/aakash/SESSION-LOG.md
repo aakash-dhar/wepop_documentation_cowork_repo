@@ -4,6 +4,21 @@
 
 ---
 
+## 2026-08-18 - Merger + tracker skills, Elvis GitHub ID, draft-docs filing, review aid
+Added `run-merge` (the triggerable merger routine, Aakash-only) and `update-tracker`, plus seeded
+`shared/PROJECT_TRACKER.md`; toolkit now 22; registered in TRIGGERS/README, OWNERS, PROJECT_INDEX.
+Logged Elvis's GitHub ID `programinator-elvis` in `comms/todos.md` (item 2) and on the HOTSHEET
+harness gate. Filed Elvis's first project docs (Phase 1 Brief v2, Moments/Reflections v0.9) as DRAFTS
+under `comms/attachments/2026-08-18_elvis-draft-docs/` with a `_NOTES.md` companion. Produced and
+independently validated a walkthrough-vs-drafts review aid (md + pdf), filed alongside; drafted an
+Elvis how-to note (chat only, ready to send).
+Open: the two drafts conflict on ratings/comments/video; draft diverges from DEC-002 (age), DEC-004
+(Kakao/OTP), DEC-009 (DM/calendar phase); escalate the Moments doc budget + legal to financials.
+Nothing proposed to DECISIONS (all on unreviewed drafts). Sync pending via GitHub Desktop.
+Detail: session_log_2026-08-18.md
+
+---
+
 ## 2026-08-17 (session 2) - Walkthrough ingest, project fill-in, merger, skills, code hygiene
 Ingested the 2026-08-17 Wepop progress walkthrough (verbatim + summary; non-Wepop Reflex/voice-tutor
 tail set aside). Filed and landed DEC-001 to DEC-009, risks R1-R3, and the hotsheet entry. Filled the

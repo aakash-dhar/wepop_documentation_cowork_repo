@@ -6,7 +6,7 @@
 
 ---
 
-## Current state (as of 2026-08-17)
+## Current state (as of 2026-08-18)
 
 Project WEP001 - Wepop. First full design walkthrough completed 2026-08-17 (Elvis, Aakash, Deepak).
 Nine decisions landed (DEC-001 to DEC-009). Coordination moving to a central GitHub repo plus a
@@ -19,8 +19,10 @@ _None yet._
 ### Needs Attention
 
 - **Repo and Cowork harness setup.** Aakash to create the Wepop GitHub repo, invite Elvis, and run
-  a short setup call, gated on Elvis sending the project documentation (V1 ok) and his GitHub ID via
-  Slack. Since 2026-08-17. Source: 2026-08-17 walkthrough. Action items tracked in `comms/todos.md`.
+  a short setup call. Elvis's GitHub ID (`programinator-elvis`) received 2026-08-18. Project
+  documentation received 2026-08-18 as an unreviewed draft (Elvis to send a reviewed version); the
+  repo invite and setup call now wait on that final documentation. Since 2026-08-17. Source:
+  2026-08-17 walkthrough. Action items tracked in `comms/todos.md`.
 - **Location at registration not locked.** Optional/contextual (current lean) vs required is
   unresolved; confirm with Elvis before it hardens. Since 2026-08-17. Source: 2026-08-17 walkthrough.
 
