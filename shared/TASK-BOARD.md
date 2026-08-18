@@ -16,7 +16,10 @@
 - **Committed:** date (and short ref) the work was pushed, filled by the task-board skill from
   `git log`. Put the task id in the commit message (for example `[aakash] TASK-012 ...`) so it matches
   automatically. Blank until pushed.
-- **Notes:** the detail shown when the task is opened (dependency, ref, context).
+- **Notes:** a short one-line summary for the row.
+- **Detail:** the full side-panel content (Overview, Linked sources, Activity, Definition of done,
+  Blockers) lives in `team/tasks/TASK-NNN.md`. The ingestion skills append linked sources and
+  activity lines there as calls, emails, and Slack come in. See `team/tasks/_TEMPLATE.md`.
 
 ## Board
 

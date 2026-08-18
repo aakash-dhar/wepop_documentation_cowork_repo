@@ -1,91 +1,195 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Wepop Delivery View</title>
+<title>Wepop - Delivery Status</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --plane:#f7f7f4; --surface:#ffffff; --ink:#12120f; --ink2:#55534d; --muted:#93908a;
+  --plane:#f6f6f3; --surface:#ffffff; --ink:#12120f; --ink2:#55534d; --muted:#93908a;
   --line:#e9e8e2; --ring:rgba(18,18,15,.08);
-  --accent:#2a6df4; --accentbg:#eaf1fe;
+  --brand:#e63946; --brand-ink:#c92f3c; --brandbg:#fdecee;
+  --accent:#e63946; --accentbg:#fdecee;
   --done:#1f9d55; --donebg:#e7f5ec; --now:#2a6df4; --nowbg:#eaf1fe;
-  --wait:#c2410c; --waitbg:#fbeadf; --todo:#6b7280; --todobg:#f0f0ee;
-  --shadow:0 1px 2px rgba(18,18,15,.05); --shadow-lg:0 8px 26px rgba(18,18,15,.10);
+  --wait:#d97706; --waitbg:#fdf0dd; --todo:#6b7280; --todobg:#efefec;
+  --shadow:0 1px 2px rgba(18,18,15,.05); --shadow-md:0 2px 10px rgba(18,18,15,.06);
+  --shadow-lg:0 8px 26px rgba(18,18,15,.10);
 }
 *{box-sizing:border-box}html,body{margin:0}
-body{background:var(--plane);color:var(--ink);font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;
+html{scroll-behavior:smooth}
+body{background:var(--plane);color:var(--ink);font:15px/1.6 "Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
  font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
-/* Bootstrap-style container */
 .container{width:100%;margin-inline:auto;padding-inline:1rem}
 @media(min-width:576px){.container{max-width:540px}}
 @media(min-width:768px){.container{max-width:720px}}
 @media(min-width:992px){.container{max-width:960px}}
 @media(min-width:1200px){.container{max-width:1140px}}
 @media(min-width:1400px){.container{max-width:1320px}}
-.pagepad{padding-top:28px;padding-bottom:72px}
-.h1{font-size:23px;font-weight:680;letter-spacing:-.01em;margin:0}
-.hsub{color:var(--ink2);font-size:13.5px;margin:4px 0 0}
-.tabs{display:flex;gap:5px;flex-wrap:wrap;margin:20px 0 22px;background:var(--surface);border:1px solid var(--line);
- border-radius:12px;padding:6px;box-shadow:var(--shadow)}
+.pagepad{padding-top:26px;padding-bottom:80px}
+/* brand chrome */
+.topaccent{height:3px;background:var(--brand)}
+.brandbar{background:#12120f;border-bottom:1px solid rgba(255,255,255,.08)}
+.brandbar .inner{display:flex;align-items:center;justify-content:space-between;padding:13px 0}
+.logo{display:inline-flex;align-items:center;gap:9px}
+.logo-fallback{display:none;align-items:center;gap:9px;font-family:"Space Grotesk",system-ui,sans-serif;font-weight:700;font-size:18px;letter-spacing:-.02em;color:#fff}
+.logomark{width:23px;height:23px;border-radius:6px;background:var(--brand);color:#fff;font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;line-height:1}
+.logomark-img{height:26px;width:auto;display:block}
+.brandnav{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.66);letter-spacing:.02em}
+/* page header */
+.hdr{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px}
+.kicker{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);margin:0 0 6px}
+.h1{font-family:"Space Grotesk",system-ui,sans-serif;font-size:29px;font-weight:700;letter-spacing:-.02em;margin:0}
+.hsub{color:var(--ink2);font-size:13.5px;margin:5px 0 0}
+.healthpill{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 14px;box-shadow:var(--shadow);font-size:13px;color:var(--ink2)}
+.healthpill .dotp{width:9px;height:9px;border-radius:50%;background:var(--done);box-shadow:0 0 0 3px var(--donebg)}
+.healthpill b{color:var(--done);font-weight:650}
+/* KPI hero */
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:20px 0 4px}
+@media(min-width:768px){.kpis{grid-template-columns:repeat(5,1fr)}}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px 12px;box-shadow:var(--shadow);
+ cursor:pointer;position:relative;overflow:hidden;transition:box-shadow .15s,transform .15s;text-align:left;font:inherit}
+.kpi:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--kc,var(--line))}
+.kpi .kv{font-family:"Space Grotesk",system-ui,sans-serif;font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.15}
+.kpi .kl{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+.kpi .ks{font-size:11.5px;color:var(--muted);margin-top:5px}
+.kpi.pct .kv{color:var(--brand)}
+.kpibar{height:5px;border-radius:999px;background:var(--todobg);overflow:hidden;margin-top:9px}
+.kpibar i{display:block;height:100%;border-radius:999px;background:var(--brand)}
+/* tabs */
+.tabwrap{position:sticky;top:0;z-index:40;background:linear-gradient(var(--plane) 82%,rgba(246,246,243,0));padding:10px 0 12px;margin:14px 0 10px}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:5px;box-shadow:var(--shadow)}
 .tab{border:none;background:transparent;color:var(--ink2);font:inherit;font-size:13.5px;font-weight:560;
- padding:8px 15px;border-radius:8px;cursor:pointer;white-space:nowrap}
-.tab:hover{color:var(--ink)} .tab.on{background:var(--accentbg);color:var(--accent)}
-.view{display:none}.view.on{display:block}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
-.health{padding:20px 24px;display:flex;align-items:center;gap:15px;border-bottom:1px solid var(--line)}
-.hbadge{font-size:12.5px;font-weight:650;color:var(--done);background:var(--donebg);border-radius:999px;padding:5px 13px;white-space:nowrap}
-.hmsg{color:var(--ink2);font-size:14px}
-.prog{padding:18px 24px;border-bottom:1px solid var(--line)}
-.pbar{height:10px;border-radius:999px;background:var(--todobg);overflow:hidden}
-.pfill{height:100%;background:var(--done);border-radius:999px}
-.pmeta{display:flex;justify-content:space-between;margin-top:9px;font-size:13px;color:var(--ink2)}
-.sect{padding:18px 24px;border-bottom:1px solid var(--line)}.sect:last-child{border-bottom:none}
-.slab{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:660;text-transform:uppercase;letter-spacing:.05em;margin-bottom:13px;color:var(--ink2)}
+ padding:8px 15px;border-radius:8px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:7px}
+.tab:hover{color:var(--ink)} .tab.on{background:#12120f;color:#fff}
+.tab .tcount{font-size:11px;font-weight:650;background:var(--todobg);color:var(--ink2);border-radius:999px;padding:1px 7px}
+.tab.on .tcount{background:rgba(255,255,255,.18);color:#fff}
+.view{display:none}.view.on{display:block;animation:fade .18s ease}
+@keyframes fade{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+/* cards & generic */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.sect{padding:18px 22px;border-bottom:1px solid var(--line)}.sect:last-child{border-bottom:none}
+.slab{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:680;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;color:var(--ink2)}
+.slab .cnt{font-weight:650;color:var(--muted);background:var(--todobg);border-radius:999px;padding:1px 8px;font-size:11px;letter-spacing:0}
 .dot{width:9px;height:9px;border-radius:50%}
 .dot.done{background:var(--done)}.dot.now{background:var(--now)}.dot.wait{background:var(--wait)}.dot.todo{background:var(--todo)}
-.li{display:flex;gap:12px;align-items:baseline;padding:9px 10px;cursor:pointer;border-radius:9px;margin:0 -10px}
-.li:hover{background:#faf9f6}
-.li .col1{flex:1}
-.li .ttl{font-size:14.5px}
-.li .sub{font-size:12.5px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:90%}
-.li .who{font-size:11.5px;color:var(--ink2);background:var(--todobg);border-radius:999px;padding:2px 9px;white-space:nowrap}
-.li .when{font-size:12px;color:var(--muted);white-space:nowrap}
-.li .chev{color:var(--muted);font-size:15px}
-.changed{padding:16px 24px;background:#fbfbf9;border-radius:0 0 14px 14px;color:var(--ink2);font-size:13.5px}
 .empty{color:var(--muted);font-size:13.5px;font-style:italic;padding:2px 0}
-.tl{padding:10px 26px 20px}
-.tlrow{position:relative;padding:15px 0 15px 28px}
-.tlrow::before{content:"";position:absolute;left:6px;top:22px;bottom:-8px;width:2px;background:var(--line)}
+/* digest layout: lists + chart sidebar */
+.diggrid{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:992px){.diggrid{grid-template-columns:minmax(0,1fr) 340px;align-items:start}}
+.side{display:flex;flex-direction:column;gap:16px;min-width:0}
+@media(min-width:992px){.side{position:sticky;top:74px}}
+/* task rows */
+.li{display:flex;gap:12px;align-items:baseline;padding:10px 10px;cursor:pointer;border-radius:10px;margin:0 -10px;transition:background .12s}
+.li:hover{background:#faf9f6}
+.li .col1{flex:1;min-width:0}
+.li .ttl{font-size:14.5px;font-weight:520}
+.li .sub{font-size:12.5px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.li .who{font-size:11.5px;font-weight:560;color:var(--ink2);background:var(--todobg);border-radius:999px;padding:2px 9px;white-space:nowrap;flex:none}
+.li .when{font-size:12px;color:var(--muted);white-space:nowrap;flex:none}
+.li .chev{color:var(--muted);font-size:15px;flex:none;transition:transform .12s}
+.li:hover .chev{transform:translateX(2px);color:var(--ink2)}
+.changed{padding:15px 22px;background:#fbfbf9;border-radius:0 0 16px 16px;color:var(--ink2);font-size:13.5px}
+/* charts */
+.chartcard{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px 20px}
+.chartcard .ch{font-size:12px;font-weight:680;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+.chartcard .ch .sub2{font-weight:500;color:var(--muted);text-transform:none;letter-spacing:0;font-size:12px}
+.donutwrap{display:flex;align-items:center;gap:18px}
+.donutwrap svg{flex:none}
+.dlegend{display:flex;flex-direction:column;gap:7px;min-width:0;flex:1}
+.dlegend .lrow{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2)}
+.dlegend .sw{width:10px;height:10px;border-radius:3px;flex:none}
+.dlegend .lv{margin-left:auto;font-weight:650;color:var(--ink)}
+.donutcenter{font-family:"Space Grotesk",system-ui,sans-serif;font-weight:700}
+/* owner bars */
+.obars{display:flex;flex-direction:column;gap:12px}
+.obar .orow{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px}
+.obar .oname{display:flex;align-items:center;gap:7px;font-weight:560;color:var(--ink2)}
+.obar .ocount{color:var(--muted)}
+.obar .otrack{display:flex;height:9px;border-radius:999px;background:var(--todobg);overflow:hidden}
+.obar .oseg{height:100%}
+.avm{width:18px;height:18px;border-radius:50%;color:#fff;font-size:10px;font-weight:650;display:inline-flex;align-items:center;justify-content:center}
+/* mini column chart (journal) */
+.cols{display:flex;align-items:flex-end;gap:10px;height:86px;padding-top:6px}
+.colu{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;justify-content:flex-end}
+.colu .cbar{width:100%;max-width:38px;border-radius:6px 6px 3px 3px;background:var(--brand);opacity:.9;min-height:4px}
+.colu .clab{font-size:10.5px;color:var(--muted);white-space:nowrap}
+.colu .cval{font-size:11px;font-weight:650;color:var(--ink2)}
+/* timeline (expandable) */
+.tl{padding:8px 24px 18px}
+.tlrow{position:relative;padding:14px 0 14px 30px;cursor:pointer;border-radius:10px}
+.tlrow:hover .tlname{color:var(--brand-ink)}
+.tlrow::before{content:"";position:absolute;left:7px;top:24px;bottom:-6px;width:2px;background:var(--line)}
 .tlrow:last-child::before{display:none}
-.node{position:absolute;left:0;top:16px;width:14px;height:14px;border-radius:50%;background:var(--surface);border:2px solid var(--line)}
+.node{position:absolute;left:0;top:17px;width:16px;height:16px;border-radius:50%;background:var(--surface);border:2px solid var(--line)}
 .tlrow.done .node{background:var(--done);border-color:var(--done)}
-.tlrow.next .node{background:var(--surface);border-color:var(--now);box-shadow:0 0 0 3px var(--nowbg)}
-.tlname{font-size:15px;font-weight:560}.tlmeta{font-size:13px;color:var(--muted);margin-top:2px}.tlmeta .when{color:var(--ink2);font-weight:560}
-.jrow{display:flex;gap:16px;padding:14px 24px;border-bottom:1px solid var(--line);cursor:pointer}
+.tlrow.done .node::after{content:"\2713";position:absolute;inset:0;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center}
+.tlrow.now .node,.tlrow.next .node{background:var(--surface);border-color:var(--now);box-shadow:0 0 0 3px var(--nowbg)}
+.tlhead{display:flex;align-items:baseline;gap:10px}
+.tlname{font-size:15px;font-weight:580;transition:color .12s}
+.tlwhen{font-size:12.5px;color:var(--ink2);font-weight:560;white-space:nowrap;margin-left:auto;flex:none}
+.tlchev{color:var(--muted);font-size:13px;transition:transform .18s;flex:none}
+.tlrow.open .tlchev{transform:rotate(90deg)}
+.tlbody{max-height:0;overflow:hidden;transition:max-height .22s ease}
+.tlrow.open .tlbody{max-height:200px}
+.tlnote{margin-top:8px;background:var(--plane);border:1px solid var(--line);border-radius:10px;padding:10px 13px;font-size:13.5px;color:var(--ink2)}
+.tlstat{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:6px;padding:2px 8px;margin-right:8px}
+.tlstat.done{color:var(--done);background:var(--donebg)}.tlstat.now,.tlstat.next{color:var(--now);background:var(--nowbg)}.tlstat.later{color:var(--muted);background:var(--todobg)}
+.tlprog{padding:16px 22px;border-bottom:1px solid var(--line)}
+/* journal */
+.jrow{display:flex;gap:16px;padding:14px 22px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .12s}
 .jrow:last-child{border-bottom:none}.jrow:hover{background:#faf9f6}
-.jdate{width:100px;flex:none;font-size:13px;color:var(--muted);font-weight:560}
+.jdate{width:96px;flex:none;font-size:12.5px;color:var(--muted);font-weight:560;padding-top:2px}
+.jbody{min-width:0}
 .jbody .act{font-size:14.5px}.jbody .subj{font-size:12.5px;color:var(--ink2);margin-top:3px}
-.jtag{font-size:11px;font-weight:600;border-radius:999px;padding:2px 8px}
+.jtag{font-size:11px;font-weight:650;border-radius:999px;padding:2px 9px;margin-right:6px}
 .jtag.done{color:var(--done);background:var(--donebg)}.jtag.now{color:var(--now);background:var(--nowbg)}
-.nnl{display:grid;grid-template-columns:1fr;gap:16px}
+/* now next later */
+.nnl{display:grid;grid-template-columns:1fr;gap:16px;min-width:0}
 @media(min-width:768px){.nnl{grid-template-columns:1fr 1fr 1fr}}
-.band{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
-.bandh{padding:14px 18px;font-size:13.5px;font-weight:660;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
-.band .subh{color:var(--muted);font-weight:400;font-size:12px}
-.bitem{padding:13px 18px;border-bottom:1px solid var(--line);cursor:pointer}.bitem:last-child{border-bottom:none}.bitem:hover{background:#faf9f6}
-.bitem .t{font-size:14.5px}.bitem .m{font-size:12.5px;color:var(--muted);margin-top:4px}
-.note{background:#fdf6e3;border:1px solid #f0e2b8;color:#6b5a1a;border-radius:10px;padding:13px 16px;font-size:13px;margin-bottom:18px}
-.grp{margin-bottom:20px}.grph{font-size:12px;font-weight:660;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);margin:0 2px 10px}
-.srow{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px 16px;margin-bottom:9px;box-shadow:var(--shadow);cursor:default}
-.sarea{flex:1;font-size:14.5px}.sarea .sn{font-size:12px;color:var(--muted);margin-top:3px}
-.chip{font-size:11px;font-weight:600;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.band{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;min-width:0;max-width:100%}
+.bandh{padding:13px 17px;font-size:13.5px;font-weight:680;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.bandh .bdot{width:9px;height:9px;border-radius:50%;flex:none}
+.band .subh{color:var(--muted);font-weight:450;font-size:12px;margin-left:auto}
+.bitem{padding:13px 17px;border-bottom:1px solid var(--line);cursor:pointer;min-width:0;transition:background .12s}
+.bitem:last-child{border-bottom:none}.bitem:hover{background:#faf9f6}
+.bitem .t{font-size:14px;font-weight:520}.bitem .m{font-size:12.5px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.bflag{font-size:10.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--wait);background:var(--waitbg);border-radius:5px;padding:1px 7px}
+/* scope */
+.scopegrid{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:992px){.scopegrid{grid-template-columns:minmax(0,1fr) 340px;align-items:start}}
+.note{background:#fdf6e3;border:1px solid #f0e2b8;color:#6b5a1a;border-radius:12px;padding:13px 16px;font-size:13px;margin-bottom:16px}
+.grp{margin-bottom:20px}
+.grph{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:680;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);margin:0 2px 10px}
+.grph .cnt{font-weight:650;color:var(--muted);background:var(--todobg);border-radius:999px;padding:1px 8px;font-size:11px;letter-spacing:0}
+.srow{background:var(--surface);border:1px solid var(--line);border-radius:13px;margin-bottom:9px;box-shadow:var(--shadow);overflow:hidden;min-width:0}
+.srowtop{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;transition:background .12s}
+.srowtop:hover{background:#faf9f6}
+.sarea{flex:1;font-size:14.5px;min-width:0;font-weight:520}
+.schev{color:var(--muted);font-size:13px;transition:transform .18s;flex:none}
+.srow.open .schev{transform:rotate(90deg)}
+.chip{font-size:11px;font-weight:650;border-radius:999px;padding:3px 10px;white-space:nowrap;flex:none}
 .chip.des{color:var(--now);background:var(--nowbg)}.chip.des.no{color:var(--muted);background:var(--todobg)}.chip.des.done{color:var(--done);background:var(--donebg)}
 .chip.blt{color:var(--muted);background:var(--todobg)}.chip.blt.yes{color:var(--done);background:var(--donebg)}
-.foot{margin-top:30px;color:var(--muted);font-size:12px;line-height:1.7}
-/* right-side drawer */
+.sbody{max-height:0;overflow:hidden;transition:max-height .22s ease;background:#fbfbf9}
+.srow.open .sbody{max-height:280px;border-top:1px solid var(--line)}
+.sbodyin{padding:13px 16px;font-size:13.5px;color:var(--ink2)}
+.sbodyin .sk2{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:10px 0 5px}
+.sbodyin .sk2:first-child{margin-top:0}
+.refchips{display:flex;flex-wrap:wrap;gap:6px}
+.ref{font-size:12px;font-weight:560;color:var(--ink2);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:3px 9px}
+/* phase progress chart */
+.phbars{display:flex;flex-direction:column;gap:14px}
+.phbar .prow{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px}
+.phbar .pname{font-weight:600;color:var(--ink2)}.phbar .pval{color:var(--muted)}
+.phtrack{display:flex;height:9px;border-radius:999px;background:var(--todobg);overflow:hidden}
+.phseg{height:100%}
+.foot{margin-top:34px;color:var(--muted);font-size:12px;line-height:1.7}
+/* drawer */
 .scrim{position:fixed;inset:0;background:rgba(12,12,10,.34);opacity:0;visibility:hidden;transition:opacity .22s,visibility .22s;z-index:65}
 .scrim.open{opacity:1;visibility:visible}
 .drawer{position:fixed;top:0;right:0;height:100vh;width:50vw;background:var(--surface);border-left:1px solid var(--line);
  box-shadow:-10px 0 34px rgba(0,0,0,.16);transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:70;overflow-y:auto}
 .drawer.open{transform:translateX(0)}
-@media(max-width:900px){.drawer{width:90vw}}
+@media(max-width:900px){.drawer{width:92vw}}
 .dh{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--line);padding:20px 26px 16px;z-index:2}
 .dh .row1{display:flex;align-items:center;gap:10px}
 .dchip{font-size:11.5px;font-weight:650;border-radius:999px;padding:3px 11px}
@@ -93,10 +197,11 @@ body{background:var(--plane);color:var(--ink);font:15px/1.6 system-ui,-apple-sys
 .dchip.wait{color:var(--wait);background:var(--waitbg)}.dchip.todo{color:var(--todo);background:var(--todobg)}
 .did{font-size:12px;color:var(--muted);font-weight:560}
 .dx{margin-left:auto;border:none;background:var(--todobg);color:var(--ink2);border-radius:9px;width:32px;height:32px;font-size:18px;cursor:pointer}
-.dh h2{margin:14px 0 0;font-size:20px;line-height:1.35;font-weight:640;letter-spacing:-.01em}
+.dx:hover{background:var(--line)}
+.dh h2{margin:14px 0 0;font-family:"Space Grotesk",system-ui,sans-serif;font-size:20px;line-height:1.35;font-weight:640;letter-spacing:-.01em}
 .db{padding:22px 26px 40px}
 .dsec{margin-bottom:22px}
-.dk{font-size:11px;font-weight:660;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:9px}
+.dk{font-size:11px;font-weight:680;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:9px}
 .meta2{display:grid;grid-template-columns:130px 1fr;gap:11px 16px;font-size:14px}
 .meta2 .mk{color:var(--ink2);font-weight:560}
 .av{width:26px;height:26px;border-radius:50%;color:#fff;font-size:12px;font-weight:650;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;margin-right:8px}
@@ -109,94 +214,323 @@ body{background:var(--plane);color:var(--ink);font:15px/1.6 system-ui,-apple-sys
 .dtlrow.on .dnode{background:var(--done);border-color:var(--done)}
 .dtlrow .dl{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
 .dtlrow .dv{font-size:14.5px;margin-top:1px}.dtlrow.off .dv{color:var(--muted)}
-.reflist{display:flex;flex-wrap:wrap;gap:7px}
-.ref{font-size:12px;font-weight:560;color:var(--ink2);background:var(--plane);border:1px solid var(--line);border-radius:8px;padding:4px 10px}
 .callout{background:var(--waitbg);border:1px solid #f0d4bf;color:#7a3d16;border-radius:10px;padding:12px 14px;font-size:13.5px}
 .desc{font-size:14.5px;line-height:1.65;color:var(--ink2)}
+.desc p{margin:0 0 10px}.desc p:last-child{margin:0}
+.dodcount{font-weight:600;color:var(--muted);margin-left:8px;font-size:12px;text-transform:none;letter-spacing:0}
+.dod{display:flex;gap:9px;align-items:flex-start;font-size:14px;padding:5px 0}
+.dodbox{flex:none;width:17px;height:17px;border-radius:5px;border:1.5px solid var(--line);color:#fff;font-size:11px;display:inline-flex;align-items:center;justify-content:center;margin-top:1px}
+.dod.on .dodbox{background:var(--done);border-color:var(--done)}.dod.on span:last-child{color:var(--ink2)}
+.dodtrack{height:6px;border-radius:999px;background:var(--todobg);overflow:hidden;margin:4px 0 10px}
+.dodtrack i{display:block;height:100%;background:var(--done);border-radius:999px}
+.srclist{display:flex;flex-direction:column;gap:8px}
+.srcrow{display:flex;gap:10px;align-items:flex-start;background:var(--plane);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+.srcbadge{flex:none;font-size:10.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--ink2);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:2px 7px;margin-top:1px}
+.srcbadge.decision{color:var(--now);background:var(--nowbg);border-color:var(--nowbg)}
+.srcbadge.slack{color:var(--wait);background:var(--waitbg);border-color:var(--waitbg)}
+.srcbadge.email,.srcbadge.call,.srcbadge.meeting{color:var(--brand-ink);background:var(--brandbg);border-color:var(--brandbg)}
+.srcbadge.design{color:#5b21b6;background:#efe7fb;border-color:#efe7fb}
+.srcmain{min-width:0}.srctext{font-size:14px;overflow-wrap:anywhere}.srcsub{font-size:12px;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
+/* decisions view */
+.drow2{background:var(--surface);border:1px solid var(--line);border-radius:13px;margin-bottom:9px;box-shadow:var(--shadow);overflow:hidden;min-width:0}
+.drowtop{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;transition:background .12s}
+.drowtop:hover{background:#faf9f6}
+.decid{flex:none;font-size:11px;font-weight:700;letter-spacing:.03em;color:var(--now);background:var(--nowbg);border-radius:6px;padding:3px 8px}
+.dtitle{flex:1;font-size:14.5px;font-weight:520;min-width:0}
+.ddate{font-size:12px;color:var(--muted);white-space:nowrap;flex:none}
+.dstat{font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:999px;padding:2px 9px;flex:none}
+.dstat.active{color:var(--done);background:var(--donebg)}.dstat.pending{color:var(--wait);background:var(--waitbg)}.dstat.superseded{color:var(--muted);background:var(--todobg)}
+.dbody2{max-height:0;overflow:hidden;transition:max-height .22s ease;background:#fbfbf9}
+.drow2.open .dbody2{max-height:600px;border-top:1px solid var(--line)}
+.drow2.open .schev{transform:rotate(90deg)}
+/* risks card */
+.riskrow{border-bottom:1px solid var(--line);padding:10px 0;cursor:pointer}
+.riskrow:last-child{border-bottom:none;padding-bottom:2px}.riskrow:first-child{padding-top:2px}
+.riskhead{display:flex;align-items:center;gap:9px;justify-content:space-between;margin-bottom:5px}
+.rid{flex:none;font-size:11px;font-weight:700;color:var(--wait);background:var(--waitbg);border-radius:6px;padding:2px 7px;margin-top:1px}
+.rtext{font-size:13px;color:var(--ink2);min-width:0;line-height:1.5}
+.rsev{flex:none;font-size:10px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;border-radius:999px;padding:2px 8px}
+.rsev.hi{color:#fff;background:var(--brand)}.rsev.med{color:var(--wait);background:var(--waitbg)}.rsev.lo{color:var(--muted);background:var(--todobg)}
+.rmit{max-height:0;overflow:hidden;transition:max-height .2s ease;font-size:12.5px;color:var(--muted)}
+.riskrow.open .rmit{max-height:260px;margin-top:7px}
+/* delta block */
+.delta{padding:16px 22px;background:#fbfbf9;border-radius:0 0 16px 16px}
+.delta .dlh{font-size:12px;font-weight:680;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);margin-bottom:9px;display:flex;gap:8px;align-items:center}
+.delta .dlh .cnt{font-weight:650;color:var(--muted);background:var(--todobg);border-radius:999px;padding:1px 8px;font-size:11px;letter-spacing:0}
+.devt{display:flex;gap:10px;padding:5px 0;font-size:13.5px;color:var(--ink2);cursor:pointer;border-radius:7px}
+.devt:hover{color:var(--ink)}
+.devt .dd{flex:none;font-size:12px;color:var(--muted);width:44px;font-weight:560;padding-top:1px}
+.devt .dtag{flex:none;font-size:10.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;border-radius:5px;padding:1px 7px;margin-top:2px;height:fit-content}
+.devt .dtag.done{color:var(--done);background:var(--donebg)}.devt .dtag.now{color:var(--now);background:var(--nowbg)}.devt .dtag.note{color:var(--ink2);background:var(--todobg)}
+/* burn-up + journal chart grid */
+.jcharts{display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:16px}
+@media(min-width:768px){.jcharts{grid-template-columns:1fr 1fr}}
+.bu-axis{font-size:10px;fill:#93908a}
+/* aging marker */
+.age{font-size:10.5px;font-weight:700;letter-spacing:.02em;color:var(--wait);background:var(--waitbg);border-radius:5px;padding:1px 6px;white-space:nowrap;flex:none}
+.age.ok{color:var(--muted);background:var(--todobg)}
+/* --- overflow safety --- */
+.li .col1,.jbody,.sarea,.bitem,.band,.dv,.dtlrow,.meta2 span,.tlhead,.tlname,.side,.chartcard,.dlegend{min-width:0}
+.dtitle,.rtext,.rmit,.devt,.dbody2 .sbodyin,.li .ttl,.li .sub,.jbody .act,.jbody .subj,.bitem .t,.bitem .m,.sarea,.dv,.desc,.dh h2,.tlname,.tlnote,.ref,.callout,.sbodyin,.dod span:last-child,.srctext,.srcsub,.changed,.dlegend .lrow{overflow-wrap:anywhere;word-break:break-word}
+.li .who,.li .when,.li .chev{flex:none}
+.card,.band,.chartcard,.srow,.kpi{overflow:hidden}
+.drawer{overflow-y:auto}
 </style></head>
 <body>
+<div class="topaccent"></div>
+<div class="brandbar"><div class="container inner"><span class="logo"><img class="logomark-img" src="https://betacraft.com/logo.svg" alt="BetaCraft" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'" /><span class="logo-fallback"><span class="logomark">b</span>betacraft</span></span><span class="brandnav">Delivery status</span></div></div>
 <div class="container pagepad">
-<div><div class="h1">Wepop Delivery View</div><div class="hsub">WEP001 &middot; as of 2026-08-18</div></div>
-<div class="tabs" id="tabs"></div>
+<div class="hdr">
+  <div><div class="kicker">Delivery status</div><div class="h1">Wepop</div><div class="hsub">WEP001 &middot; as of 2026-08-18</div></div>
+  <div class="healthpill"><span class="dotp"></span><span><b>On track</b> &middot; no blockers on the critical path</span></div>
+</div>
+<div class="kpis" id="kpis"></div>
+<div class="tabwrap"><div class="tabs" id="tabs"></div></div>
 <div id="views"></div>
-<div class="foot">Prototype exploring non-kanban forms. Data from shared/TASK-BOARD.md and the phase-1 product overview. Light mode. Click any item to open its details on the right.</div>
+<div class="foot">Prepared by betacraft for Wepop. Delivery status across five views, updated as work progresses. Data from shared/TASK-BOARD.md and the phase-1 product overview. Click any item to expand its details.</div>
 </div>
 <div class="scrim" id="scrim"></div>
 <div class="drawer" id="drawer" aria-hidden="true"></div>
 <script>
-const D={"tasks": [{"id": "TASK-016", "task": "Build the event location map picker (Google-style search and tap a named place, address field, per-event note) from the Phase 1 designs", "owner": "Deepak", "status": "To Do", "started": "", "ended": "", "committed": "", "notes": "Proposed by Elvis 2026-08-18. Grounded in DEC-003 and the Phase 1 place-picker screens; needed for event / idea create and location polls. Candidate for engineering-handoff."}, {"id": "TASK-015", "task": "Investigate pushing design output (HTML) from Cowork desktop to the repo", "owner": "Aakash", "status": "To Do", "started": "", "ended": "", "committed": "", "notes": "Ref todos #5. Would let Elvis push designs straight to the repo."}, {"id": "TASK-014", "task": "Finish the profile screens; add the draft-save and profile-description screens; finalize the map-picker detail", "owner": "Elvis (+ Deepak)", "status": "To Do", "started": "", "ended": "", "committed": "", "notes": "Ref todos #6-#9, DEC-003. Elvis design backlog from the 2026-08-17 walkthrough."}, {"id": "TASK-013", "task": "Consult a lawyer on the age/location logic", "owner": "Aakash", "status": "To Do", "started": "", "ended": "", "committed": "", "notes": "Ref todos #4, risk R1, DEC-002. Keep the age/location logic provisional until counsel."}, {"id": "TASK-012", "task": "Reconcile the walkthrough-vs-draft conflicts once Elvis's reviewed docs land", "owner": "Elvis + Aakash", "status": "Blocked", "started": "", "ended": "", "committed": "", "notes": "Ref todos #11. Waits on TASK-010. Conflicts: ratings, comments, video, age 18-vs-19, Kakao/OTP, DM/calendar phase tags."}, {"id": "TASK-011", "task": "Create the Wepop GitHub repo, invite Elvis, run the Cowork setup call", "owner": "Aakash", "status": "Blocked", "started": "", "ended": "", "committed": "", "notes": "Ref todos #3. Waits on TASK-010 (final docs). Invite goes to programinator-elvis."}, {"id": "TASK-010", "task": "Elvis sends the reviewed project documentation", "owner": "Elvis", "status": "To Do", "started": "", "ended": "", "committed": "", "notes": "Ref todos #1. Reviewed final of Phase 1 Brief v2 + Moments v0.9."}, {"id": "TASK-009", "task": "Send Elvis the review aid, the how-to note, and the Slack message", "owner": "Aakash", "status": "In progress", "started": "2026-08-18", "ended": "", "committed": "", "notes": "Ref todos #10. All three are drafted and ready to send."}, {"id": "TASK-008", "task": "Set up the task board (source + skill + inline client view)", "owner": "Aakash", "status": "In progress", "started": "2026-08-18", "ended": "", "committed": "", "notes": "This board. Moves to Done once pushed with TASK-008 in the commit message."}, {"id": "TASK-007", "task": "Write the Elvis onboarding guide (GET-STARTED-ELVIS) + PDF", "owner": "Aakash", "status": "Done", "started": "2026-08-18", "ended": "2026-08-18", "committed": "2026-08-18", "notes": "Linked from the README."}, {"id": "TASK-006", "task": "Add 6 PM skills, the README catalogs, and scrub Sapey from the blueprint", "owner": "Aakash", "status": "Done", "started": "2026-08-18", "ended": "2026-08-18", "committed": "2026-08-18", "notes": "Toolkit reached 28 here; repo now Wepop-only."}, {"id": "TASK-005", "task": "File Elvis's draft docs and produce the validated review aid", "owner": "Aakash", "status": "Done", "started": "2026-08-18", "ended": "2026-08-18", "committed": "2026-08-18", "notes": "comms/attachments/2026-08-18_elvis-draft-docs/. Review aid independently validated."}, {"id": "TASK-004", "task": "Log Elvis's GitHub ID and update the harness gate", "owner": "Aakash", "status": "Done", "started": "2026-08-18", "ended": "2026-08-18", "committed": "2026-08-18", "notes": "Ref todos #2. programinator-elvis."}, {"id": "TASK-003", "task": "Add run-merge and update-tracker skills and seed PROJECT_TRACKER", "owner": "Aakash", "status": "Done", "started": "2026-08-18", "ended": "2026-08-18", "committed": "2026-08-18", "notes": "The merger routine and the status roll-up."}, {"id": "TASK-002", "task": "Ingest the 2026-08-17 walkthrough; land DEC-001 to DEC-009 and risks R1-R3", "owner": "Aakash", "status": "Done", "started": "2026-08-17", "ended": "2026-08-17", "committed": "2026-08-17", "notes": "Source of truth seeded from the design walkthrough."}, {"id": "TASK-001", "task": "Stand up the Wepop docs repo and the PM skills toolkit", "owner": "Aakash", "status": "Done", "started": "2026-08-17", "ended": "2026-08-17", "committed": "2026-08-17", "notes": "Repo scaffold, rulebook, workspaces, toolkit, dashboard."}], "horizon": {"TASK-010": "next", "TASK-011": "next", "TASK-012": "next", "TASK-013": "later", "TASK-014": "later", "TASK-015": "later", "TASK-016": "later"}, "milestones": [{"name": "First design walkthrough", "date": "2026-08-17", "status": "done", "note": "Elvis, Aakash, Deepak"}, {"name": "Elvis GitHub ID received", "date": "2026-08-18", "status": "done", "note": "programinator-elvis"}, {"name": "First project docs received", "date": "2026-08-18", "status": "done", "note": "as a draft; reviewed version pending"}, {"name": "GitHub repo + invite + setup call", "date": "waiting on reviewed docs", "status": "next", "note": "gated on the final documentation"}, {"name": "Location-at-registration locked", "date": "open", "status": "next", "note": "optional vs required, needs Elvis"}, {"name": "Phase-1 build kickoff", "date": "not started", "status": "later", "note": "after harness + scope lock"}, {"name": "Phase-1 MVP", "date": "target late Aug 2026", "status": "later", "note": "per the Moments spec"}], "scope": [{"area": "Waitlist (non-invited signups)", "phase": "1", "designed": "draft", "built": "no", "note": ""}, {"area": "Onboarding (invited flow)", "phase": "1", "designed": "draft", "built": "no", "note": ""}, {"area": "Registration (OTP, age gate, map picker)", "phase": "1", "designed": "draft", "built": "no", "note": "age gate provisional, pending counsel (R1)"}, {"area": "Login (auto-detect, biometrics)", "phase": "1", "designed": "draft", "built": "no", "note": ""}, {"area": "Ideas (polls, discussion)", "phase": "1", "designed": "draft", "built": "no", "note": ""}, {"area": "Events (create, discussion, media, chat)", "phase": "1", "designed": "draft", "built": "no", "note": "save-as-draft screen still to add"}, {"area": "Explore (map, list, filters, search)", "phase": "1", "designed": "draft", "built": "no", "note": ""}, {"area": "Home (recommendations)", "phase": "1", "designed": "draft", "built": "no", "note": ""}, {"area": "Event / group chat (text only)", "phase": "1", "designed": "draft", "built": "no", "note": ""}, {"area": "Notifications (simple set)", "phase": "1", "designed": "draft", "built": "no", "note": ""}, {"area": "Profiles (user + org, moments)", "phase": "1", "designed": "partial", "built": "no", "note": "profile screens still being finished"}, {"area": "Moments / Reflections (P0 groundwork)", "phase": "1", "designed": "draft", "built": "no", "note": "v0.9; conflicts to reconcile"}, {"area": "Calendar (device calendar)", "phase": "later", "designed": "draft", "built": "no", "note": "deferred (DEC-009)"}, {"area": "DMs / user-created group chats", "phase": "later", "designed": "draft", "built": "no", "note": "deferred (DEC-009)"}, {"area": "'Close to new joiners' toggle exposed", "phase": "later", "designed": "na", "built": "no", "note": "built but hidden in phase 1"}, {"area": "Ratings / reviews", "phase": "contested", "designed": "draft", "built": "no", "note": "drafts disagree, needs a decision"}, {"area": "In-app AI image / video generation", "phase": "excluded", "designed": "na", "built": "na", "note": "excluded (DEC-007)"}]};const T=D.tasks;
+const D={"tasks": [{"id": "TASK-016", "task": "Build the event location map picker (Google-style search and tap a named place, address field, per-event note) from the Phase 1 designs", "owner": "Deepak", "status": "To Do", "started": "", "ended": "", "committed": "", "notes": "Proposed by Elvis 2026-08-18. Grounded in DEC-003 and the Phase 1 place-picker screens; needed for event / idea create and location polls. Candidate for engineering-handoff.", "detail": {"overview": "The event-create and idea-create flows need a location picker modeled on Google Maps: the host searches for a place, taps to select a named place (not just raw coordinates), can adjust the address, and can add a per-event note about the spot.\n\nThe same picker is reused by location polls, where attendees suggest and vote on where to meet. This is a Phase 1 item grounded in DEC-003.", "sources": [["decision", "DEC-003", "shared/DECISIONS.md", "Event location picker uses a Google-Maps-style select"], ["design", "Phase 1 place-picker screens", "architecture/elvis/", "Map-picker frames from the 2026-08-17 walkthrough"], ["proposal", "Elvis, 2026-08-18", "workspaces/elvis/proposed-tasks.md", "Raised by Elvis for the dev team; landed as TASK-016"]], "activity": [["2026-08-18", "Proposed by Elvis and landed as TASK-016, owner Deepak."]], "dod": [[false, "Place search returns named places (Google-style), not just coordinates"], [false, "Tap-to-select drops a pin and captures the named place"], [false, "Address field is editable and a per-event note is supported"], [false, "Wired into event create, idea create, and location polls"]], "blockers": ["Final map-picker interaction detail is still open; needs Elvis (tracked under TASK-014)."]}}, {"id": "TASK-015", "task": "Investigate pushing design output (HTML) from Cowork desktop to the repo", "owner": "Aakash", "status": "To Do", "started": "", "ended": "", "committed": "", "notes": "Ref todos #5. Would let Elvis push designs straight to the repo."}, {"id": "TASK-014", "task": "Finish the profile screens; add the draft-save and profile-description screens; finalize the map-picker detail", "owner": "Elvis (+ Deepak)", "status": "To Do", "started": "", "ended": "", "committed": "", "notes": "Ref todos #6-#9, DEC-003. Elvis design backlog from the 2026-08-17 walkthrough."}, {"id": "TASK-013", "task": "Consult a lawyer on the age/location logic", "owner": "Aakash", "status": "To Do", "started": "", "ended": "", "committed": "", "notes": "Ref todos #4, risk R1, DEC-002. Keep the age/location logic provisional until counsel."}, {"id": "TASK-012", "task": "Reconcile the walkthrough-vs-draft conflicts once Elvis's reviewed docs land", "owner": "Elvis + Aakash", "status": "Blocked", "started": "", "ended": "", "committed": "", "notes": "Ref todos #11. Waits on TASK-010. Conflicts: ratings, comments, video, age 18-vs-19, Kakao/OTP, DM/calendar phase tags.", "detail": {"overview": "The 2026-08-17 walkthrough and Elvis's first draft docs disagree in several places. Once Elvis sends the reviewed final documentation (TASK-010), work through each conflict and land a decision or a documentation fix so the source of truth is internally consistent.", "sources": [["doc", "Walkthrough-vs-drafts review aid", "comms/attachments/2026-08-18_elvis-draft-docs/", "The PM cross-check that surfaced these conflicts"], ["decision", "DEC-009", "shared/DECISIONS.md", "Phase-1 scope boundaries the drafts must match"], ["risk", "R1", "shared/HOTSHEET.md", "Age/location logic is provisional pending counsel"]], "activity": [["2026-08-18", "Opened as a follow-up from the review aid; blocked on TASK-010."]], "dod": [[false, "Ratings / reviews: in or out of Phase 1 (drafts disagree)"], [false, "Comments and video: confirmed against DEC-009"], [false, "Age 18-vs-19 reconciled with the age-gating decision"], [false, "Kakao / OTP auth path confirmed"], [false, "DM / calendar phase tags aligned to the scope matrix"]], "blockers": ["Waits on TASK-010 (Elvis's reviewed final of Phase 1 Brief v2 + Moments v0.9)."]}}, {"id": "TASK-011", "task": "Create the Wepop GitHub repo, invite Elvis, run the Cowork setup call", "owner": "Aakash", "status": "Blocked", "started": "", "ended": "", "committed": "", "notes": "Ref todos #3. Waits on TASK-010 (final docs). Invite goes to programinator-elvis."}, {"id": "TASK-010", "task": "Elvis sends the reviewed project documentation", "owner": "Elvis", "status": "To Do", "started": "", "ended": "", "committed": "", "notes": "Ref todos #1. Reviewed final of Phase 1 Brief v2 + Moments v0.9."}, {"id": "TASK-009", "task": "Send Elvis the review aid, the how-to note, and the Slack message", "owner": "Aakash", "status": "In progress", "started": "2026-08-18", "ended": "", "committed": "", "notes": "Ref todos #10. All three are drafted and ready to send."}, {"id": "TASK-008", "task": "Set up the task board (source + skill + inline client view)", "owner": "Aakash", "status": "In progress", "started": "2026-08-18", "ended": "", "committed": "", "notes": "This board. Moves to Done once pushed with TASK-008 in the commit message.", "detail": {"overview": "Stand up the delivery board: the task data in shared/TASK-BOARD.md, the task-board skill that maintains it, per-task detail files, and the five-view BetaCraft board rendered to the GitHub Pages root. Each task opens a detail panel with overview, linked sources, activity, and a definition of done.", "sources": [["decision", "DEC-001", "shared/DECISIONS.md", "Central GitHub repo as source of truth plus Cowork harness"], ["design", "BetaCraft brand", "https://betacraft.com", "Red accent, wordmark, dark nav bar"]], "activity": [["2026-08-18", "Built the five-view board and the task-board skill."], ["2026-08-18", "Made the full board the GitHub Pages root and applied the BetaCraft brand."], ["2026-08-18", "Added per-task detail files so the side panel shows full context."]], "dod": [[true, "Task data + task-board skill"], [true, "Five-view light board rendered to docs/index.html"], [true, "BetaCraft brand (logo, red accent, dark nav)"], [true, "Per-task detail panel (overview, sources, activity, definition of done)"], [false, "Pushed to GitHub with TASK-008 in the commit message"]], "blockers": []}}, {"id": "TASK-007", "task": "Write the Elvis onboarding guide (GET-STARTED-ELVIS) + PDF", "owner": "Aakash", "status": "Done", "started": "2026-08-18", "ended": "2026-08-18", "committed": "2026-08-18", "notes": "Linked from the README."}, {"id": "TASK-006", "task": "Add 6 PM skills, the README catalogs, and scrub Sapey from the blueprint", "owner": "Aakash", "status": "Done", "started": "2026-08-18", "ended": "2026-08-18", "committed": "2026-08-18", "notes": "Toolkit reached 28 here; repo now Wepop-only."}, {"id": "TASK-005", "task": "File Elvis's draft docs and produce the validated review aid", "owner": "Aakash", "status": "Done", "started": "2026-08-18", "ended": "2026-08-18", "committed": "2026-08-18", "notes": "comms/attachments/2026-08-18_elvis-draft-docs/. Review aid independently validated."}, {"id": "TASK-004", "task": "Log Elvis's GitHub ID and update the harness gate", "owner": "Aakash", "status": "Done", "started": "2026-08-18", "ended": "2026-08-18", "committed": "2026-08-18", "notes": "Ref todos #2. programinator-elvis."}, {"id": "TASK-003", "task": "Add run-merge and update-tracker skills and seed PROJECT_TRACKER", "owner": "Aakash", "status": "Done", "started": "2026-08-18", "ended": "2026-08-18", "committed": "2026-08-18", "notes": "The merger routine and the status roll-up."}, {"id": "TASK-002", "task": "Ingest the 2026-08-17 walkthrough; land DEC-001 to DEC-009 and risks R1-R3", "owner": "Aakash", "status": "Done", "started": "2026-08-17", "ended": "2026-08-17", "committed": "2026-08-17", "notes": "Source of truth seeded from the design walkthrough."}, {"id": "TASK-001", "task": "Stand up the Wepop docs repo and the PM skills toolkit", "owner": "Aakash", "status": "Done", "started": "2026-08-17", "ended": "2026-08-17", "committed": "2026-08-17", "notes": "Repo scaffold, rulebook, workspaces, toolkit, dashboard."}], "horizon": {"TASK-010": "next", "TASK-011": "next", "TASK-012": "next", "TASK-013": "later", "TASK-014": "later", "TASK-015": "later", "TASK-016": "later"}, "milestones": [{"name": "First design walkthrough", "date": "2026-08-17", "status": "done", "note": "Elvis, Aakash, Deepak"}, {"name": "Elvis GitHub ID received", "date": "2026-08-18", "status": "done", "note": "programinator-elvis"}, {"name": "First project docs received", "date": "2026-08-18", "status": "done", "note": "as a draft; reviewed version pending"}, {"name": "GitHub repo + invite + setup call", "date": "waiting on reviewed docs", "status": "next", "note": "gated on the final documentation"}, {"name": "Location-at-registration locked", "date": "open", "status": "next", "note": "optional vs required, needs Elvis"}, {"name": "Phase-1 build kickoff", "date": "not started", "status": "later", "note": "after harness + scope lock"}, {"name": "Phase-1 MVP", "date": "target late Aug 2026", "status": "later", "note": "per the Moments spec"}], "scope": [{"area": "Waitlist (non-invited signups)", "phase": "1", "designed": "draft", "built": "no", "note": ""}, {"area": "Onboarding (invited flow)", "phase": "1", "designed": "draft", "built": "no", "note": ""}, {"area": "Registration (OTP, age gate, map picker)", "phase": "1", "designed": "draft", "built": "no", "note": "age gate provisional, pending counsel (R1)"}, {"area": "Login (auto-detect, biometrics)", "phase": "1", "designed": "draft", "built": "no", "note": ""}, {"area": "Ideas (polls, discussion)", "phase": "1", "designed": "draft", "built": "no", "note": ""}, {"area": "Events (create, discussion, media, chat)", "phase": "1", "designed": "draft", "built": "no", "note": "save-as-draft screen still to add"}, {"area": "Explore (map, list, filters, search)", "phase": "1", "designed": "draft", "built": "no", "note": ""}, {"area": "Home (recommendations)", "phase": "1", "designed": "draft", "built": "no", "note": ""}, {"area": "Event / group chat (text only)", "phase": "1", "designed": "draft", "built": "no", "note": ""}, {"area": "Notifications (simple set)", "phase": "1", "designed": "draft", "built": "no", "note": ""}, {"area": "Profiles (user + org, moments)", "phase": "1", "designed": "partial", "built": "no", "note": "profile screens still being finished"}, {"area": "Moments / Reflections (P0 groundwork)", "phase": "1", "designed": "draft", "built": "no", "note": "v0.9; conflicts to reconcile"}, {"area": "Calendar (device calendar)", "phase": "later", "designed": "draft", "built": "no", "note": "deferred (DEC-009)"}, {"area": "DMs / user-created group chats", "phase": "later", "designed": "draft", "built": "no", "note": "deferred (DEC-009)"}, {"area": "'Close to new joiners' toggle exposed", "phase": "later", "designed": "na", "built": "no", "note": "built but hidden in phase 1"}, {"area": "Ratings / reviews", "phase": "contested", "designed": "draft", "built": "no", "note": "drafts disagree, needs a decision"}, {"area": "In-app AI image / video generation", "phase": "excluded", "designed": "na", "built": "na", "note": "excluded (DEC-007)"}], "decisions": [{"id": "DEC-009", "title": "Phase-1 scope boundaries", "date": "2026-08-17", "status": "ACTIVE", "participants": "Aakash, Elvis", "decision": "For phase 1: build the idea \"close to new joiners\" toggle but do not expose it; defer the calendar view and device calendar (Google / iCal) integration to a later phase; ship event and group chat first, with DM and user-created group chats later if they cannot be done one-shot with AI, and no audio or video chat (text only); no media upload on ideas (photos go in the discussion board).", "reasoning": "A new app needs more joiners not fewer, so a \"close\" toggle is premature to expose. The deferred items are lower priority than core flows and reduce phase-1 build scope.", "impact": "Sets a clear phase-1 line for design and build."}, {"id": "DEC-008", "title": "Salvage and build on the existing Wepop code", "date": "2026-08-17", "status": "ACTIVE", "participants": "Aakash, Elvis, Deepak", "decision": "Reuse and salvage the existing Wepop codebase and build on top of it with AI rather than rebuilding from scratch.", "reasoning": "Reduces the timeline and gets features sorted faster.", "impact": "Design decisions should account for what the legacy code already supports. How much is reused vs rebuilt is still being assessed."}, {"id": "DEC-007", "title": "No in-app AI image or video generation for now", "date": "2026-08-17", "status": "ACTIVE", "participants": "Aakash, Elvis, Deepak", "decision": "The app does not generate AI images or video for users. The only AI the user interacts with is text prompt-to-create for an idea or event.", "reasoning": "Current AI images read as low-quality and off-brand for a real-world meetup app, and skipping generation saves on token cost.", "impact": "Users upload their own photos; no in-app image or video generation is built for this phase."}, {"id": "DEC-006", "title": "Anti-stalking visibility model", "date": "2026-08-17", "status": "ACTIVE", "participants": "Aakash, Elvis, Deepak", "decision": "Before a user joins an event or idea, show only mutual friends' attendance plus aggregate signals (people near your age, area, and interests), not the full attendee list. Lock fuller info until the user joins or marks interested. Show mutuals' profile pictures only.", "reasoning": "Keeps Wepop a meetup app rather than a stalking or dating app, reduces liability, and pushes users toward the activity rather than judging attendees by looks.", "impact": "Event and idea detail views gate the attendee list and richer info behind joining; only mutuals' pictures appear pre-join. Whether to show gender and photos at all is still open and not settled by this decision."}, {"id": "DEC-005", "title": "Replace MBTI with an extensible tag list", "date": "2026-08-17", "status": "ACTIVE", "participants": "Aakash, Elvis", "decision": "The personality field is an extensible list of tags (MBTI values included as tags) rather than an MBTI selector. Show the top 10-20 common tags, make them searchable, and let users add their own.", "reasoning": "A growing tag database is richer for the recommendation and event-matching algorithm than a fixed MBTI type.", "impact": "Onboarding shows a searchable, user-extendable tag picker feeding matching."}, {"id": "DEC-004", "title": "Auth - OTP required, optional password, biometrics if feasible", "date": "2026-08-17", "status": "ACTIVE", "participants": "Aakash, Elvis", "decision": "Phone OTP verification is required to verify every user. An optional password is also offered, and biometric login is added if feasible.", "reasoning": "OTP alone cannot cover a lost or blocked phone or a reset. A password is a fallback where SMS/OTP is regionally blocked (for example when the sending business is not registered in that region) and enables password reset.", "impact": "Signup always verifies the phone via OTP; users may additionally set a password; biometric login is a nice-to-have."}, {"id": "DEC-003", "title": "Event location picker uses Google-Maps-style select", "date": "2026-08-17", "status": "ACTIVE", "participants": "Aakash, Elvis, Deepak", "decision": "The map picker uses a Google-Maps-style model (search plus tap a place, showing the place name) rather than the Uber-style fixed center-pin, with zoom, a free-text address field, and an optional per-event note for the exact unit. Profile location captures only the general city.", "reasoning": "Events need a human-readable named place, not raw latitude and longitude. The center-pin model suits precise pickup points (Uber) but reads poorly for \"let's meet at this park\". Profiles do not need a home's exact coordinates.", "impact": "One map interaction pattern across the app for places; text-address plus note covers exact-unit cases. One picker interaction detail is still to be finalized by Elvis and Deepak."}, {"id": "DEC-002", "title": "Age gating tied to country legal age", "date": "2026-08-17", "status": "ACTIVE", "participants": "Aakash, Elvis, Deepak", "decision": "Age eligibility is tied to the user's country legal age. If the entered age is under a threshold (around 19), the app triggers location permission early, checks the country's legal age, and blocks under-age users with a message that names the country.", "reasoning": "Legal age differs by country (US 18, Korea 19, Germany 16). Checking against the country avoids letting through under-age users while keeping the block early rather than after a long flow. Focus markets are Korea and the US.", "impact": "Registration gains an early conditional location and age check. Provisional: the exact logic (passive vs active location capture, travel-jurisdiction handling) is pending legal counsel before implementation is locked. See the risk register in HOTSHEET.md (R1)."}, {"id": "DEC-001", "title": "Central GitHub repo as source of truth plus Cowork PM harness", "date": "2026-08-17", "status": "ACTIVE", "participants": "Aakash, Elvis", "decision": "Wepop coordination runs off one central GitHub repo as the single source of truth, with a Cowork PM harness on top. Elvis shares his GitHub ID, Aakash creates the repo, sends the invite, and runs a short setup call.", "reasoning": "Removes back-and-forth document sharing and gives both sides a common, versioned source of truth.", "impact": "Elvis pushes design and doc updates to the repo; Aakash pulls and maintains the PM record and status there."}], "risks": [{"id": "R1", "risk": "Cross-jurisdiction age verification is legally messy (US 18, Korea 19, Germany 16; passive vs active location, travel jurisdiction); locking the age/location logic before counsel could ship a non-compliant flow.", "severity": "Medium x High", "owner": "Aakash", "mitigation": "Consult a lawyer before locking the DEC-002 logic; keep the country-tied approach provisional until then.", "status": "ACTIVE (in-flight)"}, {"id": "R2", "risk": "Solo-founder blind spot: Elvis designing alone, product/design calls may go unchallenged.", "severity": "Medium x Medium", "owner": "Aakash", "mitigation": "Aakash and Deepak give structured critique on design and docs once shared; capture as proposals/suggestions.", "status": "ACTIVE"}, {"id": "R3", "risk": "OTP/SMS (Twilio/WhatsApp) deliverability blocked by geography without an in-region registered business; breaks phone verification on expansion beyond US/Korea.", "severity": "Low x Medium", "owner": "Aakash", "mitigation": "Ship the optional password fallback (DEC-004); check regional messaging-provider requirements before a new market.", "status": "ACTIVE"}], "asof": "2026-08-18"};const T=D.tasks;
 const esc=s=>(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const sk=t=>({"to do":"todo","in progress":"now","blocked":"wait","done":"done"})[t.status.toLowerCase()]||"todo";
 const byId=id=>T.find(t=>t.id===id);
-const VIEWS=[["digest","Delivery digest"],["timeline","Timeline"],["journal","Journal"],["nnl","Now / Next / Later"],["scope","Scope vs Built"]];
+const COL={done:"#1f9d55",now:"#2a6df4",wait:"#d97706",todo:"#c9c7c1",brand:"#e63946"};
+const VIEWS=[["digest","Delivery digest"],["timeline","Timeline"],["journal","Journal"],["nnl","Now / Next / Later"],["scope","Scope vs Built"],["decisions","Decisions"]];
 function ownerAv(name){const f=(name||"").match(/[A-Za-z]+/); const key=(f?f[0]:"x").toLowerCase();
   const m={aakash:"#2a6df4",elvis:"#e0672b",deepak:"#1b9e70"}; return {ini:(f?f[0][0]:"?").toUpperCase(),col:m[key]||"#6b7280"};}
+function counts(){const c={done:0,now:0,wait:0,todo:0};T.forEach(t=>c[sk(t)]++);return c;}
+const ASOF=new Date(D.asof+"T00:00:00");
+function daysSince(d){if(!d)return null;const x=Math.round((ASOF-new Date(d+"T00:00:00"))/86400000);return x>=0?x:null;}
+function ageBadge(t){const k=sk(t);const a=daysSince(t.started);
+  if(k==="now"&&a!==null)return '<span class="age'+(a>5?'':' ok')+'">'+(a===0?"today":a+"d")+'</span>';
+  if(k==="wait"&&a!==null)return '<span class="age">stuck '+a+'d</span>';
+  return "";}
+/* ---------- charts (inline SVG / CSS, no dependencies) ---------- */
+function donut(segs,size,stroke,center,sub){
+  const tot=segs.reduce((a,s)=>a+s.v,0)||1;const r=(size-stroke)/2,C=2*Math.PI*r;let off=C*0.25;
+  const rings=segs.filter(s=>s.v>0).map(s=>{const len=C*s.v/tot;const vis=Math.max(len-2,0.5);
+    const el='<circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="'+s.c+'" stroke-width="'+stroke+'" stroke-dasharray="'+vis+' '+(C-vis)+'" stroke-dashoffset="'+off+'" stroke-linecap="round"/>';
+    off-=len;return el;}).join("");
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" role="img">'
+   +'<circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="#efefec" stroke-width="'+stroke+'"/>'+rings
+   +'<text x="50%" y="47%" text-anchor="middle" class="donutcenter" font-size="21" fill="#12120f">'+center+'</text>'
+   +'<text x="50%" y="62%" text-anchor="middle" font-size="10.5" fill="#93908a">'+sub+'</text></svg>';
+}
+function statusDonutCard(){
+  const c=counts();const pct=Math.round(c.done/T.length*100);
+  const segs=[{v:c.done,c:COL.done,l:"Done"},{v:c.now,c:COL.now,l:"In progress"},{v:c.wait,c:COL.wait,l:"Blocked"},{v:c.todo,c:COL.todo,l:"To do"}];
+  return '<div class="chartcard"><div class="ch">Status breakdown<span class="sub2">'+T.length+' tasks</span></div>'
+   +'<div class="donutwrap">'+donut(segs,132,16,pct+"%","complete")
+   +'<div class="dlegend">'+segs.map(s=>'<div class="lrow"><span class="sw" style="background:'+s.c+'"></span>'+s.l+'<span class="lv">'+s.v+'</span></div>').join("")+'</div></div></div>';
+}
+function ownerBarsCard(){
+  const per={};T.forEach(t=>{const key=(t.owner.match(/[A-Za-z]+/)||["?"])[0];(per[key]=per[key]||{done:0,now:0,wait:0,todo:0,n:0});per[key][sk(t)]++;per[key].n++;});
+  const owners=Object.keys(per).sort((a,b)=>per[b].n-per[a].n);
+  const rows=owners.map(o=>{const p=per[o],a=ownerAv(o);
+    const seg=(k,c)=>p[k]?'<span class="oseg" style="width:'+(p[k]/p.n*100)+'%;background:'+c+'"></span>':'';
+    return '<div class="obar"><div class="orow"><span class="oname"><span class="avm" style="background:'+a.col+'">'+a.ini+'</span>'+esc(o)+'</span><span class="ocount">'+p.done+' of '+p.n+' done</span></div>'
+     +'<div class="otrack">'+seg("done",COL.done)+seg("now",COL.now)+seg("wait",COL.wait)+seg("todo",COL.todo)+'</div></div>';}).join("");
+  return '<div class="chartcard"><div class="ch">Workload by owner</div><div class="obars">'+rows+'</div></div>';
+}
+function journalChartCard(ev){
+  const per={};ev.forEach(e=>{if(e.d)per[e.d]=(per[e.d]||0)+1;});
+  const days=Object.keys(per).sort();if(!days.length)return"";
+  const mx=Math.max.apply(null,days.map(d=>per[d]));
+  return '<div class="chartcard"><div class="ch">Activity by day<span class="sub2">'+ev.length+' events</span></div>'
+   +'<div class="cols">'+days.map(d=>'<div class="colu"><span class="cval">'+per[d]+'</span><span class="cbar" style="height:'+Math.round(per[d]/mx*54+8)+'px"></span><span class="clab">'+esc(d.slice(5))+'</span></div>').join("")+'</div></div>';
+}
+function phaseChartCard(){
+  const phases=[["Phase 1","1"],["Later","later"],["Contested","contested"]];
+  const rows=phases.map(ph=>{const items=D.scope.filter(s=>s.phase===ph[1]);if(!items.length)return"";
+    const designed=items.filter(s=>["draft","partial","done"].indexOf(s.designed)>=0).length;
+    const built=items.filter(s=>s.built==="done").length;
+    return '<div class="phbar"><div class="prow"><span class="pname">'+ph[0]+'</span><span class="pval">'+designed+' designed &middot; '+built+' built &middot; '+items.length+' areas</span></div>'
+     +'<div class="phtrack"><span class="phseg" style="width:'+(built/items.length*100)+'%;background:'+COL.done+'"></span><span class="phseg" style="width:'+((designed-built)/items.length*100)+'%;background:'+COL.now+'"></span></div></div>';}).join("");
+  return '<div class="chartcard"><div class="ch">Design vs build progress</div><div class="phbars">'+rows+'</div>'
+   +'<div style="display:flex;gap:14px;margin-top:12px;font-size:12px;color:#55534d"><span><span style="display:inline-block;width:9px;height:9px;border-radius:3px;background:'+COL.done+';margin-right:5px"></span>Built</span><span><span style="display:inline-block;width:9px;height:9px;border-radius:3px;background:'+COL.now+';margin-right:5px"></span>Designed, not built</span></div></div>';
+}
+/* ---------- KPI strip ---------- */
+function buildKpis(){
+  const c=counts();const pct=Math.round(c.done/T.length*100);
+  const k=[["pct",pct+"%","Complete",c.done+" of "+T.length+" tasks"],
+   ["done",c.done,"Done","finished and pushed"],
+   ["now",c.now,"In progress","being worked now"],
+   ["wait",c.wait,"Blocked","waiting on someone"],
+   ["todo",c.todo,"To do","queued next"]];
+  const kc={pct:"#e63946",done:COL.done,now:COL.now,wait:COL.wait,todo:"#a3a09a"};
+  document.getElementById("kpis").innerHTML=k.map(x=>'<button class="kpi '+x[0]+'" style="--kc:'+kc[x[0]]+'"><div class="kv">'+x[1]+'</div><div class="kl">'+x[2]+'</div><div class="ks">'+x[3]+'</div>'+(x[0]==="pct"?'<div class="kpibar"><i style="width:'+pct+'%"></i></div>':'')+'</button>').join("");
+  document.querySelectorAll(".kpi").forEach(b=>b.addEventListener("click",()=>switchTab("digest")));
+}
+/* ---------- views ---------- */
 function liTask(t,when){const sub=t.notes?'<div class="sub">'+esc(t.notes)+'</div>':'';
   return '<div class="li" data-id="'+t.id+'"><div class="col1"><div class="ttl">'+esc(t.task)+'</div>'+sub+'</div>'
-   +'<span class="who">'+esc(t.owner)+'</span><span class="when">'+esc(when||"")+'</span><span class="chev">&rsaquo;</span></div>';}
+   +ageBadge(t)+'<span class="who">'+esc(t.owner)+'</span><span class="when">'+esc(when||"")+'</span><span class="chev">&rsaquo;</span></div>';}
+function deltaBlock(){
+  const ev=[];
+  T.forEach(t=>{
+    if(t.started&&daysSince(t.started)!==null&&daysSince(t.started)<=7)ev.push({d:t.started,tag:"now",txt:"Started: "+t.task,id:t.id});
+    const fin=t.ended||t.committed;
+    if(fin&&daysSince(fin)!==null&&daysSince(fin)<=7&&sk(t)==="done")ev.push({d:fin,tag:"done",txt:"Done: "+t.task,id:t.id});
+    ((t.detail||{}).activity||[]).forEach(a=>{if(a[0]&&daysSince(a[0])!==null&&daysSince(a[0])<=7)ev.push({d:a[0],tag:"note",txt:a[1],id:t.id});});
+  });
+  ev.sort((a,b)=>(b.d||"").localeCompare(a.d||""));
+  const top=ev.slice(0,8);
+  if(!top.length)return '<div class="delta"><div class="dlh">Changed this week<span class="cnt">0</span></div><div class="empty">a quiet week - no recorded changes</div></div>';
+  return '<div class="delta"><div class="dlh">Changed this week<span class="cnt">'+ev.length+'</span></div>'
+   +top.map(e=>'<div class="devt" data-id="'+e.id+'"><span class="dd">'+esc((e.d||"").slice(5))+'</span><span class="dtag '+e.tag+'">'+(e.tag==="done"?"done":e.tag==="now"?"started":"update")+'</span><span>'+esc(e.txt)+'</span></div>').join("")
+   +(ev.length>8?'<div class="empty" style="margin-top:5px">and '+(ev.length-8)+' more in the Journal</div>':'')+'</div>';
+}
+function risksCard(){
+  if(!D.risks||!D.risks.length)return"";
+  const sev=v=>/high/i.test(v)?["hi",v]:/low/i.test(v)?["lo",v]:["med",v];
+  return '<div class="chartcard"><div class="ch">Risk register<span class="sub2">'+D.risks.length+' active</span></div>'
+   +D.risks.map(r=>{const sv=sev(r.severity||"");const short=esc(r.risk).split(/[:;(]/)[0];
+     return '<div class="riskrow"><div class="riskhead"><span class="rid">'+esc(r.id)+'</span><span class="rsev '+sv[0]+'">'+esc(r.severity||"").replace(" x "," \u00d7 ")+'</span></div>'
+      +'<div class="rtext">'+short+'</div>'
+      +'<div class="rmit"><div style="margin-bottom:6px">'+esc(r.risk)+'</div><b>Mitigation:</b> '+esc(r.mitigation||"")+'</div></div>';}).join("")
+   +'<div class="empty" style="margin-top:8px;font-size:12px">click a risk for its mitigation</div></div>';
+}
 function digest(){
   const done=T.filter(t=>sk(t)==="done"),now=T.filter(t=>sk(t)==="now"),wait=T.filter(t=>sk(t)==="wait"),todo=T.filter(t=>sk(t)==="todo");
-  const pct=Math.round(done.length/T.length*100);
   const recent=done.slice().sort((a,b)=>(b.committed||b.ended||"").localeCompare(a.committed||a.ended||"")).slice(0,4);
+  const sect=(cls,label,arr,fmt)=>'<div class="sect"><div class="slab"><span class="dot '+cls+'"></span>'+label+'<span class="cnt">'+arr.length+'</span></div>'+(arr.map(fmt).join("")||'<div class="empty">none</div>')+'</div>';
+  const lists='<div class="card">'
+   +sect("now","In progress now",now,t=>liTask(t,"since "+t.started))
+   +sect("todo","Coming next",todo,t=>liTask(t,""))
+   +sect("wait","Waiting on someone",wait,t=>liTask(t,""))
+   +sect("done","Done recently",recent,t=>liTask(t,t.committed||t.ended))
+   +deltaBlock()+'</div>';
+  return '<div class="diggrid">'+lists+'<div class="side">'+statusDonutCard()+ownerBarsCard()+risksCard()+'</div></div>';
+}
+function timeline(){
+  const done=D.milestones.filter(m=>m.status==="done").length;
   return '<div class="card">'
-   +'<div class="health"><span class="hbadge">On track</span><span class="hmsg">Decisions landed, first docs received, coordination on the shared repo. No blockers.</span></div>'
-   +'<div class="prog"><div class="pbar"><div class="pfill" style="width:'+pct+'%"></div></div><div class="pmeta"><span>'+done.length+' of '+T.length+' tasks done</span><span>'+pct+'% complete</span></div></div>'
-   +'<div class="sect"><div class="slab"><span class="dot done"></span>Done recently</div>'+(recent.map(t=>liTask(t,t.committed||t.ended)).join("")||'<div class="empty">none</div>')+'</div>'
-   +'<div class="sect"><div class="slab"><span class="dot now"></span>In progress now</div>'+(now.map(t=>liTask(t,"since "+t.started)).join("")||'<div class="empty">nothing active</div>')+'</div>'
-   +'<div class="sect"><div class="slab"><span class="dot todo"></span>Coming next</div>'+(todo.map(t=>liTask(t,"")).join("")||'<div class="empty">nothing queued</div>')+'</div>'
-   +'<div class="sect"><div class="slab"><span class="dot wait"></span>Waiting on someone</div>'+(wait.map(t=>liTask(t,"")).join("")||'<div class="empty">nothing waiting</div>')+'</div>'
-   +'<div class="changed"><b>What changed recently:</b> logged Elvis&#39;s GitHub ID, filed his first draft docs with a validated review aid, added the merger and tracker skills, and wrote his onboarding guide.</div></div>';
+   +'<div class="tlprog"><div class="slab" style="margin-bottom:9px">Milestone progress<span class="cnt">'+done+' of '+D.milestones.length+'</span></div>'
+   +'<div class="dodtrack" style="margin:0"><i style="width:'+(done/D.milestones.length*100)+'%"></i></div></div>'
+   +'<div class="tl">'+D.milestones.map((m,i)=>'<div class="tlrow '+m.status+'" data-mi="'+i+'"><span class="node"></span>'
+     +'<div class="tlhead"><div class="tlname">'+esc(m.name)+'</div><span class="tlwhen">'+esc(m.date)+'</span><span class="tlchev">&rsaquo;</span></div>'
+     +'<div class="tlbody"><div class="tlnote"><span class="tlstat '+m.status+'">'+m.status+'</span>'+(m.note?esc(m.note):"No further detail recorded.")+'</div></div></div>').join("")+'</div></div>';
 }
-function timeline(){return '<div class="card tl">'+D.milestones.map(m=>'<div class="tlrow '+m.status+'"><span class="node"></span><div class="tlname">'+esc(m.name)+'</div><div class="tlmeta"><span class="when">'+esc(m.date)+'</span> &middot; '+esc(m.note)+'</div></div>').join("")+'</div>';}
-function journal(){const ev=[];T.forEach(t=>{const k=sk(t);if(k==="done")ev.push({d:t.committed||t.ended,act:"Finished and pushed",t,tag:"done"});else if(k==="now")ev.push({d:t.started,act:"Started",t,tag:"now"});});
-  ev.sort((a,b)=>(b.d||"").localeCompare(a.d||""));
-  return '<div class="card">'+ev.map(e=>'<div class="jrow" data-id="'+e.t.id+'"><div class="jdate">'+esc(e.d||"")+'</div><div class="jbody"><div class="act"><span class="jtag '+e.tag+'">'+e.act+'</span> '+esc(e.t.task)+'</div><div class="subj">'+esc(e.t.owner)+(e.t.notes?' &middot; '+esc(e.t.notes):'')+'</div></div></div>').join("")+'</div>';}
+function journalEvents(){const ev=[];T.forEach(t=>{const k=sk(t);if(k==="done")ev.push({d:t.committed||t.ended,act:"Finished and pushed",t:t,tag:"done"});else if(k==="now")ev.push({d:t.started,act:"Started",t:t,tag:"now"});});
+  ev.sort((a,b)=>(b.d||"").localeCompare(a.d||""));return ev;}
+function burnupCard(){
+  const dates=new Set([D.asof]);
+  T.forEach(t=>{[t.started,t.ended,t.committed].forEach(d=>{if(d)dates.add(d);});});
+  const days=[...dates].sort();
+  const doneBy=d=>T.filter(t=>sk(t)==="done"&&(t.ended||t.committed)&&(t.ended||t.committed)<=d).length;
+  const W=300,H=120,PL=26,PB=18,PT=8,PR=8;
+  const iw=W-PL-PR,ih=H-PT-PB,n=days.length,tot=T.length;
+  const x=i=>PL+(n<2?iw/2:i/(n-1)*iw), y=v=>PT+ih-(v/tot)*ih;
+  const pts=days.map((d,i)=>x(i)+","+y(doneBy(d))).join(" ");
+  const area=PL+","+(PT+ih)+" "+pts+" "+x(n-1)+","+(PT+ih);
+  const last=doneBy(days[n-1]);
+  return '<div class="chartcard"><div class="ch">Burn-up<span class="sub2">'+last+' of '+tot+' done</span></div>'
+   +'<svg width="100%" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet">'
+   +'<line x1="'+PL+'" y1="'+y(tot)+'" x2="'+(W-PR)+'" y2="'+y(tot)+'" stroke="#c9c7c1" stroke-dasharray="4 4"/>'
+   +'<text x="'+(W-PR)+'" y="'+(y(tot)-4)+'" text-anchor="end" class="bu-axis">scope</text>'
+   +'<polygon points="'+area+'" fill="#1f9d55" opacity=".12"/>'
+   +'<polyline points="'+pts+'" fill="none" stroke="#1f9d55" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'
+   +days.map((d,i)=>'<circle cx="'+x(i)+'" cy="'+y(doneBy(d))+'" r="3.5" fill="#1f9d55"/>').join("")
+   +days.map((d,i)=>{const anc=i===0?"start":i===n-1?"end":"middle";const xx=i===0?PL:i===n-1?(W-PR):x(i);
+     return '<text x="'+xx+'" y="'+(H-4)+'" text-anchor="'+anc+'" class="bu-axis">'+esc(d.slice(5))+'</text>';}).join("")
+   +'<text x="'+(PL-4)+'" y="'+(y(0)+3)+'" text-anchor="end" class="bu-axis">0</text>'
+   +'<text x="'+(PL-4)+'" y="'+(y(tot)+3)+'" text-anchor="end" class="bu-axis">'+tot+'</text>'
+   +'</svg></div>';
+}
+function journal(){const ev=journalEvents();
+  return '<div class="jcharts">'+journalChartCard(ev)+burnupCard()+'</div>'+'<div class="card">'+ev.map(e=>'<div class="jrow" data-id="'+e.t.id+'"><div class="jdate">'+esc(e.d||"")+'</div><div class="jbody"><div class="act"><span class="jtag '+e.tag+'">'+e.act+'</span> '+esc(e.t.task)+'</div><div class="subj">'+esc(e.t.owner)+(e.t.notes?' &middot; '+esc(e.t.notes):'')+'</div></div></div>').join("")+'</div>';}
 function nnl(){const now=T.filter(t=>sk(t)==="now"),next=T.filter(t=>D.horizon[t.id]==="next"),later=T.filter(t=>D.horizon[t.id]==="later");
-  const band=(n,s,arr)=>'<div class="band"><div class="bandh">'+n+' <span class="subh">'+s+'</span></div>'+(arr.map(t=>'<div class="bitem" data-id="'+t.id+'"><div class="t">'+esc(t.task)+'</div><div class="m">'+esc(t.owner)+(t.status.toLowerCase()==="blocked"?' &middot; blocked':'')+'</div></div>').join("")||'<div class="bitem"><div class="m">nothing here</div></div>')+'</div>';
-  return '<div class="nnl">'+band("Now","being worked",now)+band("Next","weeks",next)+band("Later","this phase +",later)+'</div>';}
-function scope(){const grp=(label,ph)=>{const items=D.scope.filter(s=>s.phase===ph);if(!items.length)return"";
-  const rows=items.map(s=>{const desC='chip des'+(s.designed==="no"?" no":s.designed==="done"?" done":"");
-    const desL=s.designed==="draft"?"Designed (draft)":s.designed==="partial"?"Design partial":s.designed==="done"?"Designed":s.designed==="na"?"n/a":"Not designed";
-    const bltC='chip blt'+(s.built==="done"?" yes":"");const bltL=s.built==="no"?"Not built":s.built==="na"?"n/a":s.built==="done"?"Built":"In build";
-    return '<div class="srow"><div class="sarea">'+esc(s.area)+(s.note?'<div class="sn">'+esc(s.note)+'</div>':'')+'</div><span class="'+desC+'">'+desL+'</span><span class="'+bltC+'">'+bltL+'</span></div>';}).join("");
-  return '<div class="grp"><div class="grph">'+label+'</div>'+rows+'</div>';};
-  return '<div class="note"><b>No signed SOW on file yet.</b> Scope here is the phase-1 boundary from DEC-009 plus the product overview. This becomes a true SOW-vs-built comparison once a SOW is filed.</div>'+grp("Phase 1","1")+grp("Later phases","later")+grp("Contested (needs a decision)","contested")+grp("Excluded","excluded");}
-const R={digest,timeline,journal,nnl,scope};
-function build(){
-  document.getElementById("tabs").innerHTML=VIEWS.map((v,i)=>'<button class="tab'+(i===0?" on":"")+'" data-v="'+v[0]+'">'+v[1]+'</button>').join("");
-  document.getElementById("views").innerHTML=VIEWS.map((v,i)=>'<div class="view'+(i===0?" on":"")+'" id="v-'+v[0]+'">'+R[v[0]]()+'</div>').join("");
-  document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{const v=b.getAttribute("data-v");
-    document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x===b));
-    document.querySelectorAll(".view").forEach(x=>x.classList.toggle("on",x.id==="v-"+v));}));
-  document.querySelectorAll("[data-id]").forEach(el=>el.addEventListener("click",()=>openDrawer(el.getAttribute("data-id"))));
+  const band=(n,s,arr,dc)=>'<div class="band"><div class="bandh"><span class="bdot" style="background:'+dc+'"></span>'+n+'<span class="subh">'+s+' &middot; '+arr.length+'</span></div>'+(arr.map(t=>'<div class="bitem" data-id="'+t.id+'"><div class="t">'+esc(t.task)+'</div><div class="m">'+esc(t.owner)+(t.status.toLowerCase()==="blocked"?'<span class="bflag">blocked</span>':'')+'</div></div>').join("")||'<div class="bitem"><div class="m">nothing here</div></div>')+'</div>';
+  return '<div class="nnl">'+band("Now","being worked",now,COL.now)+band("Next","coming weeks",next,COL.wait)+band("Later","this phase +",later,"#a3a09a")+'</div>';}
+function scope(){
+  const grp=(label,ph)=>{const items=D.scope.filter(s=>s.phase===ph);if(!items.length)return"";
+    const rows=items.map(s=>{const i=D.scope.indexOf(s);
+      const desC='chip des'+(s.designed==="no"?" no":s.designed==="done"?" done":"");
+      const desL=s.designed==="draft"?"Designed (draft)":s.designed==="partial"?"Design partial":s.designed==="done"?"Designed":s.designed==="na"?"n/a":"Not designed";
+      const bltC='chip blt'+(s.built==="done"?" yes":"");const bltL=s.built==="no"?"Not built":s.built==="na"?"n/a":s.built==="done"?"Built":"In build";
+      const refs=(s.note||"").match(/DEC-\d+|R\d\b|TASK-\d+/g)||[];
+      const phL={"1":"Phase 1","later":"Later phase","contested":"Contested","excluded":"Excluded"}[s.phase]||s.phase;
+      return '<div class="srow" data-si="'+i+'"><div class="srowtop"><div class="sarea">'+esc(s.area)+'</div><span class="'+desC+'">'+desL+'</span><span class="'+bltC+'">'+bltL+'</span><span class="schev">&rsaquo;</span></div>'
+       +'<div class="sbody"><div class="sbodyin">'
+       +(s.note?'<div class="sk2">Note</div><div>'+esc(s.note)+'</div>':'<div class="sk2">Note</div><div class="empty">No notes for this area.</div>')
+       +'<div class="sk2">Where it stands</div><div>'+phL+' &middot; '+desL+' &middot; '+bltL+'</div>'
+       +(refs.length?'<div class="sk2">References</div><div class="refchips">'+refs.map(r=>'<span class="ref">'+esc(r)+'</span>').join("")+'</div>':'')
+       +'</div></div></div>';}).join("");
+    return '<div class="grp"><div class="grph">'+label+'<span class="cnt">'+items.length+'</span></div>'+rows+'</div>';};
+  const left='<div class="note"><b>No signed SOW on file yet.</b> Scope here is the phase-1 boundary from DEC-009 plus the product overview. This becomes a true SOW-vs-built comparison once a SOW is filed.</div>'
+   +grp("Phase 1","1")+grp("Later phases","later")+grp("Contested (needs a decision)","contested")+grp("Excluded","excluded");
+  return '<div class="scopegrid"><div>'+left+'</div><div class="side">'+phaseChartCard()+'</div></div>';
 }
-function refsOf(notes){const out=[];const seen=new Set();(notes||"").replace(/(todos #\d+|DEC-\d+|R\d\b|TASK-\d+|OTP|PIPA)/g,m=>{if(!seen.has(m)){seen.add(m);out.push(m);}return m;});return out;}
+function decisions(){
+  const rows=D.decisions.map((d,i)=>{const st=(d.status||"active").toLowerCase();
+    return '<div class="drow2" data-di="'+i+'"><div class="drowtop"><span class="decid">'+esc(d.id)+'</span><div class="dtitle">'+esc(d.title)+'</div><span class="ddate">'+esc(d.date)+'</span><span class="dstat '+esc(st)+'">'+esc(d.status||"")+'</span><span class="schev">&rsaquo;</span></div>'
+     +'<div class="dbody2"><div class="sbodyin">'
+     +(d.decision?'<div class="sk2">Decision</div><div>'+esc(d.decision)+'</div>':'')
+     +(d.reasoning?'<div class="sk2">Reasoning</div><div>'+esc(d.reasoning)+'</div>':'')
+     +(d.impact?'<div class="sk2">Impact</div><div>'+esc(d.impact)+'</div>':'')
+     +(d.participants?'<div class="sk2">Participants</div><div>'+esc(d.participants)+'</div>':'')
+     +'</div></div></div>';}).join("");
+  return '<div class="note"><b>Decision log.</b> The single source of truth from shared/DECISIONS.md. When any document disagrees with a decision here, the decision wins. Click a row for the full reasoning and impact.</div>'+rows;
+}
+const R={digest:digest,timeline:timeline,journal:journal,nnl:nnl,scope:scope,decisions:decisions};
+function tabCount(v){const c=counts();
+  return {digest:T.length,timeline:D.milestones.length,journal:journalEvents().length,nnl:c.now+Object.keys(D.horizon).length,scope:D.scope.length,decisions:D.decisions.length}[v];}
+function switchTab(v){
+  document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x.getAttribute("data-v")===v));
+  document.querySelectorAll(".view").forEach(x=>x.classList.toggle("on",x.id==="v-"+v));
+}
+function build(){
+  buildKpis();
+  document.getElementById("tabs").innerHTML=VIEWS.map((v,i)=>'<button class="tab'+(i===0?" on":"")+'" data-v="'+v[0]+'">'+v[1]+'<span class="tcount">'+tabCount(v[0])+'</span></button>').join("");
+  document.getElementById("views").innerHTML=VIEWS.map((v,i)=>'<div class="view'+(i===0?" on":"")+'" id="v-'+v[0]+'">'+R[v[0]]()+'</div>').join("");
+  document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>switchTab(b.getAttribute("data-v"))));
+  document.querySelectorAll("[data-id]").forEach(el=>el.addEventListener("click",()=>openDrawer(el.getAttribute("data-id"))));
+  document.querySelectorAll(".tlrow").forEach(el=>el.addEventListener("click",()=>el.classList.toggle("open")));
+  document.querySelectorAll(".srowtop,.drowtop").forEach(el=>el.addEventListener("click",()=>el.parentElement.classList.toggle("open")));
+  document.querySelectorAll(".riskrow").forEach(el=>el.addEventListener("click",()=>el.classList.toggle("open")));
+}
 function drow(label,val,on){return '<div class="dtlrow '+(on?"on":"off")+'"><span class="dnode"></span><div class="dl">'+label+'</div><div class="dv">'+esc(val)+'</div></div>';}
 function openDrawer(id){const t=byId(id);if(!t)return;const k=sk(t),o=ownerAv(t.owner);
   const SL={done:"Done",now:"In Progress",wait:"Blocked",todo:"To Do"};
   const hz=k==="done"?"Done":k==="now"?"Now (in progress)":(D.horizon[id]==="next"?"Next (coming weeks)":D.horizon[id]==="later"?"Later (this phase +)":"To Do");
-  const refs=refsOf(t.notes);
+  const det=t.detail||{};
+  const overview=(det.overview&&det.overview.trim())?det.overview:(t.notes||"");
   const dep=(t.notes||"").match(/Waits on (TASK-\d+)/);
+  const blockers=(det.blockers&&det.blockers.length)?det.blockers:(dep?["Waits on "+dep[1]+". This task cannot start until that one is done."]:[]);
+  const sources=det.sources||[],activity=det.activity||[],dod=det.dod||[];
+  const badge=ty=>({decision:"Decision",email:"Email",meeting:"Call",call:"Call",slack:"Slack",design:"Design",proposal:"Proposal",doc:"Doc",risk:"Risk",note:"Note"}[ty]||ty);
+  const ovHtml=esc(overview).replace(/\n\n/g,"</p><p>");
   const drawer=document.getElementById("drawer");
-  drawer.innerHTML=
-   '<div class="dh"><div class="row1"><span class="dchip '+k+'">'+SL[k]+'</span><span class="did">'+esc(t.id)+'</span>'
-   +'<button class="dx" onclick="closeDrawer()" aria-label="Close">&times;</button></div><h2>'+esc(t.task)+'</h2></div>'
-   +'<div class="db">'
-   + (t.notes?'<div class="dsec"><div class="dk">Summary</div><div class="desc">'+esc(t.notes)+'</div></div>':'')
-   + (dep?'<div class="dsec"><div class="callout"><b>Waiting on '+esc(dep[1])+'.</b> This task cannot start until that one is done.</div></div>':'')
-   + '<div class="dsec"><div class="dk">At a glance</div><div class="meta2">'
+  let html='<div class="dh"><div class="row1"><span class="dchip '+k+'">'+SL[k]+'</span><span class="did">'+esc(t.id)+'</span>'
+   +'<button class="dx" onclick="closeDrawer()" aria-label="Close">&times;</button></div><h2>'+esc(t.task)+'</h2></div><div class="db">';
+  if(overview) html+='<div class="dsec"><div class="dk">Overview</div><div class="desc"><p>'+ovHtml+'</p></div></div>';
+  if(blockers.length) html+='<div class="dsec"><div class="callout"><b>'+(k==="wait"?"Blocked.":"Waiting on a dependency.")+'</b> '+blockers.map(esc).join("<br>")+'</div></div>';
+  html+='<div class="dsec"><div class="dk">At a glance</div><div class="meta2">'
      +'<span class="mk">Owner</span><span><span class="av" style="background:'+o.col+'">'+o.ini+'</span>'+esc(t.owner)+'</span>'
      +'<span class="mk">Status</span><span>'+esc(t.status)+'</span>'
      +'<span class="mk">Horizon</span><span>'+hz+'</span>'
-     +'<span class="mk">Task ID</span><span>'+esc(t.id)+'</span>'
-   +'</div></div>'
-   + '<div class="dsec"><div class="dk">Progress</div><div class="dtl">'
-     + drow("Started",t.started||"Not started yet",!!t.started)
-     + drow("Ended",t.ended||"Not finished yet",!!t.ended)
-     + drow("Pushed to GitHub",t.committed||"Not pushed yet",!!t.committed)
-   +'</div></div>'
-   + (refs.length?'<div class="dsec"><div class="dk">References</div><div class="reflist">'+refs.map(r=>'<span class="ref">'+esc(r)+'</span>').join("")+'</div></div>':'')
-   +'</div>';
+     +'<span class="mk">Task ID</span><span>'+esc(t.id)+'</span></div></div>';
+  html+='<div class="dsec"><div class="dk">Progress</div><div class="dtl">'
+     +drow("Started",t.started||"Not started yet",!!t.started)
+     +drow("Ended",t.ended||"Not finished yet",!!t.ended)
+     +drow("Pushed to GitHub",t.committed||"Not pushed yet",!!t.committed)+'</div></div>';
+  if(dod.length){const dn=dod.filter(x=>x[0]).length;
+    html+='<div class="dsec"><div class="dk">Definition of done<span class="dodcount">'+dn+' / '+dod.length+' done</span></div>'
+      +'<div class="dodtrack"><i style="width:'+(dn/dod.length*100)+'%"></i></div>'
+      +dod.map(x=>'<div class="dod '+(x[0]?"on":"")+'"><span class="dodbox">'+(x[0]?"&#10003;":"")+'</span><span>'+esc(x[1])+'</span></div>').join("")+'</div>';}
+  if(sources.length){
+    html+='<div class="dsec"><div class="dk">Linked sources</div><div class="srclist">'
+      +sources.map(sc=>{const ty=(sc[0]||"note").toLowerCase(),label=sc[1]||"",sub=sc[3]||sc[2]||"";
+        return '<div class="srcrow"><span class="srcbadge '+esc(ty)+'">'+esc(badge(ty))+'</span><div class="srcmain"><div class="srctext">'+esc(label)+'</div>'+(sub?'<div class="srcsub">'+esc(sub)+'</div>':'')+'</div></div>';}).join("")
+      +'</div></div>';}
+  if(activity.length){
+    html+='<div class="dsec"><div class="dk">Activity</div><div class="dtl">'
+      +activity.map(a=>'<div class="dtlrow on"><span class="dnode"></span><div class="dl">'+esc(a[0]||"")+'</div><div class="dv">'+esc(a[1]||"")+'</div></div>').join("")
+      +'</div></div>';}
+  html+='</div>';
+  drawer.innerHTML=html;
   document.getElementById("scrim").classList.add("open");
   drawer.classList.add("open");drawer.setAttribute("aria-hidden","false");
 }

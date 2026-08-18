@@ -28,6 +28,10 @@ description: >
 - `shared/TASK-BOARD.md` - the data (the table of tasks).
 - `team/board-template.html` - the HTML shell for the internal board (styling lives here).
 - `team/board-render.py` - regenerates BOTH boards from the data.
+- `team/tasks/TASK-NNN.md` - per-task DETAIL (Overview, Linked sources, Activity, Definition of
+  done, Blockers). This is what the task side panel shows in full. Format in `team/tasks/_TEMPLATE.md`.
+  The ingestion skills (archive-email, process-transcript) append Source and Activity lines here as
+  calls, emails, and Slack arrive, so the panel gets richer over time. Merger writes; others propose.
 - `team/board.html` - the INTERNAL full board (all tasks, owners, notes). Under `team/` so GitHub
   Pages does NOT publish it. Shown to the team inline as the `wepop-task-board` artifact.
 - `docs/board-public.html` - the board published on GitHub Pages. Per Aakash's decision it is the
@@ -53,6 +57,10 @@ description: >
   `workspaces/[you]/proposed-tasks.md` using the format in `PROPOSAL-TEMPLATES.md` (task, suggested
   owner, why / context, priority). This is how Elvis raises work for the dev team: set the suggested
   owner to Deepak and link the decision or design. Aakash lands it.
+### Step 2b - Give a substantive task a detail file: create `team/tasks/TASK-NNN.md` from
+`team/tasks/_TEMPLATE.md` and fill Overview + Definition of done at least. Sources and Activity
+accrue automatically as the ingestion skills run. A task with no detail file still renders a basic
+panel from its Notes, so this is optional but recommended for anything real.
 ### Step 3 - Land proposed tasks (Aakash only): scan `workspaces/*/proposed-tasks.md`, assign each the next `TASK-NNN`, add rows to `shared/TASK-BOARD.md`, and replace the landed block with a dated "Landed" note.
 ### Step 4 - Move status: `To Do -> In progress` stamps Started; `-> Done` stamps Ended; `-> Blocked` records what it waits on. Use today's date (ask if the date is not today).
 ### Step 5 - Reconcile Pushed: read `git log --date=short --pretty="%ad | %s"`; for any Done task whose commit message contains its `TASK-NNN`, set Committed to that date. Leave blank if not pushed. Never invent a date.
@@ -65,6 +73,8 @@ description: >
 - Forget that `docs/board-public.html` is published publicly while the repo is public; that is
   Aakash's current choice. If the repo goes private, switch it back to the sanitized `render_public`.
 - Reuse or renumber a task id; invent a Started, Ended, or Committed date (today's, stated, or from git log only).
-- Let the boards drift from the data; always regenerate with `team/board-render.py`.
+- Let the boards drift from the data or the detail files; always regenerate with `team/board-render.py`.
+- Put client-unsafe detail in `team/tasks/` while `docs/` is public: the full board (with detail) is
+  published, so keep task detail client-appropriate (or move to a private repo, see render_public).
 - Write `shared/`, `team/`, or `docs/` when not the merger (propose via `proposed-tasks.md` instead); run git commit / push.
 - Em-dash; DENY.

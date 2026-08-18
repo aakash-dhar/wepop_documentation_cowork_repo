@@ -8,20 +8,25 @@ Outputs:
   team/board.html         - INTERNAL full board (five views, all tasks and notes).
                             Lives under team/ so it is NOT published by GitHub Pages.
                             Shown to the team inline in Cowork as the wepop-task-board artifact.
-  docs/board-public.html  - CLIENT-SAFE public board (Overview, Timeline, Scope only; no internal
-                            task list, owners, or internal notes). docs/ is what GitHub Pages
-                            publishes, so only client-safe content goes there.
+  docs/index.html         - The GitHub Pages ROOT page. Same full BetaCraft board. This is what
+                            loads at the repo's github.io URL.
+  docs/board-public.html  - Kept as a copy of the full board so older links still resolve.
 
-Keep the CLIENT_* content below client-appropriate. Light mode only. No em-dashes.
+The old dark narrative dashboard is retired. Light mode only. No em-dashes.
+(render_public + CLIENT_* below are dormant, kept for a future private-repo client-only view.)
 """
-import json, os
+import json, os, re
 
 SELF = os.path.dirname(os.path.abspath(__file__))          # team/
 ROOT = os.path.dirname(SELF)                               # repo root
 BOARD = os.path.join(ROOT, "shared", "TASK-BOARD.md")
+DECISIONS = os.path.join(ROOT, "shared", "DECISIONS.md")
+HOTSHEET = os.path.join(ROOT, "shared", "HOTSHEET.md")
 INT_TEMPLATE = os.path.join(SELF, "board-template.html")
 INT_OUT = os.path.join(SELF, "board.html")
+TASKS_DIR = os.path.join(SELF, "tasks")   # per-task detail files TASK-NNN.md
 PUB_OUT = os.path.join(ROOT, "docs", "board-public.html")
+ROOT_OUT = os.path.join(ROOT, "docs", "index.html")   # GitHub Pages root URL
 
 # ---- internal-only view data (full board) ----
 HORIZON = {"TASK-010": "next", "TASK-011": "next", "TASK-012": "next",
@@ -92,6 +97,93 @@ CLIENT_SCOPE = [
 ]
 
 
+def parse_decisions(path):
+    out = []
+    if not os.path.isfile(path):
+        return out
+    text = open(path, encoding="utf-8").read()
+    blocks = re.split(r"^### ", text, flags=re.M)[1:]
+    for b in blocks:
+        m = re.match(r"(DEC-\d+):\s*(.+)", b)
+        if not m:
+            continue
+        d = {"id": m.group(1), "title": m.group(2).strip(), "date": "", "status": "",
+             "participants": "", "decision": "", "reasoning": "", "impact": ""}
+        for key, field in [("Date", "date"), ("Status", "status"), ("Participants", "participants"),
+                           ("Decision", "decision"), ("Reasoning", "reasoning"), ("Impact", "impact")]:
+            mm = re.search(r"\*\*" + key + r":\*\*\s*(.+?)(?=\n\*\*|\n### |\n\n|$)", b, re.S)
+            if mm:
+                d[field] = " ".join(mm.group(1).split())
+        out.append(d)
+    out.sort(key=lambda d: d["id"], reverse=True)
+    return out
+
+
+def parse_risks(path):
+    out = []
+    if not os.path.isfile(path):
+        return out
+    for line in open(path, encoding="utf-8"):
+        m = re.match(r"\|\s*(R\d+)\s*\|", line)
+        if m:
+            c = [x.strip() for x in line.strip().strip("|").split("|")]
+            if len(c) >= 6:
+                out.append({"id": c[0], "risk": c[1], "severity": c[2], "owner": c[3],
+                            "mitigation": c[4], "status": c[5]})
+    return out
+
+
+def parse_detail(text):
+    d = {"overview": "", "sources": [], "activity": [], "dod": [], "blockers": []}
+    cur = None
+    buf = []
+    heads = {"overview": "overview", "sources": "sources", "activity": "activity",
+             "definition of done": "dod", "blockers": "blockers"}
+    for line in text.splitlines():
+        if line.startswith("## "):
+            cur = heads.get(line[3:].strip().lower())
+            continue
+        if line.startswith("# "):
+            continue
+        st = line.strip()
+        if cur == "overview":
+            buf.append(line)
+        elif cur == "sources" and st.startswith("- "):
+            d["sources"].append([x.strip() for x in st[2:].split("|")])
+        elif cur == "activity" and st.startswith("- "):
+            d["activity"].append([x.strip() for x in st[2:].split("|")])
+        elif cur == "dod" and st.startswith("- ["):
+            done = st[3:4].lower() == "x"
+            d["dod"].append([done, st.split("]", 1)[1].strip()])
+        elif cur == "blockers" and st.startswith("- "):
+            d["blockers"].append(st[2:].strip())
+    # collapse overview lines into paragraphs
+    paras, run = [], []
+    for ln in buf:
+        if ln.strip():
+            run.append(ln.strip())
+        elif run:
+            paras.append(" ".join(run)); run = []
+    if run:
+        paras.append(" ".join(run))
+    d["overview"] = "\n\n".join(paras).strip()
+    return d
+
+
+def load_details():
+    out = {}
+    if not os.path.isdir(TASKS_DIR):
+        return out
+    for fn in os.listdir(TASKS_DIR):
+        if fn.startswith("TASK-") and fn.endswith(".md"):
+            tid = fn[:-3]
+            try:
+                out[tid] = parse_detail(open(os.path.join(TASKS_DIR, fn), encoding="utf-8").read())
+            except Exception as e:
+                print("WARN could not parse", fn, e)
+    return out
+
+
 def parse_board(path):
     tasks, asof = [], ""
     for line in open(path, encoding="utf-8"):
@@ -109,7 +201,8 @@ def esc(s):
 
 
 def render_internal(tasks, asof):
-    data = json.dumps({"tasks": tasks, "horizon": HORIZON, "milestones": MILESTONES, "scope": SCOPE})
+    data = json.dumps({"tasks": tasks, "horizon": HORIZON, "milestones": MILESTONES, "scope": SCOPE,
+                       "decisions": parse_decisions(DECISIONS), "risks": parse_risks(HOTSHEET), "asof": asof})
     shell = open(INT_TEMPLATE, encoding="utf-8").read()
     return shell.replace("__ASOF__", asof or "").replace("__DATA__", data)
 
@@ -160,18 +253,23 @@ def render_public(asof):
 
 
 def main():
-    # Per Aakash's decision (2026-08-18): publish the FULL clickable board on GitHub Pages,
-    # not a sanitized subset. The same full board is written to team/board.html (for the inline
-    # artifact) and docs/board-public.html (served by Pages). Revisit if the repo goes private
-    # and a client-only view is wanted again (render_public below is kept for that case).
+    # Per Aakash's decision (2026-08-18): the FULL clickable BetaCraft board IS the deployed
+    # page. It is written to team/board.html (inline artifact), docs/index.html (the GitHub Pages
+    # ROOT url), and docs/board-public.html (kept so existing links still resolve). The old dark
+    # narrative dashboard is retired. Revisit render_public below only if the repo goes private
+    # and a sanitized client-only view is wanted again.
     import datetime
     tasks, asof = parse_board(BOARD)
     asof = asof or datetime.date.today().isoformat()
+    details = load_details()
+    for t in tasks:
+        if t['id'] in details:
+            t['detail'] = details[t['id']]
     full = render_internal(tasks, asof)
-    for path in (INT_OUT, PUB_OUT):
+    for path in (INT_OUT, PUB_OUT, ROOT_OUT):
         with open(path, "w", encoding="utf-8") as f:
             f.write(full)
-    print("wrote full board to", INT_OUT, "and", PUB_OUT)
+    print("wrote full board to", INT_OUT, ",", PUB_OUT, "and", ROOT_OUT)
 
 
 PUB_TEMPLATE = r'''<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">

@@ -25,6 +25,7 @@ description: >
 ### Step 3 - Flag conflicts separately with options (scope change / reject / MERGE-REVIEW).
 ### Step 4 - Conversational review until the caller says "approved".
 ### Step 5 - Then execute: save the verbatim `YYYY-MM-DD_short-title_TRANSCRIPT.md`; write the synthesized `YYYY-MM-DD_short-title.md` summary (normalize mistranscribed names in the summary only); decisions to propose-decision; conflicts to the merger.
+### Step 5b - Link to tasks: for each live task the call touched, append to `team/tasks/TASK-NNN.md` a Source line `- call | YYYY-MM-DD short-title | comms/meeting-notes/... | topic` and an Activity line `- YYYY-MM-DD | Call: <what was decided or discussed>` (merger only; others propose via `workspaces/[you]/suggestions/`). The task side panel reads these.
 ### Step 6 - Queue hotsheet / index / todo updates as proposals. Report and suggest a commit.
 
 ## Never
