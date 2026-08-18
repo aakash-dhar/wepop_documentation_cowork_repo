@@ -70,9 +70,15 @@ his review. File everything into the repo record.
   Mayuresh / Chetan / Ankit / SAP004 / sapey-pm-skills / DEFER), repointing the reference instance to
   Wepop (WEP001, Aakash / Elvis / Deepak, ALLOW / BLOCK / ESCALATE, draft-elvis-reply). Repo now
   carries no Sapey names.
+- Client onboarding: created `GET-STARTED-ELVIS.md` in the repo root (plain-language setup for GitHub
+  Desktop plus the Claude desktop app, the five safety rules, the daily Fetch/Pull -> session ->
+  Commit/Push flow, how the skills work with nothing to install, and a numbered checkbox to-do list)
+  plus a shareable PDF; linked it from the root `README.md`. Drafted an accompanying how-to note and a
+  Slack message for Elvis (chat only, ready for Aakash to send).
 
 ## Sync
 
 Pending via GitHub Desktop. Suggested commits this session:
 - `[aakash] run-merge + update-tracker skills, PROJECT_TRACKER, Elvis GitHub ID, file Elvis draft docs + walkthrough-vs-drafts review aid, session log`
 - `[aakash] Add 6 PM skills (alignment-check, engineering-handoff, compliance-watch, client-release-notes, decision-signoff, design-critique); skills + root README catalog; scrub Sapey from PROJECT-BLUEPRINT`
+- `[aakash] Add GET-STARTED-ELVIS onboarding guide (md + pdf); link it from README`
