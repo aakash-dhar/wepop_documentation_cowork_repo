@@ -32,7 +32,8 @@ Defines who can write where. Ownership model v1, 2026-08-17.
 | `architecture/technical/` | Deepak | Tech design docs, NO code. Others suggest. |
 | `architecture/phase-plan/` | Aakash | Operational planning and effort estimates. Others suggest. |
 | `comms/` | Aakash (PM) | Ingestion skills write here on behalf of the caller; PM owns the record. |
-| `docs/` | Aakash (PM) | Client-facing dashboard. Content-only updates via dashboard-update. |
+| `docs/` | Aakash (PM) | Client-facing, published by GitHub Pages. Dashboard and `board-public.html` (client-safe). Keep everything here client-safe. |
+| `team/` | Aakash (PM) | Internal board build (render script, template, internal `board.html`). NOT published by Pages. |
 | `research/` | Anyone | Anyone can add background inputs. |
 | `reference/` | Anyone (with `_NOTES.md` companions) | Grounding docs; add a companion notes file. |
 | `_legacy/` | Read-only | Archived / superseded / completed. Do not edit in place. |

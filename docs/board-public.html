@@ -1,0 +1,68 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wepop - Delivery Status</title>
+<style>
+:root{--plane:#f7f7f4;--surface:#fff;--ink:#12120f;--ink2:#55534d;--muted:#93908a;--line:#e9e8e2;
+--accent:#2a6df4;--accentbg:#eaf1fe;--done:#1f9d55;--donebg:#e7f5ec;--now:#2a6df4;--nowbg:#eaf1fe;
+--next:#6b7280;--later:#93908a;--todobg:#f0f0ee;--shadow:0 1px 2px rgba(18,18,15,.05);}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--plane);color:var(--ink);font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+.container{width:100%;margin-inline:auto;padding-inline:1rem}
+@media(min-width:576px){.container{max-width:540px}}@media(min-width:768px){.container{max-width:720px}}
+@media(min-width:992px){.container{max-width:900px}}
+.pagepad{padding-top:30px;padding-bottom:70px}
+.brand{font-size:12px;font-weight:650;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.h1{font-size:24px;font-weight:680;letter-spacing:-.01em;margin:4px 0 0}
+.hsub{color:var(--ink2);font-size:13.5px;margin:4px 0 0}
+.tabs{display:flex;gap:5px;flex-wrap:wrap;margin:20px 0 22px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:var(--shadow)}
+.tab{border:none;background:transparent;color:var(--ink2);font:inherit;font-size:13.5px;font-weight:560;padding:8px 16px;border-radius:8px;cursor:pointer}
+.tab:hover{color:var(--ink)}.tab.on{background:var(--accentbg);color:var(--accent)}
+.view{display:none}.view.on{display:block}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.health{padding:20px 24px;display:flex;align-items:center;gap:15px;border-bottom:1px solid var(--line)}
+.hbadge{font-size:12.5px;font-weight:650;color:var(--done);background:var(--donebg);border-radius:999px;padding:5px 13px;white-space:nowrap}
+.hmsg{color:var(--ink2);font-size:14px}
+.prog{padding:18px 24px;border-bottom:1px solid var(--line)}
+.pbar{height:10px;border-radius:999px;background:var(--todobg);overflow:hidden}.pfill{height:100%;background:var(--done);border-radius:999px}
+.pmeta{display:flex;justify-content:space-between;margin-top:9px;font-size:13px;color:var(--ink2)}
+.sect{padding:18px 24px}
+.slab{font-size:12px;font-weight:660;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);margin-bottom:12px}
+.uli{padding:8px 0 8px 20px;position:relative;font-size:14.5px;border-bottom:1px solid var(--line)}
+.uli:last-child{border-bottom:none}.uli::before{content:"";position:absolute;left:2px;top:15px;width:7px;height:7px;border-radius:50%;background:var(--done)}
+.tl{padding:10px 26px 20px}
+.tlrow{position:relative;padding:15px 0 15px 28px}
+.tlrow::before{content:"";position:absolute;left:6px;top:22px;bottom:-8px;width:2px;background:var(--line)}
+.tlrow:last-child::before{display:none}
+.node{position:absolute;left:0;top:16px;width:14px;height:14px;border-radius:50%;background:var(--surface);border:2px solid var(--line)}
+.tlrow.done .node{background:var(--done);border-color:var(--done)}
+.tlrow.now .node,.tlrow.next .node{background:var(--surface);border-color:var(--now);box-shadow:0 0 0 3px var(--nowbg)}
+.tlname{font-size:15px;font-weight:560}.tlmeta{font-size:13px;color:var(--muted);margin-top:2px}.tlmeta .when{color:var(--ink2);font-weight:560}
+.note{background:#fdf6e3;border:1px solid #f0e2b8;color:#6b5a1a;border-radius:10px;padding:13px 16px;font-size:13px;margin-bottom:18px}
+.grp{margin-bottom:20px}.grph{font-size:12px;font-weight:660;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);margin:0 2px 10px}
+.srow{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px 16px;margin-bottom:9px;box-shadow:var(--shadow)}
+.sarea{flex:1;font-size:14.5px}.sarea .sn{font-size:12px;color:var(--muted);margin-top:3px}
+.chip{font-size:11px;font-weight:600;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.chip.des{color:var(--now);background:var(--nowbg)}.chip.des.no{color:var(--muted);background:var(--todobg)}.chip.des.done{color:var(--done);background:var(--donebg)}
+.chip.blt{color:var(--muted);background:var(--todobg)}.chip.blt.yes{color:var(--done);background:var(--donebg)}
+.foot{margin-top:30px;color:var(--muted);font-size:12px}
+</style></head>
+<body><div class="container pagepad">
+<div class="brand">BetaCraft &middot; delivery status</div>
+<div class="h1">Wepop</div>
+<div class="hsub">WEP001 &middot; as of 2026-08-18</div>
+<div class="tabs" id="tabs">
+<button class="tab on" data-v="ov">Overview</button>
+<button class="tab" data-v="tl">Timeline</button>
+<button class="tab" data-v="sc">Scope</button>
+</div>
+<div class="view on" id="v-ov"><div class="card"><div class="health"><span class="hbadge">On track</span><span class="hmsg">Design direction agreed, core product decisions locked, and coordination set up. No blockers.</span></div><div class="prog"><div class="pbar"><div class="pfill" style="width:43%"></div></div><div class="pmeta"><span>3 of 7 milestones complete</span><span>43%</span></div></div><div class="sect"><div class="slab">Recent updates</div><div class="uli">Completed the full design walkthrough and agreed the product direction.</div><div class="uli">Locked nine core product decisions covering sign-up, age gating, location, privacy, and phase-1 scope.</div><div class="uli">Set up a shared coordination repo and workflow so status stays in one place.</div><div class="uli">Received the first project documentation; it is in review.</div></div></div></div>
+<div class="view" id="v-tl"><div class="card tl"><div class="tlrow done"><span class="node"></span><div class="tlname">Project kickoff and full design walkthrough</div><div class="tlmeta"><span class="when">2026-08-17</span></div></div><div class="tlrow done"><span class="node"></span><div class="tlname">Core product decisions locked</div><div class="tlmeta"><span class="when">2026-08-17</span> &middot; nine decisions</div></div><div class="tlrow done"><span class="node"></span><div class="tlname">Shared coordination repo and workflow</div><div class="tlmeta"><span class="when">2026-08-18</span></div></div><div class="tlrow now"><span class="node"></span><div class="tlname">Project documentation</div><div class="tlmeta"><span class="when">2026-08-18</span> &middot; first version received, in review</div></div><div class="tlrow next"><span class="node"></span><div class="tlname">Phase-1 scope confirmed</div><div class="tlmeta"><span class="when">in progress</span></div></div><div class="tlrow later"><span class="node"></span><div class="tlname">Phase-1 build kickoff</div><div class="tlmeta"><span class="when">upcoming</span></div></div><div class="tlrow later"><span class="node"></span><div class="tlname">Phase-1 MVP</div><div class="tlmeta"><span class="when">target late Aug 2026</span></div></div></div></div>
+<div class="view" id="v-sc"><div class="note">Scope reflects the agreed phase-1 boundary and the current design. Design and build status update as work progresses.</div><div class="grp"><div class="grph">Phase 1</div><div class="srow"><div class="sarea">Waitlist (non-invited signups)</div><span class="chip des">Designed (draft)</span><span class="chip blt">Not built</span></div><div class="srow"><div class="sarea">Onboarding (invited flow)</div><span class="chip des">Designed (draft)</span><span class="chip blt">Not built</span></div><div class="srow"><div class="sarea">Registration and sign-up (phone verification, age check)<div class="sn">age check pending legal review</div></div><span class="chip des">Designed (draft)</span><span class="chip blt">Not built</span></div><div class="srow"><div class="sarea">Login</div><span class="chip des">Designed (draft)</span><span class="chip blt">Not built</span></div><div class="srow"><div class="sarea">Ideas (polls, discussion)</div><span class="chip des">Designed (draft)</span><span class="chip blt">Not built</span></div><div class="srow"><div class="sarea">Events (create, discussion, media, chat)</div><span class="chip des">Designed (draft)</span><span class="chip blt">Not built</span></div><div class="srow"><div class="sarea">Explore (map, list, filters, search)</div><span class="chip des">Designed (draft)</span><span class="chip blt">Not built</span></div><div class="srow"><div class="sarea">Home (recommendations)</div><span class="chip des">Designed (draft)</span><span class="chip blt">Not built</span></div><div class="srow"><div class="sarea">Event and group chat</div><span class="chip des">Designed (draft)</span><span class="chip blt">Not built</span></div><div class="srow"><div class="sarea">Notifications</div><span class="chip des">Designed (draft)</span><span class="chip blt">Not built</span></div><div class="srow"><div class="sarea">Profiles (user and organization, moments)<div class="sn">screens in progress</div></div><span class="chip des">Design in progress</span><span class="chip blt">Not built</span></div><div class="srow"><div class="sarea">Moments and reflections<div class="sn">in review</div></div><span class="chip des">Designed (draft)</span><span class="chip blt">Not built</span></div></div><div class="grp"><div class="grph">Later phases</div><div class="srow"><div class="sarea">Calendar<div class="sn">planned for a later phase</div></div><span class="chip des">Designed (draft)</span><span class="chip blt">Not built</span></div><div class="srow"><div class="sarea">Direct messages and user-created group chats<div class="sn">planned for a later phase</div></div><span class="chip des">Designed (draft)</span><span class="chip blt">Not built</span></div></div><div class="grp"><div class="grph">Under review</div><div class="srow"><div class="sarea">Ratings and reviews<div class="sn">under review</div></div><span class="chip des">Designed (draft)</span><span class="chip blt">Not built</span></div></div><div class="grp"><div class="grph">Not planned</div><div class="srow"><div class="sarea">In-app AI image or video generation<div class="sn">not planned</div></div><span class="chip des">n/a</span><span class="chip blt">n/a</span></div></div></div>
+<div class="foot">Prepared by BetaCraft for Wepop. Status updates as work progresses.</div>
+</div>
+<script>
+document.querySelectorAll(".tab").forEach(function(b){b.addEventListener("click",function(){
+var v=b.getAttribute("data-v");
+document.querySelectorAll(".tab").forEach(function(x){x.classList.toggle("on",x===b);});
+document.querySelectorAll(".view").forEach(function(x){x.classList.toggle("on",x.id==="v-"+v);});
+});});
+</script></body></html>
