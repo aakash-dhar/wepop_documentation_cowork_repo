@@ -1,11 +1,12 @@
 # Wepop PM skills toolkit
 
-Twenty-two repeatable PM operations for the Wepop (WEP001) documentation-and-delivery repo. Each
+Twenty-eight repeatable PM operations for the Wepop (WEP001) documentation-and-delivery repo. Each
 skill lives in its own subfolder as a single `SKILL.md` and acts on the caller's own workspace, where
 `[you]` resolves to aakash, elvis, or deepak. The one exception is `run-merge`, the merger routine,
 which is Aakash-only and is the single skill that writes `shared/` directly.
 
-These are read as a plain `skills/` folder (no packaged plugin). Confirm a skill by its name.
+These are read as a plain `skills/` folder (no packaged plugin). Confirm a skill by its name. This
+toolkit is Wepop-only and is maintained separately from any other engagement.
 
 ## The skills
 
@@ -24,15 +25,21 @@ These are read as a plain `skills/` folder (no packaged plugin). Confirm a skill
 | maintenance | scope-tracker | Maintain the phase / feature matrix (what is in phase 1 vs later) |
 | maintenance | spec-sync | Keep the product overview + PROJECT_INDEX in sync with DECISIONS |
 | maintenance | update-tracker | Regenerate the one-screen shared/PROJECT_TRACKER.md status roll-up |
+| maintenance | alignment-check | Cross-check any incoming artifact against DECISIONS + the scope matrix; report divergences tagged MATCH / CHANGED / ADDED / DOCS-DISAGREE / OPEN (the repeatable review aid) |
+| maintenance | compliance-watch | Track legal / privacy items (age gating, PIPA, minors, OTP deliverability, moderation) and flag any decision or design that touches them |
 | delivery | draft-elvis-reply | Draft a client reply to Elvis (chat only) |
 | delivery | call-brief | Private pre-call rundown for the PM |
 | delivery | meeting-prep | Shareable agenda for the weekly Wepop sync |
 | delivery | status-report | RAG status report for leadership / client |
-| delivery | weekly-digest | Digest of the last 7 days |
+| delivery | weekly-digest | Internal digest of the last 7 days |
 | delivery | build-status | Reflect code-repo build / PR / release status on the dashboard |
+| delivery | dashboard-update | Refresh + snapshot the client dashboard |
+| delivery | engineering-handoff | Turn a decided + designed feature into a developer-ready handoff and paste-ready GitHub issue for Deepak |
+| delivery | client-release-notes | Client-facing changelog of what changed and what got decided since a date or version |
+| delivery | decision-signoff | Package a decision for Elvis's approval, track the sign-off, route to propose-decision on yes |
+| delivery | design-critique | Structured design pushback grounded in Wepop's invariants and decisions, for Elvis (R2) |
 | maintenance | update-hotsheet | Propose HOTSHEET changes |
 | maintenance | update-index | Propose a PROJECT_INDEX refresh |
-| delivery | dashboard-update | Refresh + snapshot the client dashboard |
 
 ## Rules baked into every skill
 

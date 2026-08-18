@@ -4,14 +4,18 @@
 
 ---
 
-## 2026-08-18 - Merger + tracker skills, Elvis GitHub ID, draft-docs filing, review aid
+## 2026-08-18 - Merger + tracker skills, Elvis GitHub ID, draft-docs filing, review aid, +6 skills
 Added `run-merge` (the triggerable merger routine, Aakash-only) and `update-tracker`, plus seeded
-`shared/PROJECT_TRACKER.md`; toolkit now 22; registered in TRIGGERS/README, OWNERS, PROJECT_INDEX.
+`shared/PROJECT_TRACKER.md`; registered in TRIGGERS/README, OWNERS, PROJECT_INDEX.
 Logged Elvis's GitHub ID `programinator-elvis` in `comms/todos.md` (item 2) and on the HOTSHEET
 harness gate. Filed Elvis's first project docs (Phase 1 Brief v2, Moments/Reflections v0.9) as DRAFTS
 under `comms/attachments/2026-08-18_elvis-draft-docs/` with a `_NOTES.md` companion. Produced and
 independently validated a walkthrough-vs-drafts review aid (md + pdf), filed alongside; drafted an
 Elvis how-to note (chat only, ready to send).
+Then built six more skills (alignment-check, engineering-handoff, compliance-watch,
+client-release-notes, decision-signoff, design-critique); toolkit now 28; updated skills/README,
+skills/TRIGGERS, and added a full skills catalog to the root README. Scrubbed the only Sapey residue
+(PROJECT-BLUEPRINT.md) and repointed it to the Wepop reference instance; repo now carries no Sapey names.
 Open: the two drafts conflict on ratings/comments/video; draft diverges from DEC-002 (age), DEC-004
 (Kakao/OTP), DEC-009 (DM/calendar phase); escalate the Moments doc budget + legal to financials.
 Nothing proposed to DECISIONS (all on unreviewed drafts). Sync pending via GitHub Desktop.

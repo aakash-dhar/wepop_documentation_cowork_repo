@@ -55,7 +55,24 @@ his review. File everything into the repo record.
 - Harness setup (repo create + invite + call) now waits only on Elvis's reviewed documentation
   (todos item 1); GitHub ID is in.
 
+## Added later this session - skills expansion, README catalog, Sapey scrub
+
+- Built six new PM skills grounded in this project: `alignment-check` (the repeatable review aid,
+  artifact vs DECISIONS), `engineering-handoff` (decided + designed feature -> dev handoff / GitHub
+  issue for Deepak), `compliance-watch` (legal / privacy register + flags), `client-release-notes`
+  (client-facing changelog), `decision-signoff` (client approval loop for Elvis), and `design-critique`
+  (structured pushback on Wepop's own invariants, serving R2). Toolkit now 28.
+- Updated `skills/README.md` (count 28, brief summaries) and `skills/TRIGGERS.md` (new triggers).
+- Added a full skills catalog to the root `README.md`: all 28 skills grouped by category with the
+  trigger phrase and a one-line summary each.
+- Sapey separation: scanned the repo. The `skills/` folder was already Wepop-clean. Scrubbed the only
+  Sapey residue, in `PROJECT-BLUEPRINT.md` (header plus the reference-instance appendix, Roddy /
+  Mayuresh / Chetan / Ankit / SAP004 / sapey-pm-skills / DEFER), repointing the reference instance to
+  Wepop (WEP001, Aakash / Elvis / Deepak, ALLOW / BLOCK / ESCALATE, draft-elvis-reply). Repo now
+  carries no Sapey names.
+
 ## Sync
 
-Pending via GitHub Desktop. Suggested this session: `[aakash] run-merge + update-tracker skills,
-PROJECT_TRACKER, Elvis GitHub ID, file Elvis draft docs + walkthrough-vs-drafts review aid, session log`.
+Pending via GitHub Desktop. Suggested commits this session:
+- `[aakash] run-merge + update-tracker skills, PROJECT_TRACKER, Elvis GitHub ID, file Elvis draft docs + walkthrough-vs-drafts review aid, session log`
+- `[aakash] Add 6 PM skills (alignment-check, engineering-handoff, compliance-watch, client-release-notes, decision-signoff, design-critique); skills + root README catalog; scrub Sapey from PROJECT-BLUEPRINT`
