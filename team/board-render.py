@@ -160,14 +160,18 @@ def render_public(asof):
 
 
 def main():
+    # Per Aakash's decision (2026-08-18): publish the FULL clickable board on GitHub Pages,
+    # not a sanitized subset. The same full board is written to team/board.html (for the inline
+    # artifact) and docs/board-public.html (served by Pages). Revisit if the repo goes private
+    # and a client-only view is wanted again (render_public below is kept for that case).
     import datetime
     tasks, asof = parse_board(BOARD)
     asof = asof or datetime.date.today().isoformat()
-    with open(INT_OUT, "w", encoding="utf-8") as f:
-        f.write(render_internal(tasks, asof))
-    with open(PUB_OUT, "w", encoding="utf-8") as f:
-        f.write(render_public(asof))
-    print("wrote", INT_OUT, "and", PUB_OUT)
+    full = render_internal(tasks, asof)
+    for path in (INT_OUT, PUB_OUT):
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(full)
+    print("wrote full board to", INT_OUT, "and", PUB_OUT)
 
 
 PUB_TEMPLATE = r'''<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">

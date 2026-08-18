@@ -2,16 +2,14 @@
 name: task-board
 category: maintenance
 description: >
-  Maintains the Wepop delivery board. The data is shared/TASK-BOARD.md (per-task lifecycle: owner,
-  status, started, ended, pushed, notes). team/board-render.py regenerates TWO views: the INTERNAL
-  full board team/board.html (five tabs: Delivery digest, Timeline, Journal, Now / Next / Later,
-  Scope vs Built; Bootstrap widths; right-side detail drawer; light mode), shown inline in Claude as
-  the "wepop-task-board" artifact and kept under team/ so GitHub Pages does not publish it; and the
-  CLIENT-SAFE public board docs/board-public.html (Overview, Timeline, Scope only; no task list,
-  owners, or internal notes), which docs/ publishes via Pages. Adds and moves tasks (stamping Started
-  and Ended), fills the Pushed date from git log. Aakash (the merger) owns the board; Elvis and
-  Deepak propose tasks via workspaces/[you]/proposed-tasks.md. Does no git. Triggers on "show the
-  task board", "task board", "add a task", "start task NNN", "finish task NNN", "update the board",
+  Maintains the Wepop delivery board. Data in shared/TASK-BOARD.md (per-task: owner, status, started,
+  ended, pushed, notes). team/board-render.py regenerates a light-mode, non-kanban board with five
+  tabs (Delivery digest, Timeline, Journal, Now / Next / Later, Scope vs Built), Bootstrap widths, and
+  a right-side detail drawer. It is written to team/board.html (shown inline in Claude as the
+  wepop-task-board artifact) and to docs/board-public.html (published on GitHub Pages). Adds and moves
+  tasks (stamping Started and Ended) and fills Pushed from git log. Aakash (the merger) owns the board;
+  Elvis and Deepak propose tasks via workspaces/[you]/proposed-tasks.md. Does no git. Triggers on
+  "show the task board", "add a task", "start task NNN", "finish task NNN", "update the board",
   "what's in progress?". Enforces BLOCK-not-DENY and no em-dashes.
 ---
 
@@ -32,9 +30,10 @@ description: >
 - `team/board-render.py` - regenerates BOTH boards from the data.
 - `team/board.html` - the INTERNAL full board (all tasks, owners, notes). Under `team/` so GitHub
   Pages does NOT publish it. Shown to the team inline as the `wepop-task-board` artifact.
-- `docs/board-public.html` - the CLIENT-SAFE public board (Overview, Timeline, Scope; no task list,
-  owners, or internal notes). `docs/` is what GitHub Pages publishes, so only client-safe content
-  goes there. Its curated content lives in the `CLIENT_*` section of `team/board-render.py`.
+- `docs/board-public.html` - the board published on GitHub Pages. Per Aakash's decision it is the
+  FULL board (same content as `team/board.html`), not a sanitized subset. `docs/` is public, so this
+  board is world-readable while the repo is public. Revisit if the repo goes private and a client-only
+  view is wanted again (a `render_public` function is kept in `team/board-render.py` for that case).
 
 ## Board columns (the data)
 `ID | Task | Owner | Status | Started | Ended | Committed | Notes`. Status is
@@ -57,14 +56,14 @@ description: >
 ### Step 3 - Land proposed tasks (Aakash only): scan `workspaces/*/proposed-tasks.md`, assign each the next `TASK-NNN`, add rows to `shared/TASK-BOARD.md`, and replace the landed block with a dated "Landed" note.
 ### Step 4 - Move status: `To Do -> In progress` stamps Started; `-> Done` stamps Ended; `-> Blocked` records what it waits on. Use today's date (ask if the date is not today).
 ### Step 5 - Reconcile Pushed: read `git log --date=short --pretty="%ad | %s"`; for any Done task whose commit message contains its `TASK-NNN`, set Committed to that date. Leave blank if not pushed. Never invent a date.
-### Step 6 - Regenerate and show: run `python3 team/board-render.py` (it rewrites both `team/board.html` and `docs/board-public.html`), then refresh the inline `wepop-task-board` artifact from `team/board.html`. Keep `docs/board-public.html` client-safe.
+### Step 6 - Regenerate and show: run `python3 team/board-render.py` (it writes the full board to both `team/board.html` and the published `docs/board-public.html`), then refresh the inline `wepop-task-board` artifact.
 ### Step 7 - Report what changed and suggest a commit. Remind that putting the `TASK-NNN` in the commit message lets the next reconcile fill the Pushed date.
 
 ## Never
 - Tell the person to download or open the board file; always show it inline.
 - Build a kanban or a dark theme; this board is the five-view, light-mode delivery view.
-- Put internal task data, names, owners, or notes into `docs/board-public.html`; it is published
-  publicly, so keep it client-safe.
+- Forget that `docs/board-public.html` is published publicly while the repo is public; that is
+  Aakash's current choice. If the repo goes private, switch it back to the sanitized `render_public`.
 - Reuse or renumber a task id; invent a Started, Ended, or Committed date (today's, stated, or from git log only).
 - Let the boards drift from the data; always regenerate with `team/board-render.py`.
 - Write `shared/`, `team/`, or `docs/` when not the merger (propose via `proposed-tasks.md` instead); run git commit / push.

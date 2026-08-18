@@ -25,7 +25,7 @@ toolkit is Wepop-only and is maintained separately from any other engagement.
 | maintenance | scope-tracker | Maintain the phase / feature matrix (what is in phase 1 vs later) |
 | maintenance | spec-sync | Keep the product overview + PROJECT_INDEX in sync with DECISIONS |
 | maintenance | update-tracker | Regenerate the one-screen shared/PROJECT_TRACKER.md status roll-up |
-| maintenance | task-board | Track tasks with lifecycle dates (started, ended, pushed) in shared/TASK-BOARD.md; render the client board at docs/board.html; reconcile pushed dates from git log |
+| maintenance | task-board | Track tasks with lifecycle dates (started, ended, pushed) in shared/TASK-BOARD.md; render the five-view delivery board (shown inline; published on GitHub Pages via docs/board-public.html); reconcile pushed dates from git log |
 | maintenance | alignment-check | Cross-check any incoming artifact against DECISIONS + the scope matrix; report divergences tagged MATCH / CHANGED / ADDED / DOCS-DISAGREE / OPEN (the repeatable review aid) |
 | maintenance | compliance-watch | Track legal / privacy items (age gating, PIPA, minors, OTP deliverability, moderation) and flag any decision or design that touches them |
 | delivery | draft-elvis-reply | Draft a client reply to Elvis (chat only) |

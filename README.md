@@ -39,7 +39,7 @@ This repo is Wepop-only and is maintained separately from any other engagement.
 - `comms/` - client communications (emails, meeting notes, slack, attachments)
 - `architecture/` - non-code design and planning
 - `skills/` - the shared PM toolkit
-- `docs/` - the client-facing delivery dashboard and the task board at `docs/board.html` (GitHub Pages)
+- `docs/` - the client-facing pages published by GitHub Pages: the delivery dashboard and the task board at `docs/board-public.html`
 - `research/` and `reference/` - background and grounding inputs
 
 ## What is archived
@@ -48,7 +48,7 @@ This repo is Wepop-only and is maintained separately from any other engagement.
 
 ## Skills (the PM toolkit)
 
-The repo ships 28 repeatable PM skills in `skills/`, each a single `SKILL.md`. Say the trigger in a
+The repo ships 29 repeatable PM skills in `skills/`, each a single `SKILL.md`. Say the trigger in a
 Cowork or Claude Code session with this repo open. Full trigger list in `skills/TRIGGERS.md`; the
 category table in `skills/README.md`. Skills never run git and never write `shared/` directly (the
 one exception is `run-merge`, run by the merger). Anything client-facing is drafted for Aakash to
@@ -81,7 +81,7 @@ review and send.
 | scope-tracker | "what's in phase 1?", "is this in scope?" | Maintains the phase / feature matrix grounded in decisions and designs |
 | spec-sync | "spec sync", "refresh the product overview" | Keeps the product overview and PROJECT_INDEX in sync with DECISIONS |
 | update-tracker | "project tracker", "where does the project stand?" | Regenerates the one-screen PROJECT_TRACKER status roll-up |
-| task-board | "task board", "add a task", "start task NNN", "finish task NNN" | Tracks tasks with start / end / pushed dates in TASK-BOARD.md and renders the client board at docs/board.html |
+| task-board | "show the task board", "add a task", "start task NNN", "finish task NNN" | Tracks tasks with start / end / pushed dates and renders the five-view delivery board (shown inline; published on GitHub Pages via docs/board-public.html) |
 | update-hotsheet | "update hotsheet" | Proposes a HOTSHEET change |
 | update-index | "update index" | Proposes a PROJECT_INDEX refresh |
 
