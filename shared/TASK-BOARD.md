@@ -22,6 +22,7 @@
 
 | ID | Task | Owner | Status | Started | Ended | Committed | Notes |
 |----|------|-------|--------|---------|-------|-----------|-------|
+| TASK-016 | Build the event location map picker (Google-style search and tap a named place, address field, per-event note) from the Phase 1 designs | Deepak | To Do | | | | Proposed by Elvis 2026-08-18. Grounded in DEC-003 and the Phase 1 place-picker screens; needed for event / idea create and location polls. Candidate for engineering-handoff. |
 | TASK-015 | Investigate pushing design output (HTML) from Cowork desktop to the repo | Aakash | To Do | | | | Ref todos #5. Would let Elvis push designs straight to the repo. |
 | TASK-014 | Finish the profile screens; add the draft-save and profile-description screens; finalize the map-picker detail | Elvis (+ Deepak) | To Do | | | | Ref todos #6-#9, DEC-003. Elvis design backlog from the 2026-08-17 walkthrough. |
 | TASK-013 | Consult a lawyer on the age/location logic | Aakash | To Do | | | | Ref todos #4, risk R1, DEC-002. Keep the age/location logic provisional until counsel. |
@@ -40,4 +41,4 @@
 
 ## Next id
 
-Next task id: **TASK-016** (never reuse a number).
+Next task id: **TASK-017** (never reuse a number).

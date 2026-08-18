@@ -20,7 +20,7 @@ TEMPLATE = os.path.join(ROOT, "docs", "board-template.html")
 OUT = os.path.join(ROOT, "docs", "board.html")
 
 HORIZON = {"TASK-010": "next", "TASK-011": "next", "TASK-012": "next",
-           "TASK-013": "later", "TASK-014": "later", "TASK-015": "later"}
+           "TASK-013": "later", "TASK-014": "later", "TASK-015": "later", "TASK-016": "later"}
 
 MILESTONES = [
  {"name": "First design walkthrough", "date": "2026-08-17", "status": "done", "note": "Elvis, Aakash, Deepak"},
