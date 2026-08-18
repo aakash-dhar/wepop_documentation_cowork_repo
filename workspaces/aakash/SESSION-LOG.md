@@ -17,7 +17,9 @@ client-release-notes, decision-signoff, design-critique); toolkit now 28; update
 skills/TRIGGERS, and added a full skills catalog to the root README. Scrubbed the only Sapey residue
 (PROJECT-BLUEPRINT.md) and repointed it to the Wepop reference instance; repo now carries no Sapey names.
 Wrote the client onboarding guide `GET-STARTED-ELVIS.md` (+ pdf), linked from the README; drafted
-Elvis's how-to note and a Slack message (chat only).
+Elvis's how-to note and a Slack message (chat only). Set up a task board: `shared/TASK-BOARD.md`, the
+`task-board` skill, and the client view `docs/board.html` (toolkit now 29), with pushed-date
+reconciliation from git log.
 Open: the two drafts conflict on ratings/comments/video; draft diverges from DEC-002 (age), DEC-004
 (Kakao/OTP), DEC-009 (DM/calendar phase); escalate the Moments doc budget + legal to financials.
 Nothing proposed to DECISIONS (all on unreviewed drafts). Sync pending via GitHub Desktop.

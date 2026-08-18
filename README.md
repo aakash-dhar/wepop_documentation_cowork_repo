@@ -19,6 +19,9 @@ dual-file session log records who did what, every session.
 
 This repo is Wepop-only and is maintained separately from any other engagement.
 
+> **New to the repo?** Start with `GET-STARTED-ELVIS.md` for step-by-step setup (GitHub Desktop plus
+> the Claude desktop app), the safety rules, and a checklist you can tick off.
+
 ## Start here
 
 | Read | For |
@@ -30,13 +33,13 @@ This repo is Wepop-only and is maintained separately from any other engagement.
 
 ## What is canonical
 
-- `shared/` - the source of truth (merger-only: DECISIONS, HOTSHEET, PROJECT_INDEX, PROJECT_STRATEGY, PROJECT_TRACKER, MERGE-REVIEW)
+- `shared/` - the source of truth (merger-only: DECISIONS, HOTSHEET, PROJECT_INDEX, PROJECT_STRATEGY, PROJECT_TRACKER, TASK-BOARD, MERGE-REVIEW)
 - `contracts/` - SOWs, pricing, invoices (financials owner)
 - `workspaces/` - one private space per person
 - `comms/` - client communications (emails, meeting notes, slack, attachments)
 - `architecture/` - non-code design and planning
 - `skills/` - the shared PM toolkit
-- `docs/` - the client-facing delivery dashboard (GitHub Pages)
+- `docs/` - the client-facing delivery dashboard and the task board at `docs/board.html` (GitHub Pages)
 - `research/` and `reference/` - background and grounding inputs
 
 ## What is archived
@@ -78,6 +81,7 @@ review and send.
 | scope-tracker | "what's in phase 1?", "is this in scope?" | Maintains the phase / feature matrix grounded in decisions and designs |
 | spec-sync | "spec sync", "refresh the product overview" | Keeps the product overview and PROJECT_INDEX in sync with DECISIONS |
 | update-tracker | "project tracker", "where does the project stand?" | Regenerates the one-screen PROJECT_TRACKER status roll-up |
+| task-board | "task board", "add a task", "start task NNN", "finish task NNN" | Tracks tasks with start / end / pushed dates in TASK-BOARD.md and renders the client board at docs/board.html |
 | update-hotsheet | "update hotsheet" | Proposes a HOTSHEET change |
 | update-index | "update index" | Proposes a PROJECT_INDEX refresh |
 

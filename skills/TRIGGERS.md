@@ -22,6 +22,7 @@ This toolkit is Wepop-only.
 - "track this question" / "open questions" -> **track-open-questions** (routed-question tracker)
 - "scope tracker" / "what's in phase 1?" / "is this in scope?" -> **scope-tracker** (phase / feature matrix)
 - "spec sync" / "refresh the product overview" -> **spec-sync** (overview + PROJECT_INDEX kept in sync with DECISIONS)
+- "task board" / "add a task" / "start task NNN" / "finish task NNN" -> **task-board** (per-task lifecycle with dates, rendered to the client board at docs/board.html)
 
 ## Checking alignment and readying build
 - "alignment check" / "does this match our decisions?" / "review this draft against the record" -> **alignment-check** (said-vs-produced divergence report against DECISIONS)

@@ -73,6 +73,24 @@ em-dashes. Governance values are ALLOW / BLOCK / ESCALATE, never DENY.
 **Reason:** {{why}}
 ```
 
+## proposed-tasks.md
+
+Use this to put a task on the delivery board (`shared/TASK-BOARD.md`). This is how Elvis or Deepak
+raise work, including work for the dev team: set the suggested owner and link the decision or design.
+The merger lands it with the next `TASK-NNN` via the task-board skill.
+
+```markdown
+# Proposed tasks from [you], YYYY-MM-DD - for merger review
+
+## Proposed Task
+**Date:** YYYY-MM-DD
+**Proposed by:** [you]
+**Task:** {{what needs doing, one clear line}}
+**Suggested owner:** {{who should do it, for example Deepak}}
+**Why / context:** {{the need, and a linked DEC or design if there is one}}
+**Priority:** Low | Medium | High
+```
+
 ## suggestions/suggestion-[topic].md
 
 ```markdown

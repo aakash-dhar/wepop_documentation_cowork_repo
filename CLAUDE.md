@@ -55,6 +55,7 @@ suggest a name-prefixed commit, and let the human push via the GUI.
 | A hotsheet change | `proposed-hotsheet.md` |
 | A risk change | `proposed-risks.md` |
 | A PROJECT_INDEX refresh | `proposed-project-index.md` |
+| A task for the delivery board | `proposed-tasks.md` |
 | A change to someone else's owned folder | `suggestions/suggestion-[topic].md` |
 
 Use the formats in `PROPOSAL-TEMPLATES.md`; the merger parses them, so freestyle does not merge cleanly.
@@ -64,6 +65,8 @@ Use the formats in `PROPOSAL-TEMPLATES.md`; the merger parses them, so freestyle
 - `[person] description` for normal commits (for example `[aakash] archive email 004`).
 - `[merger] auto-merged ...` when the merger lands proposals.
 - `[person][review-needed] ...` for a tech direct-push that the PM reviews at next session start.
+- Optionally include a task id so the task board can reconcile the pushed date, for example
+  `[aakash] TASK-012 add compliance register`.
 
 ## 8. Project architecture
 

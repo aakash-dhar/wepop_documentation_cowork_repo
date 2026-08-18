@@ -1,0 +1,208 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wepop Delivery View</title>
+<style>
+:root{
+  --plane:#f7f7f4; --surface:#ffffff; --ink:#12120f; --ink2:#55534d; --muted:#93908a;
+  --line:#e9e8e2; --ring:rgba(18,18,15,.08);
+  --accent:#2a6df4; --accentbg:#eaf1fe;
+  --done:#1f9d55; --donebg:#e7f5ec; --now:#2a6df4; --nowbg:#eaf1fe;
+  --wait:#c2410c; --waitbg:#fbeadf; --todo:#6b7280; --todobg:#f0f0ee;
+  --shadow:0 1px 2px rgba(18,18,15,.05); --shadow-lg:0 8px 26px rgba(18,18,15,.10);
+}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--plane);color:var(--ink);font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;
+ font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+/* Bootstrap-style container */
+.container{width:100%;margin-inline:auto;padding-inline:1rem}
+@media(min-width:576px){.container{max-width:540px}}
+@media(min-width:768px){.container{max-width:720px}}
+@media(min-width:992px){.container{max-width:960px}}
+@media(min-width:1200px){.container{max-width:1140px}}
+@media(min-width:1400px){.container{max-width:1320px}}
+.pagepad{padding-top:28px;padding-bottom:72px}
+.h1{font-size:23px;font-weight:680;letter-spacing:-.01em;margin:0}
+.hsub{color:var(--ink2);font-size:13.5px;margin:4px 0 0}
+.tabs{display:flex;gap:5px;flex-wrap:wrap;margin:20px 0 22px;background:var(--surface);border:1px solid var(--line);
+ border-radius:12px;padding:6px;box-shadow:var(--shadow)}
+.tab{border:none;background:transparent;color:var(--ink2);font:inherit;font-size:13.5px;font-weight:560;
+ padding:8px 15px;border-radius:8px;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink)} .tab.on{background:var(--accentbg);color:var(--accent)}
+.view{display:none}.view.on{display:block}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.health{padding:20px 24px;display:flex;align-items:center;gap:15px;border-bottom:1px solid var(--line)}
+.hbadge{font-size:12.5px;font-weight:650;color:var(--done);background:var(--donebg);border-radius:999px;padding:5px 13px;white-space:nowrap}
+.hmsg{color:var(--ink2);font-size:14px}
+.prog{padding:18px 24px;border-bottom:1px solid var(--line)}
+.pbar{height:10px;border-radius:999px;background:var(--todobg);overflow:hidden}
+.pfill{height:100%;background:var(--done);border-radius:999px}
+.pmeta{display:flex;justify-content:space-between;margin-top:9px;font-size:13px;color:var(--ink2)}
+.sect{padding:18px 24px;border-bottom:1px solid var(--line)}.sect:last-child{border-bottom:none}
+.slab{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:660;text-transform:uppercase;letter-spacing:.05em;margin-bottom:13px;color:var(--ink2)}
+.dot{width:9px;height:9px;border-radius:50%}
+.dot.done{background:var(--done)}.dot.now{background:var(--now)}.dot.wait{background:var(--wait)}.dot.todo{background:var(--todo)}
+.li{display:flex;gap:12px;align-items:baseline;padding:9px 10px;cursor:pointer;border-radius:9px;margin:0 -10px}
+.li:hover{background:#faf9f6}
+.li .col1{flex:1}
+.li .ttl{font-size:14.5px}
+.li .sub{font-size:12.5px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:90%}
+.li .who{font-size:11.5px;color:var(--ink2);background:var(--todobg);border-radius:999px;padding:2px 9px;white-space:nowrap}
+.li .when{font-size:12px;color:var(--muted);white-space:nowrap}
+.li .chev{color:var(--muted);font-size:15px}
+.changed{padding:16px 24px;background:#fbfbf9;border-radius:0 0 14px 14px;color:var(--ink2);font-size:13.5px}
+.empty{color:var(--muted);font-size:13.5px;font-style:italic;padding:2px 0}
+.tl{padding:10px 26px 20px}
+.tlrow{position:relative;padding:15px 0 15px 28px}
+.tlrow::before{content:"";position:absolute;left:6px;top:22px;bottom:-8px;width:2px;background:var(--line)}
+.tlrow:last-child::before{display:none}
+.node{position:absolute;left:0;top:16px;width:14px;height:14px;border-radius:50%;background:var(--surface);border:2px solid var(--line)}
+.tlrow.done .node{background:var(--done);border-color:var(--done)}
+.tlrow.next .node{background:var(--surface);border-color:var(--now);box-shadow:0 0 0 3px var(--nowbg)}
+.tlname{font-size:15px;font-weight:560}.tlmeta{font-size:13px;color:var(--muted);margin-top:2px}.tlmeta .when{color:var(--ink2);font-weight:560}
+.jrow{display:flex;gap:16px;padding:14px 24px;border-bottom:1px solid var(--line);cursor:pointer}
+.jrow:last-child{border-bottom:none}.jrow:hover{background:#faf9f6}
+.jdate{width:100px;flex:none;font-size:13px;color:var(--muted);font-weight:560}
+.jbody .act{font-size:14.5px}.jbody .subj{font-size:12.5px;color:var(--ink2);margin-top:3px}
+.jtag{font-size:11px;font-weight:600;border-radius:999px;padding:2px 8px}
+.jtag.done{color:var(--done);background:var(--donebg)}.jtag.now{color:var(--now);background:var(--nowbg)}
+.nnl{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:768px){.nnl{grid-template-columns:1fr 1fr 1fr}}
+.band{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+.bandh{padding:14px 18px;font-size:13.5px;font-weight:660;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.band .subh{color:var(--muted);font-weight:400;font-size:12px}
+.bitem{padding:13px 18px;border-bottom:1px solid var(--line);cursor:pointer}.bitem:last-child{border-bottom:none}.bitem:hover{background:#faf9f6}
+.bitem .t{font-size:14.5px}.bitem .m{font-size:12.5px;color:var(--muted);margin-top:4px}
+.note{background:#fdf6e3;border:1px solid #f0e2b8;color:#6b5a1a;border-radius:10px;padding:13px 16px;font-size:13px;margin-bottom:18px}
+.grp{margin-bottom:20px}.grph{font-size:12px;font-weight:660;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);margin:0 2px 10px}
+.srow{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px 16px;margin-bottom:9px;box-shadow:var(--shadow);cursor:default}
+.sarea{flex:1;font-size:14.5px}.sarea .sn{font-size:12px;color:var(--muted);margin-top:3px}
+.chip{font-size:11px;font-weight:600;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.chip.des{color:var(--now);background:var(--nowbg)}.chip.des.no{color:var(--muted);background:var(--todobg)}.chip.des.done{color:var(--done);background:var(--donebg)}
+.chip.blt{color:var(--muted);background:var(--todobg)}.chip.blt.yes{color:var(--done);background:var(--donebg)}
+.foot{margin-top:30px;color:var(--muted);font-size:12px;line-height:1.7}
+/* right-side drawer */
+.scrim{position:fixed;inset:0;background:rgba(12,12,10,.34);opacity:0;visibility:hidden;transition:opacity .22s,visibility .22s;z-index:65}
+.scrim.open{opacity:1;visibility:visible}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:50vw;background:var(--surface);border-left:1px solid var(--line);
+ box-shadow:-10px 0 34px rgba(0,0,0,.16);transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:70;overflow-y:auto}
+.drawer.open{transform:translateX(0)}
+@media(max-width:900px){.drawer{width:90vw}}
+.dh{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--line);padding:20px 26px 16px;z-index:2}
+.dh .row1{display:flex;align-items:center;gap:10px}
+.dchip{font-size:11.5px;font-weight:650;border-radius:999px;padding:3px 11px}
+.dchip.done{color:var(--done);background:var(--donebg)}.dchip.now{color:var(--now);background:var(--nowbg)}
+.dchip.wait{color:var(--wait);background:var(--waitbg)}.dchip.todo{color:var(--todo);background:var(--todobg)}
+.did{font-size:12px;color:var(--muted);font-weight:560}
+.dx{margin-left:auto;border:none;background:var(--todobg);color:var(--ink2);border-radius:9px;width:32px;height:32px;font-size:18px;cursor:pointer}
+.dh h2{margin:14px 0 0;font-size:20px;line-height:1.35;font-weight:640;letter-spacing:-.01em}
+.db{padding:22px 26px 40px}
+.dsec{margin-bottom:22px}
+.dk{font-size:11px;font-weight:660;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:9px}
+.meta2{display:grid;grid-template-columns:130px 1fr;gap:11px 16px;font-size:14px}
+.meta2 .mk{color:var(--ink2);font-weight:560}
+.av{width:26px;height:26px;border-radius:50%;color:#fff;font-size:12px;font-weight:650;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;margin-right:8px}
+.dtl{position:relative}
+.dtlrow{position:relative;padding:0 0 18px 26px}
+.dtlrow:last-child{padding-bottom:0}
+.dtlrow::before{content:"";position:absolute;left:6px;top:16px;bottom:-2px;width:2px;background:var(--line)}
+.dtlrow:last-child::before{display:none}
+.dnode{position:absolute;left:0;top:3px;width:13px;height:13px;border-radius:50%;background:var(--surface);border:2px solid var(--line)}
+.dtlrow.on .dnode{background:var(--done);border-color:var(--done)}
+.dtlrow .dl{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.dtlrow .dv{font-size:14.5px;margin-top:1px}.dtlrow.off .dv{color:var(--muted)}
+.reflist{display:flex;flex-wrap:wrap;gap:7px}
+.ref{font-size:12px;font-weight:560;color:var(--ink2);background:var(--plane);border:1px solid var(--line);border-radius:8px;padding:4px 10px}
+.callout{background:var(--waitbg);border:1px solid #f0d4bf;color:#7a3d16;border-radius:10px;padding:12px 14px;font-size:13.5px}
+.desc{font-size:14.5px;line-height:1.65;color:var(--ink2)}
+</style></head>
+<body>
+<div class="container pagepad">
+<div><div class="h1">Wepop Delivery View</div><div class="hsub">WEP001 &middot; as of __ASOF__ &middot; prototype for review</div></div>
+<div class="tabs" id="tabs"></div>
+<div id="views"></div>
+<div class="foot">Prototype exploring non-kanban forms. Data from shared/TASK-BOARD.md and the phase-1 product overview. Light mode. Click any item to open its details on the right.</div>
+</div>
+<div class="scrim" id="scrim"></div>
+<div class="drawer" id="drawer" aria-hidden="true"></div>
+<script>
+const D=__DATA__;const T=D.tasks;
+const esc=s=>(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const sk=t=>({"to do":"todo","in progress":"now","blocked":"wait","done":"done"})[t.status.toLowerCase()]||"todo";
+const byId=id=>T.find(t=>t.id===id);
+const VIEWS=[["digest","Delivery digest"],["timeline","Timeline"],["journal","Journal"],["nnl","Now / Next / Later"],["scope","Scope vs Built"]];
+function ownerAv(name){const f=(name||"").match(/[A-Za-z]+/); const key=(f?f[0]:"x").toLowerCase();
+  const m={aakash:"#2a6df4",elvis:"#e0672b",deepak:"#1b9e70"}; return {ini:(f?f[0][0]:"?").toUpperCase(),col:m[key]||"#6b7280"};}
+function liTask(t,when){const sub=t.notes?'<div class="sub">'+esc(t.notes)+'</div>':'';
+  return '<div class="li" data-id="'+t.id+'"><div class="col1"><div class="ttl">'+esc(t.task)+'</div>'+sub+'</div>'
+   +'<span class="who">'+esc(t.owner)+'</span><span class="when">'+esc(when||"")+'</span><span class="chev">&rsaquo;</span></div>';}
+function digest(){
+  const done=T.filter(t=>sk(t)==="done"),now=T.filter(t=>sk(t)==="now"),wait=T.filter(t=>sk(t)==="wait"),todo=T.filter(t=>sk(t)==="todo");
+  const pct=Math.round(done.length/T.length*100);
+  const recent=done.slice().sort((a,b)=>(b.committed||b.ended||"").localeCompare(a.committed||a.ended||"")).slice(0,4);
+  return '<div class="card">'
+   +'<div class="health"><span class="hbadge">On track</span><span class="hmsg">Decisions landed, first docs received, coordination on the shared repo. No blockers.</span></div>'
+   +'<div class="prog"><div class="pbar"><div class="pfill" style="width:'+pct+'%"></div></div><div class="pmeta"><span>'+done.length+' of '+T.length+' tasks done</span><span>'+pct+'% complete</span></div></div>'
+   +'<div class="sect"><div class="slab"><span class="dot done"></span>Done recently</div>'+(recent.map(t=>liTask(t,t.committed||t.ended)).join("")||'<div class="empty">none</div>')+'</div>'
+   +'<div class="sect"><div class="slab"><span class="dot now"></span>In progress now</div>'+(now.map(t=>liTask(t,"since "+t.started)).join("")||'<div class="empty">nothing active</div>')+'</div>'
+   +'<div class="sect"><div class="slab"><span class="dot todo"></span>Coming next</div>'+(todo.map(t=>liTask(t,"")).join("")||'<div class="empty">nothing queued</div>')+'</div>'
+   +'<div class="sect"><div class="slab"><span class="dot wait"></span>Waiting on someone</div>'+(wait.map(t=>liTask(t,"")).join("")||'<div class="empty">nothing waiting</div>')+'</div>'
+   +'<div class="changed"><b>What changed recently:</b> logged Elvis&#39;s GitHub ID, filed his first draft docs with a validated review aid, added the merger and tracker skills, and wrote his onboarding guide.</div></div>';
+}
+function timeline(){return '<div class="card tl">'+D.milestones.map(m=>'<div class="tlrow '+m.status+'"><span class="node"></span><div class="tlname">'+esc(m.name)+'</div><div class="tlmeta"><span class="when">'+esc(m.date)+'</span> &middot; '+esc(m.note)+'</div></div>').join("")+'</div>';}
+function journal(){const ev=[];T.forEach(t=>{const k=sk(t);if(k==="done")ev.push({d:t.committed||t.ended,act:"Finished and pushed",t,tag:"done"});else if(k==="now")ev.push({d:t.started,act:"Started",t,tag:"now"});});
+  ev.sort((a,b)=>(b.d||"").localeCompare(a.d||""));
+  return '<div class="card">'+ev.map(e=>'<div class="jrow" data-id="'+e.t.id+'"><div class="jdate">'+esc(e.d||"")+'</div><div class="jbody"><div class="act"><span class="jtag '+e.tag+'">'+e.act+'</span> '+esc(e.t.task)+'</div><div class="subj">'+esc(e.t.owner)+(e.t.notes?' &middot; '+esc(e.t.notes):'')+'</div></div></div>').join("")+'</div>';}
+function nnl(){const now=T.filter(t=>sk(t)==="now"),next=T.filter(t=>D.horizon[t.id]==="next"),later=T.filter(t=>D.horizon[t.id]==="later");
+  const band=(n,s,arr)=>'<div class="band"><div class="bandh">'+n+' <span class="subh">'+s+'</span></div>'+(arr.map(t=>'<div class="bitem" data-id="'+t.id+'"><div class="t">'+esc(t.task)+'</div><div class="m">'+esc(t.owner)+(t.status.toLowerCase()==="blocked"?' &middot; blocked':'')+'</div></div>').join("")||'<div class="bitem"><div class="m">nothing here</div></div>')+'</div>';
+  return '<div class="nnl">'+band("Now","being worked",now)+band("Next","weeks",next)+band("Later","this phase +",later)+'</div>';}
+function scope(){const grp=(label,ph)=>{const items=D.scope.filter(s=>s.phase===ph);if(!items.length)return"";
+  const rows=items.map(s=>{const desC='chip des'+(s.designed==="no"?" no":s.designed==="done"?" done":"");
+    const desL=s.designed==="draft"?"Designed (draft)":s.designed==="partial"?"Design partial":s.designed==="done"?"Designed":s.designed==="na"?"n/a":"Not designed";
+    const bltC='chip blt'+(s.built==="done"?" yes":"");const bltL=s.built==="no"?"Not built":s.built==="na"?"n/a":s.built==="done"?"Built":"In build";
+    return '<div class="srow"><div class="sarea">'+esc(s.area)+(s.note?'<div class="sn">'+esc(s.note)+'</div>':'')+'</div><span class="'+desC+'">'+desL+'</span><span class="'+bltC+'">'+bltL+'</span></div>';}).join("");
+  return '<div class="grp"><div class="grph">'+label+'</div>'+rows+'</div>';};
+  return '<div class="note"><b>No signed SOW on file yet.</b> Scope here is the phase-1 boundary from DEC-009 plus the product overview. This becomes a true SOW-vs-built comparison once a SOW is filed.</div>'+grp("Phase 1","1")+grp("Later phases","later")+grp("Contested (needs a decision)","contested")+grp("Excluded","excluded");}
+const R={digest,timeline,journal,nnl,scope};
+function build(){
+  document.getElementById("tabs").innerHTML=VIEWS.map((v,i)=>'<button class="tab'+(i===0?" on":"")+'" data-v="'+v[0]+'">'+v[1]+'</button>').join("");
+  document.getElementById("views").innerHTML=VIEWS.map((v,i)=>'<div class="view'+(i===0?" on":"")+'" id="v-'+v[0]+'">'+R[v[0]]()+'</div>').join("");
+  document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{const v=b.getAttribute("data-v");
+    document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x===b));
+    document.querySelectorAll(".view").forEach(x=>x.classList.toggle("on",x.id==="v-"+v));}));
+  document.querySelectorAll("[data-id]").forEach(el=>el.addEventListener("click",()=>openDrawer(el.getAttribute("data-id"))));
+}
+function refsOf(notes){const out=[];const seen=new Set();(notes||"").replace(/(todos #\d+|DEC-\d+|R\d\b|TASK-\d+|OTP|PIPA)/g,m=>{if(!seen.has(m)){seen.add(m);out.push(m);}return m;});return out;}
+function drow(label,val,on){return '<div class="dtlrow '+(on?"on":"off")+'"><span class="dnode"></span><div class="dl">'+label+'</div><div class="dv">'+esc(val)+'</div></div>';}
+function openDrawer(id){const t=byId(id);if(!t)return;const k=sk(t),o=ownerAv(t.owner);
+  const SL={done:"Done",now:"In Progress",wait:"Blocked",todo:"To Do"};
+  const hz=k==="done"?"Done":k==="now"?"Now (in progress)":(D.horizon[id]==="next"?"Next (coming weeks)":D.horizon[id]==="later"?"Later (this phase +)":"To Do");
+  const refs=refsOf(t.notes);
+  const dep=(t.notes||"").match(/Waits on (TASK-\d+)/);
+  const drawer=document.getElementById("drawer");
+  drawer.innerHTML=
+   '<div class="dh"><div class="row1"><span class="dchip '+k+'">'+SL[k]+'</span><span class="did">'+esc(t.id)+'</span>'
+   +'<button class="dx" onclick="closeDrawer()" aria-label="Close">&times;</button></div><h2>'+esc(t.task)+'</h2></div>'
+   +'<div class="db">'
+   + (t.notes?'<div class="dsec"><div class="dk">Summary</div><div class="desc">'+esc(t.notes)+'</div></div>':'')
+   + (dep?'<div class="dsec"><div class="callout"><b>Waiting on '+esc(dep[1])+'.</b> This task cannot start until that one is done.</div></div>':'')
+   + '<div class="dsec"><div class="dk">At a glance</div><div class="meta2">'
+     +'<span class="mk">Owner</span><span><span class="av" style="background:'+o.col+'">'+o.ini+'</span>'+esc(t.owner)+'</span>'
+     +'<span class="mk">Status</span><span>'+esc(t.status)+'</span>'
+     +'<span class="mk">Horizon</span><span>'+hz+'</span>'
+     +'<span class="mk">Task ID</span><span>'+esc(t.id)+'</span>'
+   +'</div></div>'
+   + '<div class="dsec"><div class="dk">Progress</div><div class="dtl">'
+     + drow("Started",t.started||"Not started yet",!!t.started)
+     + drow("Ended",t.ended||"Not finished yet",!!t.ended)
+     + drow("Pushed to GitHub",t.committed||"Not pushed yet",!!t.committed)
+   +'</div></div>'
+   + (refs.length?'<div class="dsec"><div class="dk">References</div><div class="reflist">'+refs.map(r=>'<span class="ref">'+esc(r)+'</span>').join("")+'</div></div>':'')
+   +'</div>';
+  document.getElementById("scrim").classList.add("open");
+  drawer.classList.add("open");drawer.setAttribute("aria-hidden","false");
+}
+function closeDrawer(){document.getElementById("scrim").classList.remove("open");
+  const d=document.getElementById("drawer");d.classList.remove("open");d.setAttribute("aria-hidden","true");}
+document.getElementById("scrim").addEventListener("click",closeDrawer);
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeDrawer();});
+build();
+</script></body></html>
