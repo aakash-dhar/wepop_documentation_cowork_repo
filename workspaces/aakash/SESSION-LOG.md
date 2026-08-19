@@ -4,6 +4,19 @@
 
 ---
 
+## 2026-08-19 (session 2) - Elvis setup-call ingest, board reconcile, merge no-op, TASK-018 scoping
+Ingested and processed the 2026-08-19 Elvis setup call (verbatim + summary) and reconciled the
+board: TASK-011 and TASK-009 to Done, added TASK-017 (Elvis input skill) and TASK-018 (board chat
+assistant), closed todos #3 and #10, and regenerated the board. Ran run-merge (clean no-op; all
+queues empty). Scoped TASK-018: agreed a local grounded chat widget (no LLM, no key, zero cost)
+with an optional Gemini proxy, since the key cannot live in the public repo; no code written, paused,
+design saved to project memory. Flags: push the batch via GitHub Desktop; DEC-010 (operating model)
+available but not filed; `_to_delete/` and `_gitlocks_to_delete/` to remove.
+
+**Detail:** [session_log_2026-08-19_session2.md](session_log_2026-08-19_session2.md)
+
+---
+
 ## 2026-08-19 (session 1) - Board overhaul + BetaCraft brand, board-sync, Elvis design/doc contribution
 Rebuilt the delivery board as the BetaCraft-branded six-view board served at the GitHub Pages root
 (`docs/index.html`), retired the dark dashboard, hardened overflow, and added a rich per-task detail
