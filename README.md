@@ -48,7 +48,7 @@ This repo is Wepop-only and is maintained separately from any other engagement.
 
 ## Skills (the PM toolkit)
 
-The repo ships 29 repeatable PM skills in `skills/`, each a single `SKILL.md`. Say the trigger in a
+The repo ships 30 repeatable PM skills in `skills/`, each a single `SKILL.md`. Say the trigger in a
 Cowork or Claude Code session with this repo open. Full trigger list in `skills/TRIGGERS.md`; the
 category table in `skills/README.md`. Skills never run git and never write `shared/` directly (the
 one exception is `run-merge`, run by the merger). Anything client-facing is drafted for Aakash to
@@ -81,7 +81,8 @@ review and send.
 | scope-tracker | "what's in phase 1?", "is this in scope?" | Maintains the phase / feature matrix grounded in decisions and designs |
 | spec-sync | "spec sync", "refresh the product overview" | Keeps the product overview and PROJECT_INDEX in sync with DECISIONS |
 | update-tracker | "project tracker", "where does the project stand?" | Regenerates the one-screen PROJECT_TRACKER status roll-up |
-| task-board | "show the task board", "add a task", "start task NNN", "finish task NNN" | Tracks tasks with start / end / pushed dates and renders the five-view delivery board (shown inline; published on GitHub Pages via docs/board-public.html) |
+| task-board | "show the task board", "add a task", "start task NNN", "finish task NNN" | Tracks tasks with start / end / pushed dates and renders the six-view delivery board (shown inline; published at docs/index.html) |
+| board-sync | "sync the board", "reconcile the board", "what should move?" | Reconciles the board with what has happened: auto-applies the obvious card moves and asks only on the ambiguous ones |
 | update-hotsheet | "update hotsheet" | Proposes a HOTSHEET change |
 | update-index | "update index" | Proposes a PROJECT_INDEX refresh |
 

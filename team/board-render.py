@@ -23,6 +23,7 @@ BOARD = os.path.join(ROOT, "shared", "TASK-BOARD.md")
 DECISIONS = os.path.join(ROOT, "shared", "DECISIONS.md")
 HOTSHEET = os.path.join(ROOT, "shared", "HOTSHEET.md")
 INT_TEMPLATE = os.path.join(SELF, "board-template.html")
+CHANGELOG_FILE = os.path.join(SELF, "board-CHANGELOG.md")
 INT_OUT = os.path.join(SELF, "board.html")
 TASKS_DIR = os.path.join(SELF, "tasks")   # per-task detail files TASK-NNN.md
 PUB_OUT = os.path.join(ROOT, "docs", "board-public.html")
@@ -200,11 +201,22 @@ def esc(s):
     return (s or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
+def parse_version():
+    try:
+        for line in open(CHANGELOG_FILE, encoding="utf-8"):
+            m = re.match(r"##\s+(v\S+)\s*-\s*(\d{4}-\d{2}-\d{2})", line)
+            if m:
+                return m.group(1) + " \u00b7 updated " + m.group(2)
+    except FileNotFoundError:
+        pass
+    return ""
+
+
 def render_internal(tasks, asof):
     data = json.dumps({"tasks": tasks, "horizon": HORIZON, "milestones": MILESTONES, "scope": SCOPE,
                        "decisions": parse_decisions(DECISIONS), "risks": parse_risks(HOTSHEET), "asof": asof})
     shell = open(INT_TEMPLATE, encoding="utf-8").read()
-    return shell.replace("__ASOF__", asof or "").replace("__DATA__", data)
+    return shell.replace("__ASOF__", asof or "").replace("__VERSION__", parse_version()).replace("__DATA__", data)
 
 
 def render_public(asof):

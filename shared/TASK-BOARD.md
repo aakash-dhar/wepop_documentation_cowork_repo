@@ -26,14 +26,14 @@
 | ID | Task | Owner | Status | Started | Ended | Committed | Notes |
 |----|------|-------|--------|---------|-------|-----------|-------|
 | TASK-016 | Build the event location map picker (Google-style search and tap a named place, address field, per-event note) from the Phase 1 designs | Deepak | To Do | | | | Proposed by Elvis 2026-08-18. Grounded in DEC-003 and the Phase 1 place-picker screens; needed for event / idea create and location polls. Candidate for engineering-handoff. |
-| TASK-015 | Investigate pushing design output (HTML) from Cowork desktop to the repo | Aakash | To Do | | | | Ref todos #5. Would let Elvis push designs straight to the repo. |
+| TASK-015 | Investigate pushing design output (HTML) from Cowork desktop to the repo | Aakash | Done | 2026-08-19 | 2026-08-19 | | Ref todos #5. Finding: no direct Claude Design -> repo push and the GitHub connect is read-only; Elvis exports Standalone HTML then pushes via GitHub Desktop. Drop folders + onboarding set up. |
 | TASK-014 | Finish the profile screens; add the draft-save and profile-description screens; finalize the map-picker detail | Elvis (+ Deepak) | To Do | | | | Ref todos #6-#9, DEC-003. Elvis design backlog from the 2026-08-17 walkthrough. |
 | TASK-013 | Consult a lawyer on the age/location logic | Aakash | To Do | | | | Ref todos #4, risk R1, DEC-002. Keep the age/location logic provisional until counsel. |
 | TASK-012 | Reconcile the walkthrough-vs-draft conflicts once Elvis's reviewed docs land | Elvis + Aakash | Blocked | | | | Ref todos #11. Waits on TASK-010. Conflicts: ratings, comments, video, age 18-vs-19, Kakao/OTP, DM/calendar phase tags. |
 | TASK-011 | Create the Wepop GitHub repo, invite Elvis, run the Cowork setup call | Aakash | In progress | 2026-08-18 | | | Ref todos #3. Repo live; Elvis invited and accepted (step 1 done). Setup call scheduled 2026-08-19. Invite goes to programinator-elvis. |
 | TASK-010 | Elvis sends the reviewed project documentation | Elvis | To Do | | | | Ref todos #1. Reviewed final of Phase 1 Brief v2 + Moments v0.9. |
 | TASK-009 | Send Elvis the review aid, the how-to note, and the Slack message | Aakash | In progress | 2026-08-18 | | | Ref todos #10. All three are drafted and ready to send. |
-| TASK-008 | Set up the task board (source + skill + inline client view) | Aakash | In progress | 2026-08-18 | | | This board. Moves to Done once pushed with TASK-008 in the commit message. |
+| TASK-008 | Set up the task board (source + skill + inline client view) | Aakash | Done | 2026-08-18 | 2026-08-18 | 2026-08-18 | Setup shipped and pushed (commit references TASK-008). Later brand / chart / board-sync work is separate. |
 | TASK-007 | Write the Elvis onboarding guide (GET-STARTED-ELVIS) + PDF | Aakash | Done | 2026-08-18 | 2026-08-18 | 2026-08-18 | Linked from the README. |
 | TASK-006 | Add 6 PM skills, the README catalogs, and scrub Sapey from the blueprint | Aakash | Done | 2026-08-18 | 2026-08-18 | 2026-08-18 | Toolkit reached 28 here; repo now Wepop-only. |
 | TASK-005 | File Elvis's draft docs and produce the validated review aid | Aakash | Done | 2026-08-18 | 2026-08-18 | 2026-08-18 | comms/attachments/2026-08-18_elvis-draft-docs/. Review aid independently validated. |

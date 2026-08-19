@@ -15,11 +15,13 @@ definition of done.
 - 2026-08-18 | Made the full board the GitHub Pages root and applied the BetaCraft brand.
 - 2026-08-18 | Added per-task detail files so the side panel shows full context.
 
+- 2026-08-19 | board-sync: marked Done (setup shipped and pushed 2026-08-18; commit references TASK-008).
+
 ## Definition of done
 - [x] Task data + task-board skill
 - [x] Five-view light board rendered to docs/index.html
 - [x] BetaCraft brand (logo, red accent, dark nav)
 - [x] Per-task detail panel (overview, sources, activity, definition of done)
-- [ ] Pushed to GitHub with TASK-008 in the commit message
+- [x] Pushed to GitHub with TASK-008 in the commit message
 
 ## Blockers

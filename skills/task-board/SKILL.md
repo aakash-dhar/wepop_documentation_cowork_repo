@@ -25,9 +25,15 @@ description: >
 - "show the task board", "task board", "add a task", "start task [NNN]", "finish task [NNN]" /
   "mark task [NNN] done", "block task [NNN]", "update the board", "what's in progress?".
 
+## Related
+- **board-sync** decides WHAT should move (reads comms, git log, activity, decisions and reconciles).
+  This skill (`task-board`) is the mechanical layer it calls to make the actual edits and re-render.
+
 ## The pieces
 - `shared/TASK-BOARD.md` - the data (the table of tasks).
 - `team/board-template.html` - the HTML shell for the internal board (styling lives here).
+- `team/board-CHANGELOG.md` - the board's version history. When you change the board's DESIGN or
+  features (not the data), add an entry at the top and bump the version; the footer shows it.
 - `team/board-render.py` - regenerates all board outputs from the data. It reads tasks from
   `shared/TASK-BOARD.md`, per-task detail from `team/tasks/`, decisions from `shared/DECISIONS.md`,
   and risks from `shared/HOTSHEET.md`, and writes `docs/index.html` (Pages root),
