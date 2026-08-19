@@ -30,7 +30,7 @@
 | TASK-014 | Finish the profile screens; add the draft-save and profile-description screens; finalize the map-picker detail | Elvis (+ Deepak) | To Do | | | | Ref todos #6-#9, DEC-003. Elvis design backlog from the 2026-08-17 walkthrough. |
 | TASK-013 | Consult a lawyer on the age/location logic | Aakash | To Do | | | | Ref todos #4, risk R1, DEC-002. Keep the age/location logic provisional until counsel. |
 | TASK-012 | Reconcile the walkthrough-vs-draft conflicts once Elvis's reviewed docs land | Elvis + Aakash | Blocked | | | | Ref todos #11. Waits on TASK-010. Conflicts: ratings, comments, video, age 18-vs-19, Kakao/OTP, DM/calendar phase tags. |
-| TASK-011 | Create the Wepop GitHub repo, invite Elvis, run the Cowork setup call | Aakash | Blocked | | | | Ref todos #3. Waits on TASK-010 (final docs). Invite goes to programinator-elvis. |
+| TASK-011 | Create the Wepop GitHub repo, invite Elvis, run the Cowork setup call | Aakash | In progress | 2026-08-18 | | | Ref todos #3. Repo live; Elvis invited and accepted (step 1 done). Setup call scheduled 2026-08-19. Invite goes to programinator-elvis. |
 | TASK-010 | Elvis sends the reviewed project documentation | Elvis | To Do | | | | Ref todos #1. Reviewed final of Phase 1 Brief v2 + Moments v0.9. |
 | TASK-009 | Send Elvis the review aid, the how-to note, and the Slack message | Aakash | In progress | 2026-08-18 | | | Ref todos #10. All three are drafted and ready to send. |
 | TASK-008 | Set up the task board (source + skill + inline client view) | Aakash | In progress | 2026-08-18 | | | This board. Moves to Done once pushed with TASK-008 in the commit message. |
