@@ -31,12 +31,13 @@ ROOT_OUT = os.path.join(ROOT, "docs", "index.html")   # GitHub Pages root URL
 
 # ---- internal-only view data (full board) ----
 HORIZON = {"TASK-010": "next", "TASK-011": "next", "TASK-012": "next",
-           "TASK-013": "later", "TASK-014": "later", "TASK-015": "later", "TASK-016": "later"}
+           "TASK-013": "later", "TASK-014": "later", "TASK-015": "later", "TASK-016": "later",
+           "TASK-017": "next", "TASK-018": "later"}
 MILESTONES = [
  {"name": "First design walkthrough", "date": "2026-08-17", "status": "done", "note": "Elvis, Aakash, Deepak"},
  {"name": "Elvis GitHub ID received", "date": "2026-08-18", "status": "done", "note": "programinator-elvis"},
  {"name": "First project docs received", "date": "2026-08-18", "status": "done", "note": "as a draft; reviewed version pending"},
- {"name": "GitHub repo + invite + setup call", "date": "waiting on reviewed docs", "status": "next", "note": "gated on the final documentation"},
+ {"name": "GitHub repo + invite + setup call", "date": "2026-08-19", "status": "done", "note": "repo live; Elvis onboarded on the 2026-08-19 setup call"},
  {"name": "Location-at-registration locked", "date": "open", "status": "next", "note": "optional vs required, needs Elvis"},
  {"name": "Phase-1 build kickoff", "date": "not started", "status": "later", "note": "after harness + scope lock"},
  {"name": "Phase-1 MVP", "date": "target late Aug 2026", "status": "later", "note": "per the Moments spec"},

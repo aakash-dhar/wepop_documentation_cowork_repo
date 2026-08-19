@@ -13,7 +13,7 @@
 | 6 | Add the missing "save as draft" screen for event/idea creation | Elvis | 2026-08-17 | TBD | Open |
 | 5 | Investigate pushing design output (HTML) from Cowork desktop to the GitHub repo | Aakash | 2026-08-17 | TBD | Done 2026-08-19 - export Standalone HTML then push via GitHub Desktop; drop folders set up (TASK-015) |
 | 4 | Consult a lawyer on the age/location legal logic (passive vs active location, travel jurisdiction) | Aakash | 2026-08-17 | TBD | Open |
-| 3 | Create the Wepop GitHub repo, invite Elvis, run the Cowork setup call | Aakash | 2026-08-17 | 2026-08-19 | In progress - repo live, Elvis invited and accepted; setup call 2026-08-19 (TASK-011) |
+| 3 | Create the Wepop GitHub repo, invite Elvis, run the Cowork setup call | Aakash | 2026-08-17 | 2026-08-19 | Done 2026-08-19 - setup call held (14 min); Elvis onboarded on commit/push, start/end session, merge model, drop folders, board (TASK-011) |
 | 2 | Share GitHub account ID via Slack | Elvis | 2026-08-17 | 2026-08-17 | Done 2026-08-18 - GitHub ID `programinator-elvis` |
 | 1 | Generate and share the full project documentation (doc/MD/HTML, V1 ok) via Slack | Elvis | 2026-08-17 | 2026-08-17 | Received (draft) 2026-08-18; awaiting Elvis's reviewed version. Filed under comms/attachments/2026-08-18_elvis-draft-docs/ |
 

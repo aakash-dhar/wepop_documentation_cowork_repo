@@ -17,3 +17,5 @@
   documentation and his GitHub ID; Aakash to stand up the shared repo and Cowork harness. A separate
   engagement (Dan / Reflex SEO and a voice-tutor product) was also discussed on this call but is out
   of scope for the Wepop record.
+
+- 2026-08-19 - Ran the Elvis setup call (14 min, Google Meet). Walked Elvis through the workflow (Claude commits, human pushes via GitHub Desktop; start / end session; PM merges proposals into shared/), the design and document drop folders, and the delivery board. Elvis understood the model quickly, called it a good checks-and-balances, and will trial it. Positive and low-friction. Aakash is building an Elvis-specific input skill; Elvis offered to build planning skills from his side.
