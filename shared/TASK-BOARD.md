@@ -34,7 +34,7 @@
 | TASK-012 | Reconcile the walkthrough-vs-draft conflicts once Elvis's reviewed docs land | Elvis + Aakash | Blocked | | | | Ref todos #11. Waits on TASK-010. Conflicts: ratings, comments, video, age 18-vs-19, Kakao/OTP, DM/calendar phase tags. |
 | TASK-011 | Create the Wepop GitHub repo, invite Elvis, run the Cowork setup call | Aakash | Done | 2026-08-18 | 2026-08-19 | | Ref todos #3. Repo live; Elvis invited and accepted. Setup call held 2026-08-19 (14 min): walked commit/push, start/end session, merge model, design/doc drop folders, and the board. |
 | TASK-010 | Elvis sends the reviewed project documentation | Elvis | To Do | | | | Ref todos #1. Reviewed final of Phase 1 Brief v2 + Moments v0.9. |
-| TASK-009 | Send Elvis the review aid, the how-to note, and the Slack message | Aakash | In progress | 2026-08-18 | | | Ref todos #10. All three are drafted and ready to send. |
+| TASK-009 | Send Elvis the review aid, the how-to note, and the Slack message | Aakash | Done | 2026-08-18 | 2026-08-19 | | Ref todos #10. Confirmed sent by Aakash. |
 | TASK-008 | Set up the task board (source + skill + inline client view) | Aakash | Done | 2026-08-18 | 2026-08-18 | 2026-08-18 | Setup shipped and pushed (commit references TASK-008). Later brand / chart / board-sync work is separate. |
 | TASK-007 | Write the Elvis onboarding guide (GET-STARTED-ELVIS) + PDF | Aakash | Done | 2026-08-18 | 2026-08-18 | 2026-08-18 | Linked from the README. |
 | TASK-006 | Add 6 PM skills, the README catalogs, and scrub Sapey from the blueprint | Aakash | Done | 2026-08-18 | 2026-08-18 | 2026-08-18 | Toolkit reached 28 here; repo now Wepop-only. |
