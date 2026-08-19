@@ -4,6 +4,22 @@
 
 ---
 
+## 2026-08-19 (session 1) - Board overhaul + BetaCraft brand, board-sync, Elvis design/doc contribution
+Rebuilt the delivery board as the BetaCraft-branded six-view board served at the GitHub Pages root
+(`docs/index.html`), retired the dark dashboard, hardened overflow, and added a rich per-task detail
+drawer plus KPI cards, charts, a Decisions tab, a risk register, task aging, a "Changed this week"
+feed, and board versioning (v1.0 + `team/board-CHANGELOG.md`). Built the `board-sync` skill (the
+reconciliation layer; 30 skills now) and used it to move TASK-008 and TASK-015 to Done and TASK-011
+to In progress, then reconciled `comms/todos.md`. Set up Elvis's `architecture/elvis/designs` and
+`documents` folders with READMEs, added the "Pushing designs and documents" onboarding section, wrote
+the setup-call runbook, and scheduled 7 recurring / checkpoint tasks. Flags: confirm TASK-009 was
+sent; regenerate the onboarding PDF; a stray git lock was moved to `_gitlocks_to_delete/`; push
+today's batch via GitHub Desktop.
+
+**Detail:** [session_log_2026-08-19.md](session_log_2026-08-19.md)
+
+---
+
 ## 2026-08-18 - Merger + tracker skills, Elvis GitHub ID, draft-docs filing, review aid, +6 skills, Elvis onboarding guide
 Added `run-merge` (the triggerable merger routine, Aakash-only) and `update-tracker`, plus seeded
 `shared/PROJECT_TRACKER.md`; registered in TRIGGERS/README, OWNERS, PROJECT_INDEX.
