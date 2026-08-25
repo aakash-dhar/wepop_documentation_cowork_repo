@@ -4,6 +4,33 @@
 
 ---
 
+## 2026-08-25 (session 2) - Community segmentation, recommendation algorithm, and group dynamics scoped
+Elvis raised two new strategic topics unprompted: how to handle very different early cohorts sharing a
+city (a college student and a 40s professional joining Seoul around the same time), and the
+recommendation algorithm behind home feed, explore, and Sunday Deck. Resolved community segmentation
+(`community-segmentation-2026-08-25.md`) as cohort = (city, age/life-stage bucket), computed
+independently per user, with university-affiliated users pulled into their own overriding cohort at
+launch. The mechanism itself was revised mid-session from a soft ranking signal to a hard retrieval
+filter at launch (same cohort is a must), softening once a city is manually confirmed dense enough, both
+changes recorded not overwritten. Scoped the recommendation algorithm in detail
+(`recommendation-algorithm-2026-08-25.md`): rule-based weighted scoring now, architected two-stage
+(retrieval then ranking) so a learned model can slot in later, extended with text keyword matching,
+evolving user interest profiles, and a hidden internal keyword layer across ideas/events/moments/users.
+Explore was split into an unranked, viewport-bounded map view and a fully-ranked list view. Documented a
+future per-user learned-weighting direction (Netflix/YouTube/Spotify-style), explicitly deferred, launch
+keeps one global formula. A new concept, group dynamics, split out into its own file
+(`group-dynamics-2026-08-25.md`): an avoid-signal (soft penalty, amplified by an explicit block),
+look-alike host affinity (parked, needs scale), and personality-mix compatibility (ranking signal only),
+surfacing two real gaps, a general blocking feature and attendee-level feedback, neither designed yet.
+Open: several mechanism transitions flagged rather than assumed (does cohort truly revert to a ranking
+signal once a city softens, does the map's cohort restriction loosen too); nothing from this session or
+the prior two has been promoted to `proposed-decisions.md`, that gap is now three full sessions deep;
+item 10 still hasn't actually been sent to Aakash. No `shared/` edits made.
+
+**Detail:** [session_log_2026-08-25_session2.md](session_log_2026-08-25_session2.md)
+
+---
+
 ## 2026-08-25 - Recurring events closed out, new Event Series concept, five-item feature batch scoped
 Closed out the recurring-events follow-up (`recurring-events-2026-08-25.md`): separate linked Event
 instances sharing a recurring group, Google Calendar-style edit/delete/join semantics, batch-generated
