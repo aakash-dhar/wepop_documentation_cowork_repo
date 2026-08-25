@@ -2,9 +2,11 @@
 
 > Elvis workspace working file, started 2026-08-19. Not a merge proposal yet.
 > Source of the conflict list: `comms/attachments/2026-08-18_elvis-draft-docs/Wepop_Walkthrough-vs-Drafts_Review-Aid_2026-08-18.md`
-> Once the resolved items below (and the series pages / recurring events follow-up) are settled,
-> promote the resolved set into `workspaces/elvis/proposed-decisions.md` for the merger (Aakash) to
-> land. Item 10 escalates separately to Aakash rather than being promoted through that route.
+> All items below are resolved except item 10, which escalates separately to Aakash rather than being
+> promoted through the decisions route. Item 11 (recurring events and series pages) lives in its own
+> file, `workspaces/elvis/recurring-events-2026-08-25.md`, promote it alongside this one.
+> Once ready, promote the resolved set into `workspaces/elvis/proposed-decisions.md` for the merger
+> (Aakash) to land.
 > No em-dashes. Governance values ALLOW / BLOCK / ESCALATE.
 
 ## Progress
@@ -21,7 +23,8 @@
 | 8 | Gender and photos pre-join | RESOLVED 2026-08-24 |
 | 9 | Undiscussed drafted surfaces (10 items) | RESOLVED 2026-08-24, series pages spun out as a follow-up |
 | 10 | Moments doc names, budget, legal | ESCALATED 2026-08-24, routes to Aakash |
-| - | Follow-up: series pages / recurring events, scope now, build phase 1.5 | Not started |
+| 11 | Recurring events (follow-up from item 9) | RESOLVED 2026-08-25, see `recurring-events-2026-08-25.md` |
+| 12 | Event Series (new concept, Elvis 2026-08-25) | RESOLVED 2026-08-25, see `event-series-2026-08-25.md` |
 
 ---
 
@@ -429,9 +432,12 @@ Phase 1:
 
 Later phase:
 
-- **Co-hosts** (invite another user as co-organizer, with permissions, on an individually-hosted
-  event). Org accounts already cover the multi-organizer case for clubs; this is specifically for
-  individual hosts, a smaller slice of the launch audience.
+- ~~**Co-hosts**~~ **REVISED 2026-08-25, no longer purely later-phase.** Originally deferred here
+  (invite another user as co-organizer, with permissions, on an individually-hosted event; org
+  accounts already cover the multi-organizer case for clubs). Pulled forward to ship alongside Event
+  Series once that concept needed "approved co-host" as a real permission for who can add events to a
+  series, see `event-series-2026-08-25.md`. Kept as a record of the original call and why it changed,
+  not deleted, per this repo's own convention for superseded entries.
 - **Apply-to-join with host-defined questions**, as an alternative to simple RSVP. Real added scope
   (a question builder, an approval queue, applicant notifications) that phase 1's RSVP flow does not
   need to carry.
@@ -446,11 +452,13 @@ Later phase:
 
 Flagged as its own follow-up, not decided here:
 
-- **Series pages (event lineage).** Build targeted for phase 1.5, but recurring events themselves have
-  never been scoped anywhere in this project, and series pages cannot exist without that concept
-  existing first. Elvis asked for this to be defined and scoped now even though the build lands later,
-  so it needs its own dedicated design pass rather than a placeholder decision here. Not started yet;
-  next thing to pick up after this item.
+- ~~Series pages (event lineage).~~ RESOLVED 2026-08-25, see
+  `workspaces/elvis/recurring-events-2026-08-25.md`. Recurring events scoped in full (separate linked
+  Event instances sharing a series ID, Google Calendar-style "this one / this and following"
+  interaction across edit, delete, and join, batch-generated occurrences, both individual and org
+  hosts). Series pages turned out to fall directly out of that design, an instance-embedded list of
+  the other occurrences in its series, rather than needing to be a separate feature. Build still
+  targeted for phase 1.5; this closes the design gap, not the build.
 
 ---
 
