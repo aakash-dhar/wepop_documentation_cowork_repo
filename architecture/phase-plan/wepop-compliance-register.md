@@ -8,6 +8,7 @@
 
 | Item | Area | Requirement | Linked DEC / LC | Status | Owner |
 |------|------|-------------|-----------------|--------|-------|
+| Korea PASS real-name verification | privacy | For Korean carrier numbers, verify via PASS (carrier real-name auth, government-linked, returns identity and age). Gives verified age for Korea vs self-declared elsewhere. Collects more sensitive identity data (CI/DI); PIPA data-handling and a designated-agency integration apply. Confirm intent with Elvis; Deepak to research. | DEC-026, DEC-012 | pending-counsel | Aakash / DLG Law |
 | Cross-jurisdiction age gate | age | Self-declared birthdate against a per-country legal-age config; block under-age with a country-named message. Country set once via store-region cascade, no forced GPS. Exact logic (signal conflict, travel jurisdiction) needs counsel before lock. | DEC-012 (was DEC-002), R1 | pending-counsel | Aakash / DLG Law |
 | Minors handling | minors | If the age gate lets an under-age user through, the app must block them; under-age accounts must not be created or retained. No feature should surface minors to adults. | DEC-012, DEC-006, DEC-017 | pending-counsel | Aakash / DLG Law |
 | OTP / SMS deliverability by region | deliverability | Phone verification can be blocked by geography without an in-region registered business. Email magic-link now covers account recovery. Check regional messaging-provider rules before a new market. | DEC-011 (was DEC-004), R3 | mitigated | Aakash |
@@ -25,7 +26,7 @@
 
 ## Open and pending-counsel summary
 
-- **pending-counsel (route to DLG Law via TASK-013):** age gate mechanism, minors handling, PIPA/personal-data basis, payments KYC/tax.
+- **pending-counsel (route to DLG Law via TASK-013):** age gate mechanism, minors handling, PIPA/personal-data basis, payments KYC/tax, Korea PASS real-name verification (DEC-026).
 - **open (design/ops action needed):** behavioral-inference disclosure, Free Now safety details, media-of-people moderation, the moderation launch blocker, media retention policy.
 - **mitigated (design decision covers it, verify in build):** OTP/email recovery, anti-stalking visibility, calendar minimization, contact-export exclusion, reimbursement invoicing.
 

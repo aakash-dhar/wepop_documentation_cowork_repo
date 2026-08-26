@@ -24,6 +24,8 @@ blockers, but moderation staffing must be resolved before launch.
 
 ### Needs Attention
 
+- **Korea payments need a non-Stripe path (org tier is live now, so not distant).** Stripe's actual support for Korea-based merchant payouts, KRW, and Korean local methods (KakaoPay, Naver Pay, bank transfer/virtual account) is unconfirmed, and Korean consumers strongly prefer local methods over cards. DEC-010 assumed Programination's Stripe account and DEC-018's org tier is proceeding now. Evaluate Korea-specific processors (Toss Payments, NHN KCP, PortOne/Iamport). App-store IAP also in play (15 to 30 percent; virtual-goods vs physical-experience distinction; web-payment workaround). Financials owner (Aakash); raises the urgency of the DEC-010 payments conversation (TASK-036). Since 2026-08-26. Source: 2026-08-26 team sync; elvis proposal (`internationalization-korea-2026-08-26.md`).
+
 - **Cohort/algorithm mechanism transitions unconfirmed.** Whether the cohort hard retrieval filter
   reverts to a weighted ranking signal once a city is manually confirmed dense enough (DEC-019/DEC-020),
   who owns the manual per-city density call (presumed Aakash), and whether the Explore map view's cohort
@@ -44,6 +46,8 @@ blockers, but moderation staffing must be resolved before launch.
   2026-08-17 walkthrough. Action items tracked in `comms/todos.md`.
 
 ### Watching
+
+- **Korean map coverage is a known future concern; Google Maps acceptable for now.** South Korea restricts map-data export, so local providers have richer data and Google has historically been thinner in Korea; Google is reportedly expanding Korean coverage. Use Google (DEC-003) for now; revisit only if it becomes a real issue. Since 2026-08-26. Source: 2026-08-26 team sync.
 
 - **QR check-in is now load-bearing; a low check-in rate is a product risk, not only ops.** Check-in gates
   ratings, host reputation, and the recommendation signal (DEC-014). No scans means no ratings and no
