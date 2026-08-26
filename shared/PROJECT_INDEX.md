@@ -4,45 +4,60 @@
 > `workspaces/[you]/proposed-project-index.md`. Do not hallucinate capabilities not documented
 > here. Where a section is older than the latest snapshot, `shared/DECISIONS.md` controls.
 
-## State snapshot (2026-08-17)
+## State snapshot (2026-08-26)
 
 - **Project:** WEP001 - Wepop
 - **What it is:** An invite-first, location-based events and meetup app (a meetup app, not a dating
   app) for getting people together in the real world around shared activities. Being rebuilt on top
   of an existing Wepop codebase, salvaged and extended with AI. Focus markets Korea and the US.
-- **Phase:** Setup / Phase 1 kickoff. First full design walkthrough done 2026-08-17.
-- **RAG:** Green - design walkthrough complete, decisions landed, coordination moving to a shared repo, no blockers.
-- **Last decision:** DEC-009 (phase-1 scope boundaries), 2026-08-17. DEC-001 to DEC-009 all landed
-  from the 2026-08-17 walkthrough.
+- **Phase:** Phase 1 design deepening. First walkthrough 2026-08-17; a large Elvis design batch landed
+  2026-08-26 (DEC-010 to DEC-025).
+- **RAG:** Green with a watch - design substantially deeper, no hard build blocker, but moderation
+  staffing is a launch blocker to resolve (see HOTSHEET).
+- **Last decision:** DEC-025 (new-feature scoping batch), 2026-08-25, landed 2026-08-26. DEC-010 to
+  DEC-025 landed from the Elvis workspace intake; DEC-011 superseded DEC-004, DEC-012 superseded
+  DEC-002 (provisional), DEC-013 superseded DEC-009 (chat/calendar), DEC-017 extended DEC-006.
 - **Team:** Aakash (PM/merger/financials), Elvis (client and designer), Deepak (tech lead and developer)
 
 ## What is being built
 
-- Core objects: Events (activity at a place and time), Ideas (something a user wants to do without
-  hosting, which others can spin into an event), and Business / Organization profiles (multi-member;
-  university clubs first, promotional accounts later).
-- Invite-first onboarding (invite to a specific event or idea), a waitlist for non-invited users, a
-  location-centric explore / map experience, event and idea creation with polls, event chat,
-  notifications, a later-phase calendar, and user plus organization profiles with "moments"
-  (post-event photo reflections).
-- Full feature map: `architecture/phase-plan/wepop-product-overview.md`.
+- Core objects: Events (standalone, recurring, or in a Series), Ideas, Event Series (a thematic hub,
+  phase 1.5), and Business / Organization profiles (university clubs first, promotional later).
+- Phase 1: invite-first onboarding and waitlist (auto-promote), social-login-plus-phone auth,
+  self-declared age with a country cascade, required city-level location, the map picker, events and
+  ideas, event schedule, ratings with required QR check-in, moments with video, live stories, DMs and
+  group chat (text only), lightweight calendar pieces, community cohorts and the recommendation
+  algorithm, Free Now, icebreakers, tips/guides, and gated (not live) payment provisions.
+- Phase 1.5: payments go-live and the individual premium tier, the full in-app calendar, recurring
+  events, Event Series, and co-hosts. Later: Sunday Deck, apply-to-join, annual Wrapped, private
+  accounts, and the dedicated payments/gamification/ads/marketplace threads.
+- Full feature map: `architecture/phase-plan/wepop-product-overview.md`; per-feature phase and status:
+  `architecture/phase-plan/wepop-scope-matrix.md`.
 
 ## What has been decided
 
-Landed in `shared/DECISIONS.md` (DEC-001 to DEC-009, all 2026-08-17):
+Source of truth is `shared/DECISIONS.md`. DEC-001 to DEC-009 landed 2026-08-17; DEC-010 to DEC-025
+landed 2026-08-26 from the Elvis workspace intake.
 
-- DEC-001 Central GitHub repo as source of truth plus Cowork harness.
-- DEC-002 Age gating tied to country legal age (provisional, pending legal counsel).
-- DEC-003 Event location picker uses Google-Maps-style select.
-- DEC-004 Auth: OTP required, optional password, biometrics if feasible.
-- DEC-005 Replace MBTI with an extensible tag list.
-- DEC-006 Anti-stalking visibility model.
-- DEC-007 No in-app AI image or video generation for now.
-- DEC-008 Salvage and build on the existing Wepop code.
-- DEC-009 Phase-1 scope boundaries.
+Foundational (2026-08-17): DEC-001 central repo + harness; DEC-003 Google-style map picker; DEC-005
+extensible tag list; DEC-006 anti-stalking visibility; DEC-007 no in-app AI image/video; DEC-008
+salvage the existing code.
 
-Still open (not decisions): location at registration (optional vs required), the remaining map
-picker interaction detail, and how much legacy code is reused vs rebuilt. See `shared/HOTSHEET.md`.
+Superseded or extended 2026-08-26: DEC-002 age gate (SUPERSEDED by DEC-012, still provisional);
+DEC-004 auth (SUPERSEDED by DEC-011); DEC-009 phase-1 scope (SUPERSEDED by DEC-013 for chat/calendar);
+DEC-006 (EXTENDED by DEC-017).
+
+Landed 2026-08-26: DEC-010 payments phasing; DEC-011 auth (social login + phone, password deferred);
+DEC-012 age/country cascade; DEC-013 chat + calendar into phase 1; DEC-014 ratings + required QR
+check-in; DEC-015 moments content/visibility + video; DEC-016 location at registration; DEC-017 gender
+aggregate / photos to mutuals; DEC-018 freemium/commercial structure (financials, governance flag);
+DEC-019 community cohorts; DEC-020 recommendation algorithm; DEC-021 recurring events; DEC-022 Event
+Series + co-hosts; DEC-023 group-dynamics signals; DEC-024 undiscussed-surface triage; DEC-025
+new-feature scoping batch.
+
+Still open (not decisions): the cohort softening trigger and its owner, the group-dynamics
+prerequisites (blocking, attendee feedback), Free Now open details, the Event multi-day date range,
+age/location pending counsel, and the commercial-structure proposal channel. See `shared/HOTSHEET.md`.
 
 ## Where everything lives
 
@@ -58,6 +73,7 @@ picker interaction detail, and how much legacy code is reused vs rebuilt. See `s
 | Strategy | `shared/PROJECT_STRATEGY.md` | Commercial narrative |
 | Merge queue | `shared/MERGE-REVIEW.md` | |
 | Product overview | `architecture/phase-plan/wepop-product-overview.md` | App feature map and phase-1 scope |
+| Scope matrix | `architecture/phase-plan/wepop-scope-matrix.md` | Per-feature phase, status, owner, linked DEC |
 | Emails | `comms/emails/` | `NN_YYYY-MM-DD_kebab-subject.md` |
 | Meeting notes | `comms/meeting-notes/` | summary + `_TRANSCRIPT.md` |
 | Elvis draft docs (received) | `comms/attachments/2026-08-18_elvis-draft-docs/` | Brief v2 + Moments v0.9, provisional; reviewed version pending; see `_NOTES.md` |
