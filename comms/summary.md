@@ -19,3 +19,12 @@
   of scope for the Wepop record.
 
 - 2026-08-19 - Ran the Elvis setup call (14 min, Google Meet). Walked Elvis through the workflow (Claude commits, human pushes via GitHub Desktop; start / end session; PM merges proposals into shared/), the design and document drop folders, and the delivery board. Elvis understood the model quickly, called it a good checks-and-balances, and will trial it. Positive and low-friction. Aakash is building an Elvis-specific input skill; Elvis offered to build planning skills from his side.
+
+- 2026-08-24 - Short progress check-in (11 min). Payments (ticketing + 10% platform fee, premium
+  unlocks) agreed as a Phase 1.5 milestone: architected into Phase 1 as gated provisions, enabled
+  once the core structure is demo-ready, using Programination's existing Stripe account. Elvis
+  raised a new idea to launch distinct communities (university/geography) separately before merging
+  them later, echoing early Facebook's per-university model; Aakash to bring back options by
+  2026-08-26. Algorithm/matching design flagged for a future call once Deepak (out sick this call)
+  is back. Tone continues collaborative and low-friction; Elvis's main near-term focus remains
+  updating the docs.

@@ -5,6 +5,8 @@
 
 | # | Action item | Owner | Raised | Due | Status |
 |---|-------------|-------|--------|-----|--------|
+| 13 | Present technical/product options for community segmentation by university/geography (launch separately, merge later) and the cross-enrollment access question | Aakash | 2026-08-24 | 2026-08-26 | Open |
+| 12 | Update the project docs to include the payments vision (ticketing + 10% fee, premium unlocks) and general requirements, iteratively | Elvis | 2026-08-24 | TBD (ongoing) | Open |
 | 11 | Reconcile the walkthrough-vs-draft flags once Elvis's reviewed docs land: the doc-vs-doc conflicts (ratings/reviews, comments on moments, video on moments), age gate 18 vs country-tied 19 (DEC-002), Kakao/OTP-skip vs DEC-004, and the later-phase tagging of DM / user-group-chat / calendar (DEC-009) | Elvis + Aakash | 2026-08-18 | After reviewed docs | Open |
 | 10 | Send Elvis the walkthrough-vs-drafts review aid (md + pdf) and the how-to note | Aakash | 2026-08-18 | TBD | Done 2026-08-19 - confirmed sent by Aakash (TASK-009) |
 | 9 | Finish and share the profile screens (user + organization) | Elvis | 2026-08-17 | TBD | Open |
