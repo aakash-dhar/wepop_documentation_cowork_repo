@@ -30,9 +30,27 @@ PUB_OUT = os.path.join(ROOT, "docs", "board-public.html")
 ROOT_OUT = os.path.join(ROOT, "docs", "index.html")   # GitHub Pages root URL
 
 # ---- internal-only view data (full board) ----
-HORIZON = {"TASK-010": "next", "TASK-011": "next", "TASK-012": "next",
-           "TASK-013": "later", "TASK-014": "later", "TASK-015": "later", "TASK-016": "later",
-           "TASK-017": "next", "TASK-018": "later"}
+def derive_horizon(tasks):
+    """Now / Next / Later, derived from LIVE task status so it never goes stale.
+    Done tasks are excluded entirely; In progress renders under Now via status;
+    Blocked sits in Later; a To Do task is Later only if its own wording marks it
+    phase 1.5 / later-phase / deferred, otherwise Next. Adding or completing a task
+    updates this automatically, no hand-maintained map."""
+    # Genuinely later-phase / phase-1.5 work. Everything else that is To Do is
+    # "next". Keep this list short; a new later task not listed simply shows as
+    # "next" (safe), and no completed task can ever appear here because Done is
+    # excluded by live status above, not by this list.
+    LATER_IDS = {"TASK-018", "TASK-032"}
+    hz = {}
+    for t in tasks:
+        st = (t.get("status") or "").strip().lower()
+        if st in ("done", "in progress"):
+            continue
+        if st == "blocked":
+            hz[t["id"]] = "later"
+        else:
+            hz[t["id"]] = "later" if t["id"] in LATER_IDS else "next"
+    return hz
 MILESTONES = [
  {"name": "First design walkthrough", "date": "2026-08-17", "status": "done", "note": "Elvis, Aakash, Deepak"},
  {"name": "Elvis GitHub ID received", "date": "2026-08-18", "status": "done", "note": "programinator-elvis"},
@@ -214,7 +232,7 @@ def parse_version():
 
 
 def render_internal(tasks, asof):
-    data = json.dumps({"tasks": tasks, "horizon": HORIZON, "milestones": MILESTONES, "scope": SCOPE,
+    data = json.dumps({"tasks": tasks, "horizon": derive_horizon(tasks), "milestones": MILESTONES, "scope": SCOPE,
                        "decisions": parse_decisions(DECISIONS), "risks": parse_risks(HOTSHEET), "asof": asof})
     shell = open(INT_TEMPLATE, encoding="utf-8").read()
     return shell.replace("__ASOF__", asof or "").replace("__VERSION__", parse_version()).replace("__DATA__", data)
