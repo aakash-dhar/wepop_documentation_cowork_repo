@@ -22,7 +22,9 @@ new decision.
 **Pipeline, two stages:**
 1. Retrieval: time window, exclude RSVPed/dismissed, plus a geographic bound that differs by surface
    (a radius for home feed, the map's live viewport for Explore's map view), plus **same cohort as a
-   hard filter at launch** (general age/geo, or the university-affiliated override where it applies).
+   hard filter at launch** (general age/geo, or the university-affiliated override where it applies),
+   **except content from users you follow, exempt from the cohort filter as of 2026-08-26**, see the
+   follow-graph exemption section below.
 2. Ranking: only runs for home feed and Explore's list view. Explore's map view is never ranked, it
    shows its full cohort-filtered, viewport-bounded candidate set positioned purely by geography.
 
@@ -80,7 +82,9 @@ learned ranker can slot in later without a rebuild:
    entirely, it never reaches scoring. Once a city is manually confirmed dense enough, the working
    assumption is this reverts to a ranking signal instead of a retrieval filter, see the open item
    flagged in that doc. The geographic bound differs by surface: home feed uses a radius around the
-   user, Explore's map view uses the map's current viewport instead, see below.
+   user, Explore's map view uses the map's current viewport instead, see below. **Follow-graph
+   exemption, added 2026-08-26:** a candidate is not excluded by the cohort filter if it comes from a
+   user the viewer follows, see the dedicated section below.
 2. **Ranking:** the candidate set gets scored by a weighted combination of signals (below) and returned
    in ranked order. This is the stage a future learned model would replace or blend into, once there is
    real logged interaction data to train on.
@@ -111,6 +115,30 @@ explicit visibility boost, a counterweight to the popularity signal above, not a
 boost should decay as an item or host accrues real engagement of its own, a standard exploration bonus,
 not a permanent advantage. The exact decay curve and boost magnitude are tuning questions for after
 launch, not locked here.
+
+## Follow-graph exemption to the cohort filter, RESOLVED 2026-08-26 (landed via the live team sync)
+
+Not raised in this workspace originally. This came out of the live 2026-08-26 team sync (Elvis, Aakash,
+Deepak) and landed directly as a change-history note on DEC-019 and DEC-020 in `shared/DECISIONS.md`,
+synced into this file to keep it matching the source of truth rather than as a new decision made here.
+Full mechanism and reasoning also recorded in `community-segmentation-2026-08-25.md`.
+
+Elvis's own clarification on that call: the launch cohort hard filter should not apply to people already
+followed. His example: a user's mother, older and not in college, outside his cohort by the general
+age/geo basis, but her events should still rank higher because the follow relationship already implies
+the connection.
+
+**Current resolution:** content from a followed user is exempt from the cohort hard filter. Rather than
+being excluded at retrieval like any other out-of-cohort candidate, it is pulled into the candidate set
+directly and ranked through the existing social-proximity signal (`w6`) alongside everything else. The
+retrieval query becomes, per user: (their own cohort) union (content from users they follow), then the
+cohort filter and ranking apply to that combined set as already designed. This does not weaken the
+cohort filter for anyone else, it is a carve-out specific to an existing direct relationship, not a
+general loosening.
+
+This changes the illustrative walkthrough below in one respect: Event B is excluded at launch only
+because Sujin does not follow its host in that example. Had she followed him, Event B would have reached
+scoring even at launch, via `w6`, same as any other candidate outside her cohort.
 
 ## Text keyword matching and evolving user interest profiles, RESOLVED 2026-08-25
 
@@ -334,7 +362,8 @@ Cohort: (Seoul, university-affiliated), per the override resolved in
 **At launch, before Seoul is manually confirmed dense enough:** Event B never reaches the scoring stage
 at all. It fails the retrieval-stage cohort filter (different cohort from Sujin's), so it is excluded
 before ranking runs, full stop. Sujin's launch feed only ever considers candidates already inside her
-own cohort, Event A among them.
+own cohort, Event A among them. (This example assumes Sujin does not follow Event B's host. If she did,
+the 2026-08-26 follow-graph exemption above would pull Event B into scoring even at launch, via `w6`.)
 
 **Once Seoul is confirmed dense enough and cohort softens back into a ranking signal,** both events
 would reach scoring, illustrated below:
@@ -445,7 +474,8 @@ personalization step ever becomes worth revisiting before the full learned-embed
 
 - Retrieval query needs to run before ranking for performance at scale (geo radius, time window, city,
   excluding dismissed/RSVPed), not score the full catalog per request. The cohort hard filter (above)
-  belongs in this same retrieval query at launch.
+  belongs in this same retrieval query at launch, unioned with content from users the viewer follows per
+  the 2026-08-26 follow-graph exemption, not a plain cohort-only filter.
 - Interaction-logging pipeline (RSVP, check-in, dismiss/skip, share, tag click) is a day-one
   infrastructure requirement, independent of which ranking approach ships first.
 - Needs a per-event or per-host low-history indicator (an engagement count or similar) to drive the

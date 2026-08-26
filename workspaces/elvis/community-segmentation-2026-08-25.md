@@ -35,6 +35,31 @@ original soft design, rather than disappearing from the algorithm entirely. Elvi
 confirm this transition point when revising the mechanism, flagged here rather than assumed silently,
 worth a direct confirmation next time this comes up.
 
+## Follow-graph exemption, RESOLVED 2026-08-26 (landed via the live 2026-08-26 team sync, synced here)
+
+Not raised in this workspace originally, this came out of the live 2026-08-26 team sync (Elvis, Aakash,
+Deepak) and landed directly as a change-history note on DEC-019 and DEC-020 in `shared/DECISIONS.md`.
+Recorded here to keep this file in sync with the source of truth, not as a new decision made in this
+session.
+
+Elvis's own clarification on that call: the launch cohort hard filter should not apply to people you
+already follow. If you follow someone outside your own cohort (his example: a user's mother, older and
+not in college), her events should rank higher, not be hidden, because the follow relationship already
+implies you know each other and want to see their activity.
+
+**Current resolution:** a followed user's content is exempt from the DEC-019 cohort hard retrieval
+filter. Instead of being excluded pre-scoring like any other out-of-cohort candidate, it is pulled into
+the candidate set through the existing social-proximity ranking signal (w6 in the recommendation-
+algorithm scoring formula) and ranked on that basis. This does not change the filter for anyone you do
+not follow, it only carves out an exception for content from people you already have a direct
+relationship with.
+
+**Relationship to the hard-filter mechanism above:** the two are not in conflict. The retrieval stage
+still excludes out-of-cohort candidates by default; the follow graph is a second, independent input into
+that same retrieval query, unioned with the cohort-filtered set rather than replacing it. A user's
+candidate pool becomes (their own cohort) union (people they follow), then ranking runs over that
+combined pool as before.
+
 ## Cohort basis, RESOLVED 2026-08-25: a composite of life-stage and geography
 
 Not a single axis. A cohort is effectively (city, age/life-stage bucket) together, not age alone and
@@ -127,3 +152,7 @@ the general age/geo cohorts, not a separate trigger or number.
 - No new data model entity needed for this by itself, since the mechanism is a ranking signal, not a
   partition. It becomes a real requirement on whatever the recommendation algorithm's feature/signal
   layer looks like, tracked there instead of duplicated here.
+- Retrieval query needs to union the user's cohort-filtered set with content from users they follow, per
+  the follow-graph exemption above, not just apply the cohort filter alone. This is stated directly in
+  DEC-019's change history as a note to Deepak already, repeated here so this file stays the single place
+  to look for cohort mechanics.

@@ -33,11 +33,13 @@ hard exclusion, but it should weigh far more heavily than an inferred pattern al
 of "substantially greater" is a tuning question, not locked here, consistent with how every other weight
 in this system is being treated.
 
-**Real dependency, flagged, not designed here:** this assumes a general user-blocking capability already
-exists somewhere in the profile or safety system. That has not been explicitly designed as its own
-feature anywhere in this repo yet, it is being treated here as a baseline safety expectation (the kind
-of thing every social product needs) rather than something to scope from scratch in this pass. Worth
-confirming it is actually on the build list, not just assumed.
+**Real dependency, RESOLVED 2026-08-26: general user blocking confirmed as phase-1 scope.** This assumes
+a general user-blocking capability, and Elvis has now confirmed it directly, phase 1, not later, treated
+as a baseline safety expectation for a location-based social product, independent of whether the
+avoid-signal itself is ready to consume it at launch. The blocking feature's own design (what exactly
+gets blocked or hidden, symmetric or asymmetric, interaction with the private-accounts follow/approval
+flow, notification behavior) is not scoped in this pass, needs its own dedicated design pass, this only
+resolves the phase placement.
 
 **Also flagged:** the rating-pattern side of this needs an actual data source, "consistently rates one
 user low" implies a mechanism for rating individual attendees, not just events or hosts. That mechanism
@@ -78,8 +80,9 @@ than assumed into existence by this document.
 
 - Exact magnitude of the avoid-signal penalty, both the inferred-pattern case and the
   explicit-block-amplified case.
-- Whether a general user-blocking feature already exists or needs to be scoped from scratch, flagged
-  above.
+- General user blocking's own design: what exactly gets blocked or hidden, symmetric or asymmetric,
+  interaction with the private-accounts follow/approval flow. Phase placement is resolved above (phase
+  1), the feature itself is not designed, needs its own scoping pass.
 - The attendee-level feedback mechanism itself (thumbs up/down post-event), not designed, needs its own
   scoping pass.
 - Exact scale threshold at which look-alike host affinity becomes computable with real confidence, not

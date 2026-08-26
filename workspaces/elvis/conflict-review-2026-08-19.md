@@ -438,9 +438,20 @@ Later phase:
   Series once that concept needed "approved co-host" as a real permission for who can add events to a
   series, see `event-series-2026-08-25.md`. Kept as a record of the original call and why it changed,
   not deleted, per this repo's own convention for superseded entries.
-- **Apply-to-join with host-defined questions**, as an alternative to simple RSVP. Real added scope
-  (a question builder, an approval queue, applicant notifications) that phase 1's RSVP flow does not
-  need to carry.
+- ~~**Apply-to-join with host-defined questions**~~ **REVISED 2026-08-26: moved to phase 1.5, no longer
+  open-ended "later."** Originally deferred here as an alternative to simple RSVP, real added scope (a
+  question builder, an approval queue, applicant notifications) that phase 1's RSVP flow does not need to
+  carry. Elvis revisited this with a concrete driving use case: organizations and clubs may want to
+  filter who can join a specific event or idea, not just accept anyone who RSVPs. That reasoning still
+  holds for phase 1, RSVP is enough at launch, but it earns a firm phase 1.5 slot rather than staying an
+  undated "later" item, since it is a real, named need for the org-account audience, not a
+  speculative feature. Kept here as a record of the original call and why it changed, per this repo's own
+  convention for superseded entries, full design (question builder shape, approval-queue UX) not scoped
+  in this pass.
+
+**Availability, RESOLVED 2026-08-26: both individual hosts and org accounts.** Elvis confirmed org
+accounts specifically get apply-to-join, alongside individual hosts, not an org-only feature. Closes the
+"individual hosts too, or org-account-only" question left open above.
 - **Sunday Deck** (swipeable event discovery stack). Needs real event density to be a good experience;
   density is explicitly the central go-to-market risk this project is still solving (`PROJECT_STRATEGY.md`),
   so this is a feature that benefits from density existing, not one that helps create it.

@@ -4,6 +4,48 @@
 
 ---
 
+## 2026-08-26 (session 2) - Live team-sync synced, language switch resolved, four new features scoped,
+full onboarding and auth flows detailed; six proposals filed to the merger
+
+Synced the live team-sync's follow-graph cohort-filter exemption into two files. Fully closed out the
+language-switch open items in `internationalization-korea-2026-08-26.md`: cascade confirmed one-time not
+ongoing, day-one full bilingual coverage for WePop's own copy (UGC stays as-authored), notifications follow
+the same profile field, and a new "Give Feedback" entry point landing in a dedicated Admin Portal table.
+Scoped shake-to-create as a new feature (`shake-to-create-2026-08-26.md`), gesture-triggered creation tray,
+suppressed during active input, its own open-only behavior kept explicitly distinct from its settings
+toggle. Reviewed the phase 1/1.5 list and resolved three placements: private accounts into phase 1
+(`private-accounts-2026-08-26.md`, superseding DEC-015's deferral, whole-profile gating with
+follow-request approval), general user blocking confirmed phase 1 (resolving an open DEC-023 dependency),
+apply-to-join given a firm phase 1.5 slot and extended to org accounts too. Scoped org invites as a new
+invite mechanism (`org-invites-2026-08-26.md`), admin-only in phase 1, a deliberate scoped exception to the
+invite-first invariant (organizational identity substitutes for event/idea specificity), landing on a
+discussion board. Assembled the full onboarding flow end to end for the first time
+(`onboarding-flow-2026-08-26.md`): a single shared "Get Started" screen for every entry path (individual,
+org, a new third founder-seed invite type, and organic/waitlist) with an invite-context toast layered on
+for invited paths and a persistent language selector instead of a one-time confirmation toast; a full
+15-step account-creation sequence built from Elvis's own detailed walkthrough; optional email, password,
+and description moved out of onboarding entirely into profile settings with reminder nudges. Reviewed item
+#2 of the phase list, auth, in the same depth (`auth-flow-2026-08-26.md`): multi-credential returning
+login with phone as the durable anchor, biometric quick-unlock as a local session gate, an always-active
+Instagram-style persistent session validated against industry standard with two flagged safeguards
+(iOS Keychain-reinstall handling, server-side revocation capability), and an account-linking flow revised
+mid-session from Elvis's own initial silent-auto-link answer to the actual industry-standard pattern
+(verified-phone login plus explicit opt-in consent) once he asked to align to standard practice instead.
+Filed six real decisions to `proposed-decisions.md` this session, all still awaiting merger: language
+storage/cascade/scope, private accounts into phase 1, apply-to-join's phase 1.5 placement, user blocking
+confirmed phase 1, org invites as a scoped invite-first exception, and the DEC-011 password-field
+reversal (updated in place once its design moved from onboarding to profile settings).
+Open: items #3 onward of the phase 1/1.5 list not yet reviewed in this detailed style; several flagged
+sub-questions remain across every file touched this session (username-change login continuity, multi-device
+session management, and the customer-service recovery workflow on auth; founder-seed-invite copy and
+reminder cadence on onboarding); none of the six proposals filed this session, or any filed previously,
+have actually been merged yet. Item 10 still hasn't actually been sent to Aakash, not touched this session.
+No `shared/` edits made.
+
+**Detail:** [session_log_2026-08-26_session2.md](session_log_2026-08-26_session2.md)
+
+---
+
 ## 2026-08-26 - Embeddings/tagging pipeline, robustness roadmap, internationalization, and Korea-user
 detection resolved; first proposal filed to the merger
 Second start-session of the visible stretch (first re-verified Aakash's large DEC-010 through DEC-025
