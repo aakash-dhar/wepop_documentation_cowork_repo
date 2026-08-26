@@ -28,7 +28,11 @@ new decision.
 
 **Ranking formula (home feed and Explore list view only):**
 
-`score = w1*tag_and_keyword_overlap + w2*cohort_match + w3*recency + w4*geo_distance + w5*popularity + w6*social_proximity + w7*new_host_boost + w8*group_composition_fit`
+`score = w1*tag_and_keyword_overlap + w2*cohort_match + w3*recency + w4*geo_distance + w5*popularity + w6*social_proximity + w7*new_host_boost + w8*group_composition_fit + w9*embedding_similarity`
+
+`w9`, embedding similarity, added 2026-08-26, see the content-embeddings section below. It runs
+alongside `w1`, not replacing it, exact tag/keyword overlap stays fast and explainable, embedding
+similarity catches semantically related content that shares no exact words.
 
 Cohort match (`w2`) only participates in this formula once a city has been manually confirmed dense
 enough that the hard filter above has relaxed. Before that point it isn't a weighted term, it's already
@@ -47,6 +51,10 @@ implicitly chosen an area via the map.
 **Signals still pending real data, not usable at launch:** likes/interest, dwell time, ratings on hosts
 and events, attendee-level thumbs up/down (not yet a designed feature), look-alike collaborative
 signals, friends-of-friends. See the future signal roadmap section below.
+
+**Content embeddings and automated tagging, added 2026-08-26:** unlike the signals just listed, this
+one is pulled into launch, since it only needs an item's own text, not accumulated user behavior. See
+the dedicated section below for the full pipeline.
 
 ## Surfaces in scope, RESOLVED 2026-08-25: home feed and explore, now
 
@@ -81,6 +89,8 @@ learned ranker can slot in later without a rebuild:
 
 - Tag and keyword overlap (DEC-005 extensible tag list, self-declared, plus keywords extracted from an
   item's title and description text, matched against the user's own interest profile, see below).
+- Embedding similarity (added 2026-08-26), a separate signal from tag/keyword overlap, see the content
+  embeddings section below.
 - Geo distance (DEC-003).
 - Social graph proximity, follows and mutuals (DEC-006).
 - Invite-chain proximity.
@@ -130,6 +140,52 @@ the system has inferred about a given piece of content or a given user, for audi
 though this never surfaces in the end-user product. Flagged for the existing legal-consult action item
 (`comms/todos.md` #4) that this kind of behavioral inference typically needs general disclosure in a
 privacy policy ("we infer interests from usage"), even without exposing the specific inferred tags.
+
+## Content embeddings and automated tagging, RESOLVED 2026-08-26: the actual process
+
+Elvis asked what the actual process is for generating the hidden internal tags and embeddings, since it
+cannot be manual. Two distinct mechanisms, worth separating clearly: discrete tags are human-readable
+strings; embeddings are dense numeric vectors used for similarity math, not human-readable at all. Most
+real recommenders (Netflix, Spotify, Pinterest) use both together, and this is mature, commodity
+technology at this point, not something exotic to build.
+
+**Pipeline for content (events, ideas, moments), RESOLVED:**
+1. Trigger: on creation, and again on any edit to the title or description.
+2. Embedding: the title-plus-description text is passed through a text embedding model, either a hosted
+   API or a small self-hosted model, producing a vector stored alongside the item.
+3. Tags: the same text is passed through an LLM-based extraction step, resolved over simpler
+   keyword/term-frequency extraction, that outputs relevant tags drawn from the existing DEC-005
+   vocabulary plus new candidate terms. WePop already has AI-assisted text tooling per DEC-007's
+   carve-out (text prompt-to-create), so this is not a new category of AI use for the product, just a
+   new application of it.
+4. Both get stored. Admin visibility, per the earlier internal-visibility resolution, looks different
+   for each: tags are literally readable strings; an embedding is inspected indirectly, an admin tool
+   showing "the most similar items to this one" as a sanity check, not the raw vector values.
+
+**Launch timing, RESOLVED:** pulled into launch scope, not deferred with the rest of the future signal
+roadmap below. Generating an embedding or extracting tags from an item's own text needs no accumulated
+user behavior, so it does not carry the cold-start dependency that collaborative filtering, look-alike
+signals, and per-user learned weighting elsewhere in this doc all do. This is a genuinely different
+category from "later phase, needs real data."
+
+**Pipeline for users, RESOLVED:** a different shape, since a meaningful user profile does need some
+signal to work from. Seeded immediately at onboarding from explicit signals already available (DEC-005
+tags, university affiliation, any profile description text), then refined by a periodic batch job, not
+computed per request, that recomputes a user's embedding from the embeddings of content they have
+positively engaged with, weighted toward recency and engagement strength. This is the concrete consumer
+of the day-one interaction-logging pipeline already required elsewhere in this doc: that log is the raw
+material, this batch job is what turns it into a usable profile over time.
+
+**Signal relationship, RESOLVED:** embedding similarity runs alongside the existing exact tag/keyword
+overlap signal in the formula above (`w9`, separate from `w1`), not replacing it. The exact-match signal
+stays fast, cheap, and easy to explain when someone asks why they were shown something; embedding
+similarity catches semantically related content the exact-match approach misses entirely, a "sunrise
+hike" and a "morning trail run" scoring as related despite sharing no exact words.
+
+**Cost, flagged, not modeled here:** both the embedding call and the LLM-based tag extraction carry a
+real, if typically small, per-item cost. Worth a short cost model before committing, the same kind of
+exercise already done for the org tier's media infrastructure, not attempted here since it depends on
+actual provider pricing and expected item volume.
 
 ## Future signal roadmap, once real usage data exists
 
@@ -198,6 +254,57 @@ RSVPs, check-ins, dismiss and skip actions, shares, and tag clicks should be log
 though the rule-based scoring function above does not consume any of it yet. This is what makes a
 future learned ranking model possible without months of catch-up once there is enough real interaction
 data to train on. Treated as infrastructure, not a feature, should not wait for the ML phase to start.
+
+## Robustness roadmap and day-1 sequencing, RESOLVED 2026-08-26
+
+Elvis asked what else should be considered to build a robust recommendation system, and what belongs on
+day 1 versus later. Several real gaps surfaced that were not previously covered in this doc: impression
+and position logging (not just action logging), a way to test changes before trusting them, resistance
+to gaming the new-host boost and the avoid-signal, deletion handling for inferred profiles, negative
+feedback suppression beyond single-item dismissal, output diversity, and a couple of non-functional
+concerns (latency once embedding similarity is live, session-stable ordering).
+
+**Day 1, RESOLVED: basic experimentation capability.** Elvis's explicit priority. Concretely, a way to
+randomly bucket users into groups per experiment (a control group and one or more test groups), tag
+which bucket a given session falls into, and log outcomes by bucket, not a full experimentation
+platform, just enough to compare before-and-after on a real metric rather than tuning weights by feel.
+This is what makes the "tune weights after launch" plan (Not yet decided, above) an actual measured
+process instead of guessing. Needed before the post-launch weight-tuning pass, not after it.
+
+**Deferred, explicit tradeoff acknowledged: impression/position logging and deletion handling.**
+Sequenced after experimentation capability, Elvis's own call. Worth restating the tradeoff already
+flagged for the record: impression and position data cannot be reconstructed retroactively once
+launched without them, so choosing to sequence this after experimentation capability is a deliberate,
+informed choice, not an oversight, kept here as the record of that choice.
+
+**Anti-gaming, REVISED 2026-08-26: account integrity, not a separate rate-limiting system.** First
+raised as a candidate day-1 build (rate limits and anomaly detection on signal-contributing actions).
+Elvis's actual answer addresses the same risk a different way, through account-model integrity rather
+than a bolt-on detection system, kept here per this repo's own convention for superseded framing.
+
+**Current resolution:** one personal account per user, enforced initially through phone-number
+uniqueness (phone verification is already required per DEC-011), with a move to ID verification planned
+eventually for stronger enforcement. A user may create and own multiple business/Organization accounts,
+but every Org account is tied to and traceable back to a specific personal user account, not anonymous
+or freely creatable. Ratings and reviews are already restricted to checked-in attendees only (DEC-014),
+reaffirmed here specifically as an anti-gaming mechanism, not just an authenticity one: it substantially
+raises the cost of review-bombing, since it requires physically attending an event, not just creating an
+account.
+
+**Residual risk, flagged, not solved here:** phone-number uniqueness is a real deterrent, not an
+absolute one (a determined actor can obtain multiple numbers), which is exactly why ID verification is
+already the planned eventual hardening step, not treated as sufficient forever. This account-integrity
+approach is the primary defense at launch, replacing rather than complementing a separate detection
+system, a real and deliberate scope choice, not an oversight.
+
+**Near-term and later items, captured so nothing raised gets lost, not designed in this pass:**
+negative-feedback suppression by content type (not just excluding the one dismissed item), a diversity
+pass on the final ranked list (avoiding a monotonous feed of near-identical results), a lightweight
+"why you're seeing this" explanation label, and formal offline evaluation metrics (the kind that need
+real scale to compute meaningfully, bucketed with the rest of the future signal roadmap). Two
+non-functional notes worth keeping in mind, not new work: a latency budget once embedding similarity
+(a real per-request cost) is live, and keeping a user's feed order stable within a session rather than
+visibly reshuffling on every refresh.
 
 ## Illustrative scoring walkthrough, added 2026-08-25
 
@@ -322,11 +429,17 @@ personalization step ever becomes worth revisiting before the full learned-embed
   community segmentation's cohort-weighting relaxation, or needs its own separate number.
 - Whether cohort match actually reverts to a ranking signal once a city softens, or is dropped from the
   algorithm at that point, see the same open item in `community-segmentation-2026-08-25.md`.
-- The keyword-extraction method for title and description text (simple term matching versus something
-  more sophisticated) is not specified, an implementation detail for Deepak to choose, not a product
-  decision.
 - Whether the Explore map view's cohort restriction loosens once a city densifies, or stays permanent
   regardless of density. Explicitly deferred by Elvis.
+- Exact embedding model/provider choice, and exact tag-extraction prompt design, are implementation
+  detail for Deepak, not specified here. Method is resolved (LLM-based extraction, a stored embedding
+  per item), the specific model/vendor is not.
+- Cost model for the embedding and tag-extraction calls, flagged but not built in this pass, worth doing
+  before committing, similar to the earlier media infrastructure cost model.
+- Exact shape of the day-1 experimentation capability (bucketing method, how many concurrent experiments
+  it needs to support) is not specified, an implementation detail once Deepak scopes it.
+- Timing for the move from phone-number uniqueness to ID verification is not specified, "eventually,"
+  not tied to a phase or trigger condition.
 
 ## Flags for Deepak, implementation, not decided here
 
@@ -356,3 +469,18 @@ personalization step ever becomes worth revisiting before the full learned-embed
   implementation detail, not specified here.
 - Map view's candidate set should be retrievable without running the ranking stage at all, since it is
   not scored, only list view invokes the ranking stage on that same candidate set.
+- Needs vector-capable storage for embeddings (a vector column/index on the existing database, or a
+  dedicated vector store), plus an LLM API integration for the tag-extraction step, both triggered on
+  item create/edit.
+- Needs a periodic batch job (not real-time) that recomputes each user's embedding from the embeddings
+  of content they have positively engaged with, consuming the day-one interaction-logging pipeline.
+- Needs a lightweight admin tool to inspect embeddings indirectly (nearest-neighbor lookup, "show items
+  most similar to this one") since the raw vector values are not directly readable the way tags are.
+- Needs an experimentation/bucketing capability (day-1 priority): assign users to a control or test
+  group per experiment, persist that assignment, and tag logged outcomes with the bucket, so a weight or
+  algorithm change can be measured, not just deployed on faith.
+- Needs a phone-number uniqueness constraint enforced at the account layer (one personal account per
+  phone number), and every Organization account needs a traceable owner reference back to a specific
+  personal account, not created independently of one. Both are platform/auth-layer requirements that
+  happen to double as this algorithm's primary anti-gaming defense, not purely an algorithm concern,
+  touches DEC-011 as well as this doc.

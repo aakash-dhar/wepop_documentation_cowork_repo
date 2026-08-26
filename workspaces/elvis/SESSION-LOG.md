@@ -4,6 +4,44 @@
 
 ---
 
+## 2026-08-26 - Embeddings/tagging pipeline, robustness roadmap, internationalization, and Korea-user
+detection resolved; first proposal filed to the merger
+Second start-session of the visible stretch (first re-verified Aakash's large DEC-010 through DEC-025
+merge against the actual repo state rather than assuming the earlier briefing still held, catching one
+real stale-doc discrepancy in CLAUDE.md section 8, flagged rather than fixed unilaterally). Elvis then
+worked through four linked topics. Resolved how embeddings and hidden internal tags actually get
+generated, since Elvis correctly identified this cannot be manual
+(`recommendation-algorithm-2026-08-25.md`): a create/edit-triggered pipeline (embedding model call plus
+LLM-based tag extraction) for content, pulled into launch scope since it needs no behavioral history,
+versus a periodic batch job refining user-side embeddings from engagement data, deferred until real usage
+exists. Scoped a day-1-versus-later robustness roadmap: basic experimentation/bucketing capability
+resolved for day 1, impression/position logging and deletion handling explicitly deferred by Elvis
+despite the retroactive-data-loss tradeoff already being explained, and anti-gaming reframed away from a
+rate-limiting system toward account integrity (one personal account per phone number, ID verification
+later, Org accounts always traceable to a specific user, reviews already gated to checked-in attendees).
+Then scoped internationalization and Korea-specific concerns in a new file
+(`internationalization-korea-2026-08-26.md`), grounded in real research rather than assumption: full i18n
+architecture from day one with on-demand UGC translation explicitly deferred, a bilingual tag vocabulary,
+a flexible full-name field for Korean naming order, and on the Korea side a genuine gap found in DEC-010's
+Stripe-only payments plan (escalated to `proposed-hotsheet.md`, the first proposal filed to the merger in
+over three sessions), Bumble's actual Korea ID-verification flow strengthening the already-provisional
+DEC-012 age gate, a resolved plan to adopt Korea's carrier-based PASS verification, and three concrete
+PIPA points tied directly to the embedding/tag layer. Closed with a Korea-user-detection design that
+reframed "is this user in Korea" into four independent signals rather than one new detection mechanism:
+timezone and language read from the device with a settings-level manual override on each (Elvis
+confirmed both), PASS eligibility checked directly against the phone number's own carrier country code
+rather than DEC-012's blended value, payment options driven by the org's own billing setup, and a
+redacted-ID fallback path for Korea-based users without a Korean number.
+Open: `proposed-decisions.md` still has nothing filed despite several launch-scoped resolutions this
+session (embeddings/tagging pipeline, day-1 experimentation capability, PASS adoption plan) that read as
+real decisions, not just workspace notes, this gap is now four-plus sessions deep even though the hotsheet
+channel was used for the first time. Item 10 still has not actually been sent to Aakash. No `shared/`
+edits made.
+
+**Detail:** [session_log_2026-08-26.md](session_log_2026-08-26.md)
+
+---
+
 ## 2026-08-25 (session 2) - Community segmentation, recommendation algorithm, and group dynamics scoped
 Elvis raised two new strategic topics unprompted: how to handle very different early cohorts sharing a
 city (a college student and a 40s professional joining Seoul around the same time), and the
