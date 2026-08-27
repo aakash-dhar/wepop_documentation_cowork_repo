@@ -169,6 +169,12 @@ though this never surfaces in the end-user product. Flagged for the existing leg
 (`comms/todos.md` #4) that this kind of behavioral inference typically needs general disclosure in a
 privacy policy ("we infer interests from usage"), even without exposing the specific inferred tags.
 
+**Concrete specification, added 2026-08-27:** `categories-taxonomy-2026-08-27.md` section 9 (backend tag
+layer) is this same mechanism given a real implementation, a rules engine plus AI inference over
+title/description plus behavioral signals, with an illustrative tag vocabulary. That doc's §9 and this
+section describe one system, not two, point Deepak at both together rather than building from either
+alone.
+
 ## Content embeddings and automated tagging, RESOLVED 2026-08-26: the actual process
 
 Elvis asked what the actual process is for generating the hidden internal tags and embeddings, since it

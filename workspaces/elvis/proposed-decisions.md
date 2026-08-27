@@ -8,178 +8,174 @@
 **Topic:** Language preference storage, detection cascade, and scope
 **Type:** Technical
 **Decision:** The language setting is a profile field, not a device-only setting, so it syncs across a
-user's devices. Its initial value comes from a fallback cascade run once, at account setup: device
-language setting first, then app/Play Store region if that signal is unavailable or ambiguous, then
-phone number as a last resort, mirroring the shape of DEC-012's own age/country cascade. This is a
-one-time read, not an ongoing check, the app does not monitor the device's language setting afterward. A
-manual override in profile settings always takes precedence over the cascade, both at first set and any
-time after. Notifications (push, SMS, email) follow this same profile field rather than the device/OS
-locale independently. Scope is split explicitly in two: every WePop-authored string (chrome, system
-messages, transactional text) ships fully bilingual, selected by this field; user-generated content
-(event titles/descriptions, moment captions, chat) renders exactly as authored with no translation
-pipeline at launch, on-demand translation deferred to a later phase per the existing UGC deferral already
-in DEC-027's source doc.
+user's devices. Its initial value comes from a fallback cascade at first launch: device language setting
+first, then app/Play Store region if that signal is unavailable or ambiguous, then phone number as a
+last resort, mirroring the shape of DEC-012's own age/country cascade. A manual override in profile
+settings always takes precedence over the cascade. Notifications (push, SMS, email) follow this same
+profile field rather than the device/OS locale independently. Scope is split explicitly in two: every
+WePop-authored string (chrome, system messages, transactional text) ships fully bilingual, selected by
+this field; user-generated content (event titles/descriptions, moment captions, chat) renders exactly as
+authored with no translation pipeline at launch, on-demand translation deferred to a later phase per the
+existing UGC deferral already in DEC-027's source doc.
 **Reasoning:** DEC-027 only specified device-detection-plus-manual-switch; it did not specify storage
-model, initial-detection fallback order, whether it re-checks the device over time, or whether
-notifications follow the same setting. A profile field avoids a real "I lost my language setting"
-complaint on a new device or reinstall, and reusing the DEC-012 cascade shape (including the same
-set-once, not re-checked, behavior) keeps the codebase consistent rather than inventing a second pattern.
-Splitting WePop-copy from UGC scope prevents the i18n coverage requirement from silently expanding to
-content translation, which was deliberately deferred.
+model, initial-detection fallback order, or whether notifications follow the same setting. A profile
+field avoids a real "I lost my language setting" complaint on a new device or reinstall, and reusing the
+DEC-012 cascade shape keeps the codebase consistent rather than inventing a second pattern. Splitting
+WePop-copy from UGC scope prevents the i18n coverage requirement from silently expanding to content
+translation, which was deliberately deferred.
 **Impact:** Adds a profile-level language field and a first-launch cascade to the auth/onboarding flow
-alongside DEC-012's existing cascade logic, no background job or listener needed since the read is
-one-time. Notification pipeline (push/SMS/email) needs to read this field rather than infer language
-independently. Does not change DEC-027's core detect-plus-switch design, refines its implementation. Both
-English and Korean versions of every WePop-authored string ship together on day one, translation is not a
-phased rollout, closing the earlier open question about a fallback for an untranslated string since no
-gap is expected. A separate issue-reporting feature (users can report issues they encounter) was raised
-as the backstop for anything that slips through despite that commitment, its own scope is not yet
-confirmed and is not part of this proposal, tracked as a new open item in the source doc.
+alongside DEC-012's existing cascade logic. Notification pipeline (push/SMS/email) needs to read this
+field rather than infer language independently. Does not change DEC-027's core detect-plus-switch design,
+refines its implementation. Still open, not resolved by this proposal: fallback behavior for a
+WePop-authored string with no Korean translation yet at ship time (English fallback vs blocking launch on
+full coverage), and whether the profile field re-reads device signals after initial set or is captured
+once like DEC-012's age value. Both flagged in the source doc for a future pass.
 **Relates to / Supersedes:** Refines DEC-027. Reuses the cascade pattern from DEC-012. Does not supersede
 either.
 **Status:** Awaiting merger
 
 ## DEC-NNN (PROPOSED)
-**Date:** 2026-08-26
+**Date:** 2026-08-27
 **Proposed by:** Elvis
-**Source:** `workspaces/elvis/private-accounts-2026-08-26.md`
-**Topic:** Private accounts pulled into phase 1
-**Type:** Strategic
-**Decision:** Private accounts, previously deferred (DEC-015, `conflict-review-2026-08-19.md` item 4),
-move into phase 1. A private account gates the whole profile (moments, event-attended history, upcoming
-RSVPs), not just moments as originally scoped, restricted to approved followers. Following a private
-account creates a pending follow-request that the account owner must accept or decline, replacing the
-immediate follow that public accounts still use. A private account is distinct from a private event, the
-account setting gates the profile view only, an event's own visibility is set independently per DEC-015.
-**Reasoning:** Elvis's own call, made once the real scope this needs (follow-request-and-approval
-machinery) was priced out clearly, this was the specific reason it was deferred originally, not a change
-in appetite for the feature itself. Whole-profile gating rather than moments-only matches the private-
-account behavior users already expect from comparable apps, a moments-only carve-out would look
-incomplete and confusing (a stranger blocked from moments but still able to see full RSVP history would
-not read as private).
-**Impact:** Adds new machinery: a follow-request state distinct from an active follow, an approval
-queue/inbox for the account owner, notifications in both directions. Composes with DEC-015's most-
-restrictive-wins moment-visibility principle without conflict. Flags a consistency review against the
-DEC-006/DEC-017 anti-stalking pre-join visibility rules (designed independently of account privacy, not
-yet confirmed to compose correctly). Still open, not resolved by this proposal: what a non-follower
-actually sees on a private profile (stub page design), whether private-account status changes anything
-about discovery/recommendation surfaces (DEC-020) beyond the profile page itself, exact approval-queue
-UX, and default-state/grandfathering assumptions (public by default, existing followers kept on switch to
-private) that are inferred, not explicitly confirmed. All flagged in the source doc for a future pass.
-**Relates to / Supersedes:** Supersedes the phase-1 deferral of private accounts recorded in DEC-015 and
-`conflict-review-2026-08-19.md` item 4. Does not change DEC-015's moment-visibility model itself, extends
-it to account level.
+**Source:** `workspaces/elvis/city-location-registration-2026-08-27.md`, revising DEC-019
+**Topic:** Cohort formula simplified to student-vs-not, city removed as a cohort dimension
+**Type:** Product
+**Decision:** DEC-019's cohort key changes from `(city, age/life-stage bucket)` to a single binary value,
+university-affiliated or not, computed the same way everywhere rather than per-location. Location is
+removed from the cohort formula entirely. Geographic event relevance is unaffected by this change and was
+never actually a city hard-match to begin with, DEC-020's retrieval stage already uses a distance radius
+(home feed) or the live map viewport (Explore), not a city filter; this proposal just confirms that
+mechanism was never part of what DEC-019's cohort was solving for, and gives it a precise anchor point (see
+the DEC-016 refinement proposal below).
+**Reasoning:** Elvis's direct call, made while reviewing the home-location-at-registration flow: in
+practice phase-1 cohort is doing its real work on the student/not-student split, not the geographic one.
+DEC-019's own cold-start reasoning (a college student and a 40-something joining the same city) was
+protecting against the age/life-stage collision specifically; location riding along in the same key was
+never the load-bearing part of that protection.
+**Impact:** DEC-019's per-city manual density review (the mechanism that softens cohort from a hard filter
+into a ranking signal once a city is confirmed dense enough) loses its per-location dimension along with
+location leaving the formula; that review becomes a single global call instead of a city-by-city PM
+decision. Simpler to own, at the cost of the ability to soften the filter in one dense city ahead of
+others. The retrieval-filter mechanism itself, the university three-signal check (self-declared, school
+email domain, org membership), and DEC-020's existing radius/viewport-based geographic relevance are all
+unaffected in mechanism, though the latter gains a real anchor point for the first time via the DEC-016
+refinement below. Deepak flag: if any per-city density-review interface work has started against the old
+per-city shape, hold it pending this merger.
+**Relates to / Supersedes:** Revises DEC-019. Interacts with DEC-020 (recommendation architecture, whose
+`geo_distance` anchor point this affects) and the new DEC-016 refinement proposal below (where the location
+value itself is captured).
 **Status:** Awaiting merger
 
 ## DEC-NNN (PROPOSED)
-**Date:** 2026-08-26
+**Date:** 2026-08-27
 **Proposed by:** Elvis
-**Source:** `workspaces/elvis/conflict-review-2026-08-19.md` item 9 (revised)
-**Topic:** Apply-to-join given a firm phase 1.5 placement
-**Type:** Strategic
-**Decision:** Apply-to-join with host-defined questions moves from an open-ended "later" placement (DEC-024)
-to a firm phase 1.5 slot, available to both individual hosts and org accounts, not org-only.
-**Reasoning:** Elvis's own driving use case: organizations and clubs may want to filter who can join a
-specific event or idea rather than accept anyone who RSVPs, a real, named need for the org-account
-audience, not a speculative feature. Phase 1 stays on plain RSVP, this reasoning does not change, simple
-RSVP is still sufficient at launch and apply-to-join remains real added scope (a question builder, an
-approval queue, applicant notifications) that phase 1 does not need to carry. It earns a dated phase 1.5
-slot rather than staying in the undifferentiated "later" bucket alongside items like Sunday Deck and
-Wrapped that are waiting on density or history, since org demand does not depend on either of those.
-**Impact:** Moves this item's row on the scope matrix from "later, deferred" to "later (1.5), decided."
-Confirms availability spans both individual hosts and org accounts. Full design (question builder shape
-and fields, approval-queue UX) is not scoped by this proposal, needs its own dedicated pass when phase 1.5
-work begins.
-**Relates to / Supersedes:** Refines DEC-024's phase placement for this one item. Does not change DEC-024's
-other phase-1/later calls (waitlist auto-promote, org ownership transfer, org track-record module stay
-phase 1; Sunday Deck, Wrapped, memories resurfacing stay later, unaffected).
+**Source:** `workspaces/elvis/city-location-registration-2026-08-27.md`, refining DEC-016
+**Topic:** Home-location input mechanism, neighborhood-level granularity, and mutability
+**Type:** Design + Technical
+**Decision:** Four changes to DEC-016, which only set policy (required, city-level, no forced GPS) and left
+mechanism open. (1) Input reuses the DEC-003 event-location map picker (search plus tap), not a
+typed/autocomplete city-name field; unrestricted (anywhere in the world) at onboarding only. (2)
+Granularity is revised down from city to neighborhood-scale (roughly dong-level in Korea, or a
+neighborhood/postal-code-sized area elsewhere, comparable to a US zip code); city-level proved too coarse
+to give DEC-020's `geo_distance` ranking signal real accuracy. The confirmed map point is immediately
+reverse-geocoded to a canonical neighborhood ID, that area's centroid, and its country code, and the
+precise tapped coordinate is discarded, never persisted, consistent with the anti-stalking stance in
+DEC-006/DEC-017; a fallback chain (neighborhood, then postal code, then city) covers markets without a
+clean neighborhood geocoding tier. (3) After onboarding, the home location can only be updated by granting
+device location permission and selecting current location, a live GPS read that becomes the new stored
+value through the same reverse-geocode-and-discard flow; the unrestricted map picker does not reopen for a
+later edit. There is deliberately no fallback for a user who never grants location permission, Elvis's
+explicit call against my recommendation of a support-ticket path matching DEC-012's pattern; that user has
+no way to ever update their home location. (4) The stored home location is only the *default* anchor for
+home feed and Explore: when device GPS permission is granted, live current location is used instead, pulled
+on-demand per screen load (not continuous background tracking) and never persisted, with a manual refresh
+action on the home feed to explicitly re-pull it.
+**Reasoning:** Reusing DEC-003's picker avoids building a second location-selection UI. City-level
+granularity was revised to neighborhood after Elvis caught that a city-wide bucket would starve
+`geo_distance` ranking of real precision. Restricting post-onboarding edits to a GPS-confirmed current-
+location read (rather than reopening the free picker) is deliberate anti-gaming design, not just a
+mutability choice, it closes the loophole where a user could otherwise defeat the country-based Explore
+gate (separate proposal below) by simply dropping a pin wherever they want free access to. Preferring live
+GPS over the stored default when granted exercises the contextual-permission path DEC-016 already built (it
+names Explore's map as one example value point); keeping the GPS read ephemeral rather than persisted keeps
+this consistent with why the stored default itself was deliberately kept coarse in the first place.
+**Impact:** Location input needs a canonical neighborhood-level ID, centroid, and country code underneath
+the display string, which becomes the anchor point for DEC-020's retrieval radius and `geo_distance`
+ranking, a gap that doc never actually specified before this. A geocoding fallback chain is needed for
+markets without a clean neighborhood tier. Every home-feed or Explore retrieval call now needs request-time
+anchor resolution (live GPS if granted, else stored default) rather than a single cached value, plus a
+fallback path for GPS read failures so a feed load never hard-fails on a location error. Note: an earlier
+version of this proposal included a separate "browsing city" override; that's retired in favor of the
+country-gate proposal below, which covers the same underlying need (previewing somewhere else) without a
+redundant second mechanism.
+**Not yet decided, flagged for a follow-up pass, not resolved by this proposal:** whether Explore needs its
+own manual refresh distinct from the home feed's, and whether a user who granted GPS should still be able
+to opt back into the coarser stored default rather than always getting live location.
+**Relates to / Supersedes:** Refines DEC-016. Reuses DEC-003. Interacts with the DEC-019 cohort-formula
+revision above (the neighborhood value captured here anchors DEC-020's geographic ranking directly) and the
+Explore country-gate proposal below (this entry's mutability restriction is load-bearing for that
+proposal's integrity).
 **Status:** Awaiting merger
 
-## DEC-NNN (PROPOSED)
-**Date:** 2026-08-26
+## DEC-NNN (PROPOSED, NEEDS AAKASH'S EXPLICIT REVIEW, NOT ROUTINE MERGER)
+**Date:** 2026-08-27
 **Proposed by:** Elvis
-**Source:** `workspaces/elvis/group-dynamics-2026-08-25.md`
-**Topic:** General user blocking confirmed as phase-1 scope
-**Type:** Strategic
-**Decision:** General user blocking, previously an unresolved dependency of DEC-023's avoid signal with no
-phase placement of its own, is confirmed as phase-1 scope.
-**Reasoning:** Basic user blocking is a baseline safety expectation for a location-based social product
-that engineers real-world meetups between strangers, not a feature that should wait on the recommendation
-algorithm's own readiness to consume it. Elvis's own call, independent of whether the avoid-signal itself
-has enough data to use it at launch.
-**Impact:** Resolves the "unbacked, needs a decision" item on the scope matrix (general user-blocking
-feature, phase-1 safety baseline versus later). The blocking feature's own design, what exactly gets
-blocked or hidden, symmetric or asymmetric, interaction with the new private-accounts follow/approval flow
-(a separate proposal in this same file), is not scoped here, needs its own dedicated design pass. DEC-023's
-avoid signal keeps its existing dependency note, now resolved to phase 1 rather than an open question.
-**Relates to / Supersedes:** Resolves an open item flagged in DEC-023, does not change DEC-023's own
-decision text. Relates to the private-accounts proposal above (follow/approval is a related but distinct
-mechanism from blocking).
-**Status:** Awaiting merger
+**Source:** `workspaces/elvis/city-location-registration-2026-08-27.md`, extends DEC-018's commercial
+structure
+**Topic:** Explore content gated by country, individual-premium perk for trip planning
+**Type:** Product / Commercial (financials-owner territory per DEC-018's own governance note)
+**Decision:** Explore's map and search stay fully unrestricted for everyone, no gating on panning or
+searching to anywhere in the world. What's gated is content detail: for a free user, events in a country
+other than their current-location country (live GPS if granted, else the stored home-location default,
+same signal defined in the DEC-016 refinement above) render as an aggregate teaser only, a clustered count
+with no pin-level or listing detail. Events in the same country as current location render in full.
+Individual-tier premium (DEC-018) lifts this gate entirely. Stated use case: browsing another country's
+events before a trip there.
+**Reasoning:** Reuses the existing "aggregate visible, individual detail gated" pattern from DEC-006/DEC-017
+rather than inventing a new mechanic. Gating content detail rather than the map interaction itself avoids
+the map reading as broken. Country-level, not a distance radius, both matches the actual use case (trip
+planning) and avoids per-market boundary-data inconsistency. The gate compares against *current* location,
+not a fixed home value, so a user physically present in another country (GPS-confirmed) sees it in full,
+they're not previewing, they're there; the flip side, a traveling free user correspondingly loses full
+access to home-country content for the duration unless they disable GPS, is a deliberate, examined
+consequence of that single rule, not a bug to special-case around.
+**Impact:** Requires a distinct, separate country field from DEC-012's locked legal-compliance country
+(different purpose, different mutability, must not be conflated in the data model). Server-side enforcement
+is the actual gate, the client map is never the authority. Depends on the DEC-016 refinement's mutability
+restriction (current-location-only post-onboarding edits) to prevent a free user from trivially defeating
+the gate by re-picking a foreign home location.
+**Governance flag, not resolved by this proposal:** DEC-018 explicitly states "paid ranking/discovery boost
+is explicitly locked out," reasoning that it would cut against the fairness/anti-stalking moat. My own read
+is that this proposal differs in kind, DEC-018's concern appears to be same-market competitive fairness
+(paid users outranking free users on the same local events), while this gate never touches ranking or
+visibility within a user's own market, only access to a non-competing market they don't live in. That
+reading is not authoritative. This needs Aakash's explicit sign-off against DEC-018's own rule before it's
+treated as a normal awaiting-merger proposal, flagged here rather than silently assumed compatible.
+**Relates to / Supersedes:** Extends DEC-018. Interacts with the DEC-016 refinement above (shares the
+current-location signal and depends on its mutability restriction) and is explicitly distinct from DEC-012
+(must not share a country field or concept).
+**Status:** Awaiting Aakash's explicit review (DEC-018 tension), not routine merger
 
 ## DEC-NNN (PROPOSED)
-**Date:** 2026-08-26
+**Date:** 2026-08-27
 **Proposed by:** Elvis
-**Source:** `workspaces/elvis/org-invites-2026-08-26.md`
-**Topic:** Org invites, admin-only in phase 1, a scoped exception to invite-first
-**Type:** Strategic
-**Decision:** Org accounts can invite users directly, not only through individual members. Phase 1: only
-an org's admin(s) can send org invites, no member-suggestion or review-queue machinery at launch. Org
-invites are a second, distinct invite type from the existing person-to-person invite, not tied to a
-specific event or idea, unlike every individual invite, which keeps working exactly as it does today. An
-org invite must display who is inviting and what org it is for, so the invitee gets the same concrete,
-credible context an event-tied invite provides for free. Org-invited members land with access to a
-discussion board on join, the same pattern events and ideas already have (DEC-009, DEC-013), full
-organizational-account design deferred to a dedicated later pass.
-**Reasoning:** A real, named early-growth path: convincing an existing club's president to bring their
-whole membership onto WePop at once, rather than relying only on one-at-a-time member invites. The
-invite-first invariant's actual purpose is giving the invitee a credible, non-spam reason to trust the
-invite, an event does that by being specific; a real club president inviting an actual member of their
-real club satisfies the same purpose through the existing relationship and community, not through an
-event. Forcing an admin to invent a first event or idea unilaterally just to unlock invites creates
-friction and skips the point, a newly onboarded club should plan its first activity together, not have it
-decided for them. Admin-only sending in phase 1 and org accounts launching with university clubs first
-(not yet-designed promotional accounts) both narrow the reopened spam surface this exception creates,
-worth revisiting once promotional/business org accounts are designed later.
-**Impact:** Adds a second invite type alongside the existing event/idea-tied invite. Needs an invite
-record that carries inviter and org identity for display. Org-invited members get discussion-board access
-on join, reusing the existing event/group chat mechanism's pattern rather than a new chat system. Confirms
-university-affiliated cohort assignment (DEC-019) already covers these members automatically via the
-existing Org-profile-affiliation signal, no new cohort logic needed. Later phase, direction only: an
-org-level configurable invite policy (admin-only, suggest-and-review, or open to all members), not
-designed here.
-**Relates to / Supersedes:** A scoped exception to the invite-first invariant recorded in CLAUDE.md
-section 8, individual invites are unaffected, this applies to org-issued invites specifically. Relates to
-DEC-019 (cohorts), DEC-009/DEC-013 (event/group chat, the discussion-board pattern reused here).
-**Status:** Awaiting merger
-
-## DEC-NNN (PROPOSED)
-**Date:** 2026-08-26
-**Proposed by:** Elvis
-**Source:** `workspaces/elvis/onboarding-flow-2026-08-26.md`, "Profile completion, moved out of onboarding"
-section
-**Topic:** Optional password field, additive auth method, reverses DEC-011's deferral
-**Type:** Technical
-**Decision:** An optional password field is added as an additive login method alongside the existing
-social-login-plus-phone auth model, not a replacement for either. A user can set a password whenever they
-choose, or leave it unset and continue relying on social/phone sign-in only. It lives in profile settings,
-not the account-creation sequence, so it never lengthens or blocks onboarding. Along with optional email
-and the profile description field, it's nudged via periodic reminder notifications while left empty,
-cadence not yet specified.
-**Reasoning:** DEC-011 explicitly deferred password auth in favor of social-plus-phone only. While working
-through the full detailed onboarding sequence step by step, Elvis specified a password field belongs in
-the product now, an explicit reversal of that provision rather than an incidental addition, surfaced
-directly by Elvis when asked whether to keep DEC-011's deferral or add it now. Elvis then moved it (along
-with optional email and description) out of the onboarding sequence itself and into profile settings, to
-keep onboarding short, backed by reminder nudges instead of an upfront ask.
-**Impact:** Backend needs to support password as a real, additive auth method, storage and hashing, plus a
-login-method-selection or fallback flow at sign-in for users who set one. Does not remove or weaken
-social/phone auth, both remain fully supported and phone stays a hard requirement regardless of provider,
-per DEC-011's other provisions, which are otherwise unchanged. Also needs a scheduled reminder-notification
-job for the three profile-completion fields (email, password, description), routed through the same
-pipeline that already follows the profile language field, cadence and dismissal behavior not yet decided.
-Username auto-generate-and-suggest is new alongside it, part of the same onboarding-sequence work, not
-separately proposed here since it doesn't reverse any existing landed decision.
-**Relates to / Supersedes:** Reverses DEC-011's password-deferred provision specifically. DEC-011's phone-
-required and social-login provisions are unaffected and stay as landed.
+**Source:** `workspaces/elvis/paid-tier-features-2026-08-27.md`, extends DEC-018
+**Topic:** Apply-to-join screening questions, quota by tier
+**Type:** Product / Commercial
+**Decision:** A host using apply-to-join can write up to 3 screening questions for free; individual-tier
+premium raises that to 10.
+**Reasoning:** Directly matches the shape DEC-018 already established for Moments (10 free / 20
+individual-paid / 50 org-paid media items), a quota that scales with tier rather than a feature blocked
+outright for free users. A full free-tier block was considered and rejected: apply-to-join questions are
+how a host screens who gets into their event, and blocking that outright for free hosts would edge toward
+gating a marketplace-adjacent capability (screening/curation), which DEC-018's own three-bucket rule says
+not to do. A small free quota keeps the capability available to everyone; more questions for a host who
+wants finer screening is a difference of degree, in the "quota-gate" bucket DEC-018 already permits.
+**Impact:** Needs a tier-check on question count at event creation/edit for apply-to-join hosts. Exact
+numbers (3, 10) are a starting point, not data-backed, same caveat DEC-018's own media caps carried at
+first ("priced against realistic usage"), worth revisiting once real usage exists. Apply-to-join itself is
+still an unmerged proposal (phase-1.5 placement, from the 2026-08-26 session), this quota rides along with
+that feature's own merger rather than needing separate build sequencing.
+**Relates to / Supersedes:** Extends DEC-018. Depends on apply-to-join's own (still unmerged) phase-1.5
+placement and design.
 **Status:** Awaiting merger

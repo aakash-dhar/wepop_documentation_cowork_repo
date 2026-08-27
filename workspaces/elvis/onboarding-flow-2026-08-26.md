@@ -87,7 +87,11 @@ invited them to one specific thing.
 11. **Categories and subcategories, RESOLVED 2026-08-26: a distinct system from personality tags.**
     Optional, multi-select, topic/activity interests. Confirmed by Elvis as a second, separate taxonomy
     from personality tags above, not one shared tag system, even though both are searchable multi-selects.
-    Feeds the recommendation algorithm's tag-overlap signal (DEC-020).
+    Feeds the recommendation algorithm's tag-overlap signal (DEC-020). The actual taxonomy content, 8
+    categories (85 subcategories) plus Other, browse-only picker, and real selection limits (up to 5
+    subcategories from at most 3 categories here at onboarding, matching the "user profile" row, not the
+    tighter per-event limit), is specified in full in `categories-taxonomy-2026-08-27.md`, not invented
+    here.
 12. **Campus affiliation, RESOLVED 2026-08-26: optional.** Verified via school email with a code sent to
     that address, or, if the user's school isn't in the pre-populated list, a self-declared "suggest a
     school" fallback. Confirmed optional, a non-student or a student who prefers not to verify can skip
@@ -171,7 +175,10 @@ cohort-filtered and ranked per the recommendation algorithm (DEC-020).
   display-language setting (the DEC-027/cascade field), to avoid the two getting collapsed into one by
   accident at the schema level.
 - Personality tags (step 10) and categories/subcategories (step 11) need two distinct taxonomies/data
-  models, both searchable and extensible, but not backed by the same underlying tag table.
+  models, both searchable and extensible, but not backed by the same underlying tag table. Categories and
+  subcategories are user-facing only and browse-only (no search, no user-submitted nodes), not the
+  same shape as personality tags' general-vibe section, which is genuinely open and searchable. Full
+  schema and picker behavior in `categories-taxonomy-2026-08-27.md`.
 - Campus affiliation (step 12) needs an email-verification-code flow for the school-email path, plus a
   workflow for the "suggest a school not in our list" fallback, whether that queues for review or is
   auto-added is not specified here.

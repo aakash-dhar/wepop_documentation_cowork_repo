@@ -4,6 +4,51 @@
 
 ---
 
+## 2026-08-27 - Age gate research filed to counsel, home location fully reworked (granularity, mutability,
+Explore country gate), paid-tier features scoped, event location map picker closed out with real market
+research
+
+Continued the phase-1/1.5 review list from item #3. Filed age-gate research to TASK-013
+(`age-gate-country-cascade-2026-08-27.md`): flagged DEC-012's own reasoning conflating age-of-majority with
+GDPR digital-consent age, and Apple's Declared Age Range API as a platform-native alternative worth putting
+to counsel; DEC-012 stays provisional, unchanged. Item #4, home location, went through several real
+revisions in one file (`city-location-registration-2026-08-27.md`): input reuses the DEC-003 map picker,
+granularity revised from city down to neighborhood-scale once Elvis caught that city-level starved
+DEC-020's `geo_distance` ranking of real precision, mutability revised to current-location-only
+(GPS-confirmed) with no fallback for a user who never grants permission (Elvis's explicit call against my
+recommendation), and DEC-019's cohort formula revised to drop location entirely (student-vs-not only) after
+correcting my own oversimplification about how geographic relevance actually works in DEC-020. Elvis then
+proposed, refined, and had me flag for Aakash specifically an Explore content gate by country as an
+individual-premium perk, reusing the DEC-006/DEC-017 aggregate-teaser pattern; flagged rather than filed as
+routine because DEC-018 explicitly locks out paid discovery boosts and this needs Aakash's own read against
+that rule. Confirmed item #5 (personality tags) already done via files from earlier the same day. A detour
+into paid-tier feature design (`paid-tier-features-2026-08-27.md`) resolved apply-to-join screening
+questions at 3 free / 10 paid (filed), surfaced two low-effort next candidates (live stories, icebreakers),
+and corrected an over-reach on my part, Explore's filters (multi-category, host-quality, date range) got
+reclassified from premium candidates to ordinary free functionality once Elvis pointed out they're core
+discovery, not power-user extras. Closed out item #6, the event location map picker
+(`event-location-map-picker-2026-08-27.md`), resolving a walkthrough flag that had carried unresolved since
+2026-08-17 with no detail ever recorded: one map component in two modes serving three surfaces (event/idea
+location, newly-scoped location polls, Explore), zoom-determines-precision with no minimum floor after
+Elvis corrected my initial instinct on it. Escalated the HOTSHEET's Korea map-coverage "watching" item to an
+actual decision point after researching that Google's Feb 2026 conditional map-export approval has stalled
+with no timeline; researched dual Google/Naver feasibility (Elvis's own simplification, locked per session,
+no live cross-border swap, no visual wrapper for now, removed most of the real difficulty); caught and
+corrected an unverified claim of my own about precedent companies, then found real supporting evidence on a
+second pass (`react-maps-loader`, a real open-source project combining both providers) alongside the
+higher-severity China/Baidu analogy, honest throughout about what searching could and couldn't confirm.
+
+Open: none of today's four proposed decisions (DEC-019 revision, DEC-016 refinement, the Explore
+country-gate extending DEC-018, the apply-to-join quota extending DEC-018) merged yet; the country-gate
+specifically needs Aakash's explicit sign-off against DEC-018's own rule before normal merger; whether a
+non-Korean-registered business can even open a Naver or Kakao developer account is unresolved and needs an
+actual signup attempt, not more research; location-poll mechanics (min/max options, vote changeability,
+anonymity) not decided; items #7 onward of the phase-1/1.5 list not yet reached. No `shared/` edits made.
+
+**Detail:** [session_log_2026-08-27.md](session_log_2026-08-27.md)
+
+---
+
 ## 2026-08-26 (session 2) - Live team-sync synced, language switch resolved, four new features scoped,
 full onboarding and auth flows detailed; six proposals filed to the merger
 
@@ -40,7 +85,7 @@ sub-questions remain across every file touched this session (username-change log
 session management, and the customer-service recovery workflow on auth; founder-seed-invite copy and
 reminder cadence on onboarding); none of the six proposals filed this session, or any filed previously,
 have actually been merged yet. Item 10 still hasn't actually been sent to Aakash, not touched this session.
-No `shared/` edits made.
+No `shared/` edits made this session, all writes stayed in `workspaces/elvis/`.
 
 **Detail:** [session_log_2026-08-26_session2.md](session_log_2026-08-26_session2.md)
 
