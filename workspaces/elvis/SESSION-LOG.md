@@ -4,6 +4,56 @@
 
 ---
 
+## 2026-08-29 - Handoff spec v0.9 intake: six conflicts with ACTIVE decisions found and resolved,
+scoring model designed, six proposals filed; stale-repo drift caught and corrected
+
+Elvis brought in `WePop_Phase1_P1.1_Consolidated_Handoff_Spec_v0.9.docx`, a large consolidated
+engineering/design handoff, while item #7 of the phase-1/1.5 list (Events + Ideas core objects) was being
+opened. It reached far wider than item #7. Read against `shared/DECISIONS.md` rather than against its own
+stated baseline (it declares supersession over three drafts that are not in this repo and never references
+DECISIONS.md), it conflicted with six ACTIVE decisions; taken at face value it would have silently reversed
+all six. All six were walked to resolution with Elvis (`handoff-spec-v0.9-intake-2026-08-29.md`). Ratings are
+NOT removed, DEC-014 stands; the only intended change is dropping attendee thumbs-down and the follow-all
+affordance, making peer feedback positive-only. Caught that the handoff's own new invariant I-12 forbids host
+ratings on its face, confirmed with Elvis that host and attendee rating are separate concepts, and drafted
+replacement wording carrying that distinction. Check-in decouples from Moment and feedback eligibility, with
+a visible badge plus invisible algorithmic weight; designed the full scoring model (1.0 verified / 0.4
+unverified, minimum 3 verified before any public star average displays, Bayesian smoothing with C=5 on the
+internal signal to protect DEC-020's new-host boost from a single early bad rating), and named the integrity
+risk neither document had noticed, that DEC-014's hard gate had been quietly ensuring only real attendees
+could rate and a no-show now can. Gender hidden from the attendee-facing pre-join aggregate, partially
+superseding DEC-017; separately confirmed DEC-017's mutual-follow-only photo rule is untouched, since the
+handoff's silence on it would otherwise have been read as assent either way. Media retention resolved at a
+6-month tiered boundary active at launch as a paid differentiator (Elvis's own third position, neither
+document's), with three refinements recommended: restore-from-cold rather than exemption-from-demotion for
+Wrapped, the same path extended to P1.2 memories resurfacing, and a ~1080px mid tier so 400px is not what a
+free user sees of their own memory. DEC-015/DEC-018 media caps confirmed to stand; new event-cover caps set
+at 5 items, 15s free / 30s paid. Ran real cost math on Elvis's question about shortening video and
+recommended against it (a free-tier Moment of video costs about half a cent to hold for the whole window;
+clip length is not the lever, retention is), while finding where the exposure actually is: 50 items at 30s at
+an org-paid event is 25 minutes of video in one Moment, a moderation problem before a storage one, answered
+by a total-duration-per-Moment cap the handoff proposes but never numbers. Avoid signal becomes block-only
+per Elvis, with absence-of-positive explicitly considered and rejected, and the positive tap redirected into
+a positive affinity ranking signal so the DEC-023 amendment is not purely subtractive. Also closed the scope
+matrix's own open question on general user blocking (phase-1 baseline, fully designed, earliest wave) and
+most of item #7 itself (Event vs Idea structural definition, Discussion as the persistent surface, a
+seven-status event lifecycle, polls unified into one primitive). Six proposals filed, all awaiting merger.
+Mid-session, on Elvis asking whether anything was staged for the repo, found the session had been reading a
+stale Aug-27 uploads snapshot while the live clone had moved on: the merger landed DEC-029 through DEC-033 on
+2026-08-28 and cleared the queue, and the locally assembled proposal file still carried all five already-
+merged items, which would have re-proposed landed decisions. Rebuilt against the live clone.
+Open: all six proposals awaiting merger, the retention one additionally needing Aakash since the window is a
+direct input to DEC-018's cost model; three retention refinements and the video total-duration cap are
+recommendations not yet confirmed; whether org-paid lifts Moment video to 30s is still unspecified in
+DEC-018. Not yet worked: the DM/group-chat gap (DEC-013 unmentioned in the handoff), four new scope-matrix
+rows, two legal items for TASK-013 (L-3 geofence, BLOCKING before P0; L-8 PIPA under-14 guardian consent),
+adopting the I-N invariant scheme into CLAUDE.md, the wave-to-phase label mapping, and the sign-off pass on
+[D]-tagged items. DEC-009's "close to new joiners" toggle still unanswered. No `shared/` edits made.
+
+**Detail:** [session_log_2026-08-29.md](session_log_2026-08-29.md)
+
+---
+
 ## 2026-08-27 - Age gate research filed to counsel, home location fully reworked (granularity, mutability,
 Explore country gate), paid-tier features scoped, event location map picker closed out with real market
 research
