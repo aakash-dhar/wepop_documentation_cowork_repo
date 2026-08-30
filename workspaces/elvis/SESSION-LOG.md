@@ -4,6 +4,66 @@
 
 ---
 
+## 2026-08-30 - Hotsheet/risk/task backlog filed, phase-1/1.5 items #7 and #8 closed, host-accountability
+model built from Korean-practice research; eleven decision proposals now pending
+
+Start-session verified the live clone rather than the uploads snapshot, per the lesson recorded 2026-08-29,
+and found the merger had landed DEC-029 through DEC-033 on 2026-08-28 and cleared the queue; confirmed
+DEC-018's clauses the pending proposals touch were unchanged by that merge. Filed the hotsheet-class
+findings the 2026-08-29 intake produced but never filed: five HOTSHEET entries, two risks, three tasks
+(kept minimal, since TASK-034 already covers standing up moderation and TASK-013 the age/location consult).
+The moderation launch blocker was reframed rather than answered: Elvis deferred the §12.5 SLAs until he has
+employees and confirmed the named second reviewer is being replaced, so the entry stays Blocking on the
+argument that response *speed* depends on headcount while response *capability* does not, with 정보통신망법
+takedown duties and 임시조치 flagged hardest because they attach from the day the service has users, not
+staff. Used "Reviewer B (to be hired)" rather than a name-shaped pseudonym, since a plausible fake name
+reproduces exactly the failure that entry caught. Added two blocking-class items that had never reached the
+HOTSHEET or risk register (L-3 위치정보법 geofence, with its fallback stated so it does not become a hard
+stop; and the CSAM runbook, where the intuitive response is the legally wrong one) and corrected two stale
+entries the pending batch had overtaken. Then closed **item #7**, open since 2026-08-18: found Elvis's own
+walkthrough transcript settling that DEC-009's toggle freezes membership while handoff §10 freezes
+everything, so two mechanics not one. Elvis reframed §10 as time-based auto-archive, which filled a gap
+nobody had named (Ideas had no lifecycle at all while Events have a seven-status machine), resolved at 90
+days inactivity with no reason string. Copy resolved via the ux-copy skill as "Pause new joins" ("Lock"
+rejected as actively misleading on Elvis's own subreddit model), and exposure resolved as shipping visible
+in phase 1, superseding DEC-009's do-not-expose provision with the reasoning written out rather than just
+the outcome. His Idea-as-subreddit framing drove the deletion and detachment rules (delete only while nobody
+else has engaged, otherwise detach and the idea becomes system-owned) and the deliberate
+Idea-versus-Event-Series distinction. **Item #8** closed the multi-day dependency from two directions
+(`scheduled_end` ships, plus a confirmed Airbnb-style calendar picker), allowed schedules on unresolved
+events, and resolved change notifications as a general rule (all changes notify, event changes also post to
+chat, one per save, audience is attendees plus waitlist plus pending applicants). Elvis then asked why
+anyone would delete an event after it is over, which found a real hole: handoff §3.2 permits `any ->
+deleted` for "host or admin" undifferentiated, so a host could delete a completed event and launder its
+ratings straight through DEC-014 reputation and DEC-024's public track record. Resolved as admin-only after
+completion with detachment by reviewed request, and Elvis extended it so ratings survive both detachment and
+event deletion; flagged the trap that a rating aggregate joined against live event rows would silently die
+with the event. That opened a wider accountability pass, researched directly rather than assumed after
+Elvis asked how Danggeun's 매너온도 handles PIPA. The finding that resolved it: Danggeun splits reputation
+from enforcement, 매너온도 dying with the account while suspensions carry over to a same-environment
+re-registration. Verified PIPA Art. 36(1)'s proviso does not reach "keep it for accountability", so the ban
+list rests on a disclosed 부정이용 방지 item instead (JobKorea precedent: five years), escalated to DLG
+rather than asserted. Org loophole reframed and closed: the problem was never multiple orgs but that no
+consequence flowed along traceability that already exists, so enforcement propagates, admins see every org a
+user operates, and creation is gated on standing rather than rating (a rating gate would block brand-new
+club officers, the actual launch market). Elvis added a suspended admin may transfer the role so a club is
+not punished for one officer; flagged and closed the evasion that opens (plant an accomplice, transfer, keep
+control) with three qualifications. Rejected with reasons recorded: org caps, and public display of
+connected profiles, which fights DEC-006/DEC-017 and could out someone running orgs for an LGBTQ+ group and
+a church group.
+Open: eleven decision proposals plus five hotsheet entries, two risks and three tasks all pending, none
+merged. The moderation blocker still needs its three pre-launch artifacts regardless of the SLA deferral.
+Unconfirmed recommendations: three retention refinements, the total-video-duration cap, explicit per-stop
+dates. Numbers unset: re-registration cooldown, ban-list retention, minimum account age for org creation,
+minimum tenure for a suspension-triggered transfer. Elvis's calendar-picker design not yet uploaded. Items
+#9 and #10 not started, both reshaped by the pending DEC-014 amendment. Still carried: the DM/group-chat
+gap, four scope-matrix rows, the I-N invariant scheme into CLAUDE.md, the wave-to-phase mapping, and the
+[D]-tag sign-off pass. No `shared/` edits made.
+
+**Detail:** [session_log_2026-08-30.md](session_log_2026-08-30.md)
+
+---
+
 ## 2026-08-29 - Handoff spec v0.9 intake: six conflicts with ACTIVE decisions found and resolved,
 scoring model designed, six proposals filed; stale-repo drift caught and corrected
 
