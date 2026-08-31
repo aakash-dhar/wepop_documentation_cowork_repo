@@ -34,7 +34,7 @@ description: >
 ## Pre-read (mandatory)
 1. `team/project-reference/README.md` - how the pipeline works.
 2. `team/project-reference/data.js` - read `META` (`asOf`, `lastDec`) to learn the last build point,
-   then skim `M`, `ELVIS.modules`, `ELVIS.new`, `PLAIN`, `RISKS`, `OPEN`, `LEGAL` (the decision index and
+   then skim `M`, `ELVIS.modules`, `ELVIS.new`, `PLAIN`, `FLOWS`, `RISKS`, `OPEN`, `LEGAL` (the decision index and
    records are generated from `shared/DECISIONS.md` at build time, not kept here).
 3. `shared/DECISIONS.md` - every `DEC-NNN` above `META.lastDec`, and any change-history note dated
    after `META.asOf`.
@@ -64,6 +64,11 @@ For every change decide where it lands in `data.js`, and nowhere else:
   in `status` so the page flags it red.
 - A new module (decided or Elvis-designed) -> write its `PLAIN` explainer: two to four plain sentences
   that only restate what the module's own data says, for a reader with no context. Never a new fact.
+- A module with a real sequence of steps -> add or update its `FLOWS[Mnn]` diagram spec (columns of
+  nodes, edges with optional labels, a note). Node and edge labels may only restate that module's own
+  `flow` / `rules` (or DECISIONS.md); an arrow asserts a sequence, so never draw one the record does not
+  state, and never lift wording from a superseded decision. `FLOWS.overview` and `FLOWS.governance`
+  are the two page-level diagrams.
 - A new or changed decision -> nothing to do in `data.js`: `build.py` regenerates the decision index and
   the full decision records (`DECS`, `DECFULL`) from `shared/DECISIONS.md` on every build, so the page's
   decisions can never drift from the source of truth. Only the module `decs` chips need updating.
@@ -78,8 +83,9 @@ No em-dashes anywhere in the data.
 
 ### Step 4 - Validate (mandatory, two passes)
 Run two subagents and fix every finding before building:
-1. **Claim validator** - for every `M` entry touched and every `ELVIS` item added, check the text
-   against its cited source and against `shared/DECISIONS.md`. Report anything unsupported, wrongly
+1. **Claim validator** - for every `M` entry touched, every `ELVIS` item added, and every `FLOWS`
+   diagram touched (each node label, edge label and note, including whether an arrow implies a sequence
+   the record does not state), check the text against its cited source and against `shared/DECISIONS.md`. Report anything unsupported, wrongly
    numbered, over-claimed, or tagged with the wrong DEC, with file:line evidence.
 2. **Citation spot-check** - sample at least 30 added items (all of them if fewer) and confirm each
    `src` points at a real file and section that supports the text.

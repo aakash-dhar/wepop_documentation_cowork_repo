@@ -7,8 +7,9 @@ generated, not hand-edited.
   marker, `/*__DATA__*/`, where the data is inlined at build time.
 - `data.js` - all authored content: `META` (as-of date, last DEC), `M` (the 24 decided modules), `ELVIS`
   (sourced detail per module under `modules`, and the Elvis-designed modules under `new`), `PLAIN`
-  (plain-language explainers keyed by module id), plus `RISKS`, `OPEN`, `LEGAL`, `GOV`, `PRINCIPLES`,
-  `DATAMODEL`, `GLOSS`. Every ELVIS item carries a `src` naming the file and section it came from.
+  (plain-language explainers keyed by module id), `FLOWS` (flow-diagram specs keyed by module id plus
+  `overview` and `governance`; rendered as inline SVG by the template, no external library), plus
+  `RISKS`, `OPEN`, `LEGAL`, `GOV`, `PRINCIPLES`, `DATAMODEL`, `GLOSS`. Every ELVIS item carries a `src` naming the file and section it came from.
 - The decision index and the full decision records (`DECS`, `DECFULL`) are NOT in data.js: `build.py`
   parses `shared/DECISIONS.md` on every build, so the page's decisions can never drift from the source
   of truth. Clicking a decision card or any DEC chip opens the verbatim record in the drawer.
