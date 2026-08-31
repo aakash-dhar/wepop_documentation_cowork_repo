@@ -4,48 +4,18 @@
 
 ## Pending
 
-One entry. The five filed 2026-08-30 all landed; this one updates a Blocking entry that the check-in
-direction reversal may have de-blocked.
-
-## Proposed Hotsheet Entry
-**Date:** 2026-09-01
-**Proposed by:** Elvis
-**Source:** `workspaces/elvis/ratings-checkin-2026-08-31.md`; updates the existing Blocking entry
-"위치정보법 registration for geofenced check-in (blocking before P0)" and risk R5
-**Type:** Blocking
-**Summary:** The 위치정보법 blocker may no longer gate P0, because the check-in direction reversed and the
-mode that triggers it is deferred with attendee self-scan.
-**Key Points:**
-- The exposure attaches specifically to the **printed-poster** check-in mode, whose static token needs a
-  location radius to resist forgery. Printed posters exist to support **attendee self-scan**.
-- Phase 1 check-in reversed on 2026-08-31 to **host-scans-attendee** (ticketing standard), and attendee
-  self-scan moved to a deferred **self-service mode**. The poster and its geofence defer with it.
-- If that holds, L-3 stops being a gate before P0 and becomes a later-phase legal question.
-- **Do not close the item, and do not drop it from the DLG consult (TASK-040).** Re-scope it to a question
-  rather than a blocker. The exposure returns intact the day self-service mode is built, and the answer is
-  cheaper to have in hand before that work starts than during it.
-- Risk R5 should be re-rated on the same basis: same exposure, materially lower near-term likelihood, since
-  nothing in phase 1 now collects the location data that triggers it.
-- Also worth noting on the same entry: anti-forgery simplifies under the reversal. The 60-second rotating QR
-  existed because a host-displayed code could be screenshotted and forwarded; once a host scans a person
-  standing in front of them, the host's own eyes are the strongest control available, so a static
-  per-attendee credential suffices.
-
-**Decisions Made:**
-| Decision | Owner | Date |
-|----------|-------|------|
-| Check-in reverses to host-scans-attendee; attendee self-scan deferred to self-service mode | Elvis | 2026-08-31 |
-
-**Action Items:**
-| Item | Owner | Due |
-|------|-------|-----|
-| Confirm with DLG that deferring attendee self-scan removes the 위치정보법 trigger from phase 1, rather than assuming it | Aakash | Before P0 |
-| Re-scope the HOTSHEET Blocking entry and re-rate R5 once DLG confirms | Aakash (merger) | On confirmation |
-| Keep L-3 in the TASK-040 consult regardless, scoped as a question for when self-service is built | Aakash | With TASK-040 |
+_Queue is empty._
 
 ---
 
 ## Landed
+
+- **2026-08-31 (second merge): the 위치정보법 re-scope landed** as an in-place update to the existing
+  Blocking entry in `shared/HOTSHEET.md`: the DEC-046 reversal context recorded, the entry kept Blocking
+  until DLG confirms that deferring self-scan removes the phase-1 trigger (TASK-040), and L-3 retained in
+  the consult as a scoped question. The R5 re-rating is held for the same DLG confirmation, per this
+  proposal's own action items; R5's mitigation line now records the expected likelihood drop. The no-show
+  Watching entry was also rewritten on DEC-045 (0.4 weight no longer the mitigation). Nothing pending.
 
 - **2026-08-31: all five entries filed 2026-08-30 landed** into `shared/HOTSHEET.md` by the merger: the
   content-moderation blocker reframed around capability rather than response time, 위치정보법 registration

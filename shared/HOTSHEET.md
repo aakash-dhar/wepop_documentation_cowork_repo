@@ -13,7 +13,10 @@ three-session batch of Elvis design work landed as DEC-010 to DEC-025 (16 decisi
 (age mechanism), DEC-004 (auth), and DEC-009 (chat/calendar scope), and extending DEC-006. Phase 1 scope
 grew materially (DM and group chat, video moments, ratings with required QR check-in, city-level location,
 community cohorts, the recommendation algorithm). The main new risk is moderation load. No hard build
-blockers, but moderation staffing must be resolved before launch.
+blockers, but moderation staffing must be resolved before launch. On 2026-08-31 (second merge) DEC-045
+to DEC-047 landed: DEC-034's badge and scoring weight withdrawn, check-in reversed to host-scans-attendee
+as an operations tool with self-service deferred, and feedback confirmed uniformly anonymous with a 7-day
+edit window. The reversal likely de-blocks the 위치정보법 entry, pending DLG confirmation.
 
 ### Blocking
 
@@ -35,16 +38,21 @@ blockers, but moderation staffing must be resolved before launch.
   flag. Day-one metrics (reports per 1,000 Moments, median time-to-decision, backlog depth, appeal overturn
   rate) become the hiring trigger. Tracked as TASK-034; companion risk R4. Does not clear until the three
   artifacts exist. Since 2026-08-26, reframed 2026-08-31. Source: handoff spec v0.9 §12; Elvis intake.
-- **위치정보법 registration for geofenced check-in (blocking before P0).** The printed-poster check-in mode
-  constrains scans to a location radius, which is location-data collection and may require
-  위치기반서비스사업 신고 to the KCC under 위치정보법 before it can ship in Korea. Must be answered by DLG Law
-  before the geofence ships (legal register L-3). Clean fallback if registration proves burdensome: drop
-  the radius and rely on the time window plus live-display mode (a QR regenerated every 60 seconds from a
-  short-TTL signed token, so a forwarded screenshot dies within a minute); live display is already the
-  default mode, so the fallback costs the printed-poster path some anti-forgery strength rather than the
-  feature. Stakes are also lowered by DEC-034: once eligibility decouples from check-in, a forged check-in
-  unlocks a badge and nothing else. Distinct from TASK-013 (age/location logic). Companion risk R5. Since
-  2026-08-31. Source: handoff spec v0.9 §4.2, §16 L-3.
+- **위치정보법 registration for check-in (updated 2026-08-31 on DEC-046: likely no longer gates P0; kept
+  Blocking until DLG confirms).** The exposure attaches to the printed-poster check-in mode, whose static
+  token needs a location radius to resist forgery, and printed posters exist to support attendee self-scan.
+  DEC-046 reverses phase-1 check-in to host-scans-attendee and defers attendee self-scan to a later
+  self-service mode, so the poster and its geofence defer with it; if that holds, L-3 stops being a gate
+  before P0 and becomes a later-phase legal question. Not closed and not dropped from the DLG consult
+  (TASK-040): confirm with DLG that deferring self-scan removes the 위치정보법 trigger from phase 1 rather
+  than assuming it, then re-scope this entry to a question and re-rate R5 on the same basis (same exposure,
+  materially lower near-term likelihood, since nothing in phase 1 then collects the triggering location
+  data). The exposure returns intact the day self-service mode is built, and the answer is cheaper in hand
+  before that work starts. Anti-forgery also simplifies under the reversal: once a host scans a person
+  standing in front of them, a static per-attendee credential suffices and the 60-second rotating QR is no
+  longer needed. Stakes remain lowered by check-in gating nothing (DEC-045/046). Distinct from TASK-013
+  (age/location logic). Companion risk R5. Since 2026-08-31, updated 2026-08-31. Source: handoff spec v0.9
+  §4.2, §16 L-3; `workspaces/elvis/ratings-checkin-2026-08-31.md`.
 - **CSAM preserve-and-report runbook required before launch.** If child sexual abuse material appears it
   must not be deleted (deleting destroys evidence); the required handling is preserve, restrict access, and
   report to the authorities. A written one-page procedure any reviewer can follow unaided is a pre-launch
@@ -79,15 +87,17 @@ blockers, but moderation staffing must be resolved before launch.
 
 - **Korean map coverage is a known future concern; Google Maps acceptable for now.** South Korea restricts map-data export, so local providers have richer data and Google has historically been thinner in Korea; Google is reportedly expanding Korean coverage. Use Google (DEC-003) for now; revisit only if it becomes a real issue. Since 2026-08-26. Source: 2026-08-26 team sync.
 
-- **No-show rating abuse now that check-in is decoupled (rewritten 2026-08-31 on DEC-034).** DEC-034
-  decouples check-in from Moment authorship and feedback eligibility: a user who joined an event that
-  completed can do both regardless of check-in, and check-in now grants only a verification badge plus a
-  scoring weight (1.0 verified, 0.4 unverified). The old risk (no scans means no ratings or recommendation
-  signal) is largely gone. The remaining risk changes shape: a user who RSVP'd and never attended can now
-  rate an event and its host, which DEC-014's hard gate had been quietly preventing. The 0.4 weight is the
-  designed mitigation and the lever to pull if abuse appears, which is why it is read-time config rather
-  than a materialized value. Watch after the first events. Since 2026-08-26, rewritten 2026-08-31 (was: QR
-  check-in load-bearing / signal starvation). Source: DEC-034.
+- **No-show rating abuse, now unmitigated by weighting (rewritten again 2026-08-31 on DEC-045).** DEC-045
+  withdraws DEC-034's badge and 1.0/0.4 scoring weight, so eligibility is simply joined plus event
+  completed: a user who RSVP'd and never attended can rate an event and its host and is indistinguishable
+  from a real attendee. This is an accepted cost under DEC-045, not an oversight. The protections are now
+  the 3-rating public display gate (one person cannot establish a public number alone), Bayesian smoothing
+  toward the global mean with C = 5 (absorbs a single outlier), and host reporting of a rating from someone
+  who was not there, which makes abuse a moderation rather than a scoring problem. The motive is judged
+  thin at a free casual meetup. The `attendance` table stays first-class and transactional, so reinstating
+  weighting later is a config change plus a runnable backfill; that is the lever if abuse appears. Watch
+  after the first events. Since 2026-08-26, rewritten 2026-08-31 twice (was: QR check-in load-bearing;
+  then: 0.4 weight as the designed mitigation). Source: DEC-045.
 - **New real-time features carry open safety/scope details before build (DEC-025).** Free Now: exact
   account-standing threshold for room creation, duration cap, room auto-archival, org-created rooms;
   location rounding needs a concrete method; reciprocal-join enforced server-side. Live stories: whether
@@ -124,4 +134,4 @@ blockers, but moderation staffing must be resolved before launch.
 | R2 | Solo-founder blind spot: Elvis designing alone, product/design calls may go unchallenged. | Medium x Medium | Aakash | Aakash and Deepak give structured critique on design and docs once shared; capture as proposals/suggestions. | ACTIVE |
 | R3 | OTP/SMS (Twilio/WhatsApp) deliverability blocked by geography without an in-region registered business; breaks phone verification on expansion beyond US/Korea. | Low x Medium | Aakash | Email magic-link recovery now covers reset (DEC-011, which superseded the DEC-004 password fallback); check regional messaging-provider requirements before a new market. | ACTIVE |
 | R4 | Single-reviewer moderation. Rota is one person (Elvis) until employees are hired, covering eleven reportable target types across five live UGC surfaces. Three failure modes: no coverage for sleep/travel/illness so an urgent report sits until one person wakes; appeals cannot be independent with one reviewer; and growth outpacing hiring rather than launch day itself. | Medium x High | Elvis | Ship the designed load reducers (one generic report model and single queue, idempotent repeat reports, auto-hide on 5+ distinct reporters AND 10 percent of distinct viewers, brigade_suspected flag); track the four day-one metrics as the hiring trigger. Auto-hide is doing heavy lifting under a single reviewer, so its thresholds must not be loosened without revisiting this risk. Companion to the moderation Blocking entry. | ACTIVE |
-| R5 | 위치정보법 registration exposure. The printed-poster check-in geofence constrains scans to a location radius, which is location-data collection and may require 위치기반서비스사업 신고 to the KCC before it can ship in Korea. Shipping without an answer risks operating an unregistered location-based service; waiting with no fallback risks blocking P0. | Medium x High | Aakash | Route to DLG Law before the geofence ships (companion Blocking entry, before P0). Default to the fallback if registration proves burdensome: drop the radius and rely on the time window plus live-display mode. Residual exposure further limited by DEC-034 (a forged check-in unlocks only a badge). | ACTIVE |
+| R5 | 위치정보법 registration exposure. The printed-poster check-in geofence constrains scans to a location radius, which is location-data collection and may require 위치기반서비스사업 신고 to the KCC before it can ship in Korea. Shipping without an answer risks operating an unregistered location-based service; waiting with no fallback risks blocking P0. | Medium x High | Aakash | Route to DLG Law before the geofence ships (companion Blocking entry, before P0). Default to the fallback if registration proves burdensome: drop the radius and rely on the time window plus live-display mode. Near-term likelihood expected to drop on DEC-046 (phase 1 no longer collects the triggering location data; the poster geofence defers with self-service mode); re-rate once DLG confirms. | ACTIVE |
