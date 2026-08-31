@@ -1,11 +1,16 @@
 # Proposed risk register change from elvis - for merger review
 
-> Queue is empty. No em-dashes. Governance values ALLOW / BLOCK / ESCALATE.
+> No em-dashes. Use a lowercase x for Likelihood x Impact. Governance values ALLOW / BLOCK / ESCALATE.
+
+## Pending
+
+_Queue is empty. Nothing pending._
+
+---
 
 ## Landed
 
-- 2026-08-31: both risks filed 2026-08-30 landed into `shared/HOTSHEET.md`'s risk register as **R4**
-  (single-reviewer moderation, three distinct failure modes: no cover for sleep or travel on urgent
-  reports, no independent appeal, and growth outpacing hiring) and **R5** (위치정보법 registration exposure
-  on the printed-poster check-in geofence). A re-rating of R5 is proposed in `proposed-hotsheet.md`, since
-  the check-in direction reversal defers the mode that triggers it.
+- 2026-08-31: Two risks landed into the Risk Register Snapshot in `shared/HOTSHEET.md` by the merger:
+  R4 (single-reviewer moderation, Medium x High, owner Elvis) and R5 (위치정보법 registration exposure,
+  Medium x High, owner Aakash). Both are companions to the 2026-08-31 HOTSHEET Blocking entries.
+  Source: `handoff-spec-v0.9-intake-2026-08-29.md`.
