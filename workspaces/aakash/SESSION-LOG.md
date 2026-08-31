@@ -4,6 +4,21 @@
 
 ---
 
+## 2026-08-31 (session 1) - Merge DEC-034..044, summary layer refreshed, project reference built and published
+Landed Elvis's eleven pending proposals as DEC-034 to DEC-044 with the matching HOTSHEET rewrite (two new
+Blocking entries, R4 and R5), three new tasks, and a board-sync; refreshed PROJECT_INDEX, PROJECT_TRACKER
+and the scope matrix to the DEC-044 state. Built a validated, client-shareable project reference in the
+BetaCraft scheme (31 modules, 397 sourced Elvis details, clickable records for all 44 decisions, 22 flow
+diagrams) as a build pipeline under team/project-reference/ that also emits the Markdown rendition;
+published it behind the dashboard's login gate with one shared login and a link from the dashboard; added
+the project-reference skill (toolkit now 31). Flags: private accounts conflicts with DEC-015 (needs a
+ruling); the Plan Mode spec is not in the repo; product-overview and compliance-register need spec-sync
+and compliance-watch. Everything committed and pushed via GitHub Desktop during the session.
+
+**Detail:** [session_log_2026-08-31.md](session_log_2026-08-31.md)
+
+---
+
 ## 2026-08-19 (session 2) - Elvis setup-call ingest, board reconcile, merge no-op, TASK-018 scoping
 Ingested and processed the 2026-08-19 Elvis setup call (verbatim + summary) and reconciled the
 board: TASK-011 and TASK-009 to Done, added TASK-017 (Elvis input skill) and TASK-018 (board chat
