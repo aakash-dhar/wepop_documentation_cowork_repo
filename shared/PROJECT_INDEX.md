@@ -4,19 +4,23 @@
 > `workspaces/[you]/proposed-project-index.md`. Do not hallucinate capabilities not documented
 > here. Where a section is older than the latest snapshot, `shared/DECISIONS.md` controls.
 
-## State snapshot (2026-08-26)
+## State snapshot (2026-08-31)
 
 - **Project:** WEP001 - Wepop
 - **What it is:** An invite-first, location-based events and meetup app (a meetup app, not a dating
   app) for getting people together in the real world around shared activities. Being rebuilt on top
   of an existing Wepop codebase, salvaged and extended with AI. Focus markets Korea and the US.
 - **Phase:** Phase 1 design deepening. First walkthrough 2026-08-17; a large Elvis design batch landed
-  2026-08-26 (DEC-010 to DEC-025).
-- **RAG:** Green with a watch - design substantially deeper, no hard build blocker, but moderation
-  staffing is a launch blocker to resolve (see HOTSHEET).
-- **Last decision:** DEC-025 (new-feature scoping batch), 2026-08-25, landed 2026-08-26. DEC-010 to
-  DEC-025 landed from the Elvis workspace intake; DEC-011 superseded DEC-004, DEC-012 superseded
-  DEC-002 (provisional), DEC-013 superseded DEC-009 (chat/calendar), DEC-017 extended DEC-006.
+  2026-08-26 (DEC-010 to DEC-025); a Korea/localization sync landed 2026-08-28 (DEC-026 to DEC-033); the
+  handoff-spec-v0.9 intake and the phase-1/1.5 review batch landed 2026-08-31 (DEC-034 to DEC-044).
+- **RAG:** Green with a watch - design substantially deeper, no hard build blocker, but three launch
+  blockers are open on the HOTSHEET: moderation capability (reframed 2026-08-31 as speed-vs-capability),
+  위치정보법 KCC registration for the geofenced check-in, and the CSAM preserve-and-report runbook.
+- **Last decision:** DEC-044 (host accountability: reputation/enforcement split, ban list, org loophole),
+  2026-08-30, landed 2026-08-31. The 2026-08-31 batch (DEC-034 to DEC-044) amended DEC-014 (feedback and
+  check-in), DEC-017 (gender pre-join), DEC-023 (avoid signal), DEC-015/018 (media caps and retention),
+  DEC-025 (event schedule and notifications), and DEC-009 (idea lifecycle), and added host-accountability
+  and completed-event-deletion rules.
 - **Team:** Aakash (PM/merger/financials), Elvis (client and designer), Deepak (tech lead and developer)
 
 ## What is being built
@@ -36,8 +40,10 @@
 
 ## What has been decided
 
-Source of truth is `shared/DECISIONS.md`. DEC-001 to DEC-009 landed 2026-08-17; DEC-010 to DEC-025
-landed 2026-08-26 from the Elvis workspace intake.
+Source of truth is `shared/DECISIONS.md` (currently DEC-001 to DEC-044). DEC-001 to DEC-009 landed
+2026-08-17; DEC-010 to DEC-025 landed 2026-08-26 from the Elvis workspace intake; DEC-026 to DEC-033
+landed 2026-08-28 (Korea PASS, localization, A/B testing, cohort simplification, home-location mechanism,
+Explore country gate, apply-to-join quota); DEC-034 to DEC-044 landed 2026-08-31.
 
 Foundational (2026-08-17): DEC-001 central repo + harness; DEC-003 Google-style map picker; DEC-005
 extensible tag list; DEC-006 anti-stalking visibility; DEC-007 no in-app AI image/video; DEC-008
@@ -55,9 +61,28 @@ DEC-019 community cohorts; DEC-020 recommendation algorithm; DEC-021 recurring e
 Series + co-hosts; DEC-023 group-dynamics signals; DEC-024 undiscussed-surface triage; DEC-025
 new-feature scoping batch.
 
-Still open (not decisions): the cohort softening trigger and its owner, the group-dynamics
-prerequisites (blocking, attendee feedback), Free Now open details, the Event multi-day date range,
-age/location pending counsel, and the commercial-structure proposal channel. See `shared/HOTSHEET.md`.
+Landed 2026-08-28: DEC-026 Korea PASS auth; DEC-027 localization/Korean; DEC-028 A/B testing; DEC-029
+language-preference storage and i18n scope (refines DEC-027); DEC-030 cohort simplified to student-vs-not,
+location removed (revises DEC-019); DEC-031 home-location input mechanism, neighborhood granularity,
+mutability (refines DEC-016); DEC-032 Explore gated by country, individual-premium lift (extends DEC-018);
+DEC-033 apply-to-join screening-question quota (extends DEC-018).
+
+Landed 2026-08-31: DEC-034 peer feedback positive-only, check-in decoupled to badge plus weight (amends
+DEC-014); DEC-035 gender out of attendee pre-join, invariant I-13 (partially supersedes DEC-017); DEC-036
+avoid signal block-only plus positive affinity (amends DEC-023); DEC-037 general user blocking as phase-1
+baseline; DEC-038 event cover media caps (extends DEC-015/018); DEC-039 tiered 6-month media retention,
+active at launch (revises DEC-018); DEC-040 Ideas lifecycle (supersedes DEC-009's idea provision); DEC-041
+event schedule multi-day plus propagation (refines DEC-025); DEC-042 change notifications (extends DEC-025);
+DEC-043 completed events cannot be deleted or left by host, ratings persist (amends handoff spec §3.2);
+DEC-044 host accountability, reputation/enforcement split (extends DEC-024/026).
+
+Still open (not decisions): Free Now open details, DEC-038's total-video-duration cap and org-paid video
+length, DEC-039's three retention refinements pending Elvis, the DEC-044 open list (re-registration
+cooldown, ban-list retention, org-creation account age), age/location pending counsel (TASK-013), the
+legal register L-1 to L-12 consult (TASK-040), and the commercial-structure proposal channel (TASK-037).
+Resolved since the last snapshot: the group-dynamics prerequisites (DEC-036/037), the cohort softening
+mechanism (DEC-030 removed location from the formula), and the Event multi-day date range (DEC-041). See
+`shared/HOTSHEET.md`.
 
 ## Where everything lives
 
