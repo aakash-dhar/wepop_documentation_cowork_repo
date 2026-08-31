@@ -93,7 +93,9 @@ Re-run until both come back clean. A finding is never silently dropped.
 
 ### Step 5 - Build
 `python3 team/project-reference/build.py`. It refuses to build if any ELVIS item lacks a `src` or an
-em-dash is present. It writes `team/wepop-project-reference.html` (internal copy).
+em-dash is present. It writes `team/wepop-project-reference.html` (internal copy) AND
+`architecture/phase-plan/wepop-project-reference.md` (the Markdown rendition, Mermaid diagrams), so the
+markdown reference is always the same content as the page. Never edit either output by hand.
 
 ### Step 6 - Publish behind the gate (Aakash only)
 If the board data also changed, run `python3 team/board-render.py` first. Then:
@@ -119,7 +121,7 @@ remind that nothing is live until the push.
 - Invent, infer, or embellish. Every ELVIS item carries a `src`; a detail you cannot anchor to a line
   in a source stays out.
 - Treat an Elvis design as scope, or resolve a conflict with a landed decision. Flag it; DECISIONS wins.
-- Edit the built HTML files by hand, or edit `template.html` for content.
+- Edit the built HTML or Markdown outputs by hand, or edit `template.html` for content.
 - Store or echo the gate password anywhere; run `git commit` or `git push`.
 - Write `team/` or `docs/` as anyone but Aakash.
 - Em-dash; DENY (governance values are ALLOW / BLOCK / ESCALATE).

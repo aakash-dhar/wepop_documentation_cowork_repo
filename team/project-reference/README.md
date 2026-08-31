@@ -19,7 +19,9 @@ generated, not hand-edited.
   dashboard once unlocks the reference too.
 
 Outputs: `team/wepop-project-reference.html` (internal, not published), `docs/project-reference.html`
-(client, behind the login gate, linked from the dashboard header).
+(client, behind the login gate, linked from the dashboard header), and
+`architecture/phase-plan/wepop-project-reference.md` (the Markdown rendition of the same data, with the
+diagrams as Mermaid so GitHub renders them). All three are overwritten on every build; never hand-edit.
 
 To update as Elvis's documents change, use the **project-reference** skill (`skills/project-reference/`).
 It reads what is new in `shared/DECISIONS.md` and `workspaces/elvis/`, updates `data.js` with sources,
