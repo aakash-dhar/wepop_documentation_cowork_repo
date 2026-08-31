@@ -1,81 +1,11 @@
-# Proposed HOTSHEET changes from elvis, 2026-08-30 - for merger review
+# Proposed HOTSHEET changes from elvis - for merger review
 
-> Five entries, all arising from the 2026-08-29 intake of
-> `WePop_Phase1_P1.1_Consolidated_Handoff_Spec_v0.9.docx`. Two update existing entries that the
-> pending proposal batch has made stale; two are new blocking-class items the handoff surfaced that
-> never reached the HOTSHEET or the risk register; one reframes the standing launch blocker around what
-> is actually blocking now that response-time targets have been deferred. Source detail throughout: `workspaces/elvis/handoff-spec-v0.9-intake-2026-08-29.md`.
-> No em-dashes. Governance values ALLOW / BLOCK / ESCALATE.
+> Newest at top. Priority order Blocking, Needs Attention, Watching, Resolved. No em-dashes.
+> Governance values ALLOW / BLOCK / ESCALATE.
 
-## Proposed Hotsheet Entry
-**Date:** 2026-08-30
-**Proposed by:** Elvis
-**Source:** `WePop_Phase1_P1.1_Consolidated_Handoff_Spec_v0.9.docx` §12.1, §12.3, §12.5, §7; intake review
-`workspaces/elvis/handoff-spec-v0.9-intake-2026-08-29.md`
-**Type:** Blocking
-**Summary:** The moderation launch blocker splits into two halves: response-time targets, which Elvis has
-deferred until there are employees to meet them, and moderation capability, which cannot be deferred
-because UGC ships at launch and Korean takedown obligations attach from day one.
-**Key Points:**
-- Updates the existing Blocking entry (open since 2026-08-26) rather than replacing it. Tracked as
-  TASK-034. The blocker does not clear until the pre-launch artifacts below exist.
-- **SLAs deferred, Elvis 2026-08-30.** The handoff spec §12.5 proposes an urgent lane under 4 hours in
-  waking hours, standard 24 hours weekday and 48 hours weekend, and appeals within 72 hours. Elvis's call
-  is not to commit to these now and to revisit once employees are hired. Recorded rather than dropped, so
-  the numbers are available when staffing exists. Two structural notes that go with the deferral: the
-  "waking hours" phrasing was already undefined for a Korea-first launch, and the spec's appeal rule
-  (reviewed by whoever did not make the first decision) is structurally impossible with a single reviewer,
-  so appeals cannot be independent until there is a second person.
-- **Staffing, as it actually stands.** The second reviewer named in the handoff spec is being replaced, so
-  the rota is one reviewer (Elvis) plus a placeholder. This proposal uses **"Reviewer B (to be hired)"**
-  rather than a name-shaped pseudonym, deliberately: a plausible-looking fake name reproduces exactly the
-  failure this entry caught, where an unconfirmed name sat in a spec long enough to be read downstream as
-  a real staffed position.
-- **What is NOT deferred, and why this stays Blocking.** Response *speed* depends on headcount. Response
-  *capability* does not, and it is what the blocker has always been about. At launch the app ships
-  anonymous public-by-default host-rating comments (DEC-014), public Moment comments (DEC-015), DM and
-  user-created group chats (DEC-013), Free Now location-tied rooms (DEC-025), and Discussion on every
-  event and idea. All are live UGC surfaces. Without somewhere for reports to land and someone able to act
-  on them, there is no removal path at all, which is a different and more serious condition than a slow
-  removal path.
-- **Three artifacts required before launch, none of which exist yet, and none of which are SLA
-  commitments:** a basic internal admin queue (a plain web view, explicitly not a product), urgent-report
-  push alerts to whoever is on call, and a one-page written guideline so decisions stay consistent (which
-  matters for a single reviewer over time as much as it does between two people).
-- **Legal obligations do not wait for hiring, and this is the part worth flagging hardest.**
-  정보통신망법 imposes illegal-content takedown duties and the 임시조치 procedure for blinding content
-  pending assessment on a rights-infringement request (legal register L-5 and L-11), and 불법촬영물
-  obligations under 전기통신사업법 apply to the service (L-12). These attach to the service from the day
-  it has users, not from the day it has staff. A deferred internal target is a business choice; a missed
-  statutory takedown window is not.
-- **Day-one metrics, worth keeping even without SLAs:** reports per 1,000 Moments, median
-  time-to-decision, backlog depth, appeal overturn rate. With SLAs deferred these stop being compliance
-  measures and become the hiring trigger instead, which is arguably their more useful role: they are how
-  Elvis learns that one person is no longer enough before it becomes an incident rather than after.
-- **The surface count has grown since the blocker was written.** It originally named four surfaces
-  (anonymous host-rating comments per DEC-014, public moment comments per DEC-015, DM and user-created
-  group chat per DEC-013, Free Now rooms per DEC-025). The handoff adds Discussion, a threaded persistent
-  comment surface present on every event and every idea, before and after the event (§7), and its
-  reportable-target list spans eleven types: user profile, organization profile, event, idea, Moment,
-  individual photo or video, Moment comment, Discussion comment, chat message, chat room, plus a general
-  app feedback entry. One reviewer covering eleven target types across five surfaces is the real exposure;
-  filed as a companion risk in `proposed-risks.md`.
-- **Real mitigations the handoff adds, worth recording because they reduce the load rather than only
-  adding to it:** one generic report model (`report(target_type, target_id, reason_code, reporter_id,
-  note)`) feeding a single queue rather than per-surface tooling; repeat reports by the same user on the
-  same target are idempotent; auto-hide requires a double condition (5+ distinct reporters AND reports
-  from at least 10 percent of distinct viewers) rather than a raw count, which matters in a student
-  community where coordinating five taps is trivial and a raw threshold would hand any group a takedown
-  button; and a `brigade_suspected` flag when reporters are heavily clustered, so coordinated reporting is
-  visible rather than invisible.
-**Decisions Made:**
-| Decision | Owner | Date |
-|----------|-------|------|
-| Moderation response-time SLAs deferred until employees are hired; §12.5 numbers recorded for reuse, not committed | Elvis | 2026-08-30 |
-| Moderation rota is one reviewer plus "Reviewer B (to be hired)"; the previously named second reviewer is being replaced | Elvis | 2026-08-30 |
-| Single generic report model and one queue rather than per-surface tooling | Elvis | 2026-08-30 |
-| Auto-hide gated on a double condition (5+ distinct reporters AND 10 percent of distinct viewers) | Elvis | 2026-08-30 |
+## Pending
 
+<<<<<<< HEAD
 **Action Items:**
 | Item | Owner | Due |
 |------|-------|-----|
@@ -237,10 +167,22 @@ and filed, so this Needs Attention entry closes on merger.
 |------|-------|-----|
 | Move this entry to Resolved once both pending proposals merge | Aakash (merger) | On merge |
 | Update the scope matrix row for general user blocking from later/proposed to phase 1, and clear its "Unbacked / needs a decision" entry | Aakash | On merge |
+=======
+_Queue is empty. Nothing pending._
+>>>>>>> 9232f52265c666b151966dbeb0d86f0f40b141b6
 
 ---
 
 ## Landed
+
+- 2026-08-31: Five HOTSHEET changes landed into `shared/HOTSHEET.md` by the merger. The moderation
+  Blocking entry was rewritten around the speed-vs-capability split (SLAs deferred, three pre-launch
+  artifacts, statutory duties do not wait). Two new Blocking entries added: 위치정보법 KCC registration
+  for the geofenced check-in mode, and the CSAM preserve-and-report runbook. The QR check-in Watching
+  entry was rewritten to track no-show rating abuse (on DEC-034). The group-dynamics-prerequisites Needs
+  Attention entry moved to Resolved (on DEC-036 and DEC-037). "Joy Jeong ops/legal" removed from the
+  conflict-review item 10 name list (position being refilled). Companion risks R4 and R5 landed.
+  Source: `handoff-spec-v0.9-intake-2026-08-29.md`.
 
 - 2026-08-26: The Korea/Stripe payments item was consolidated with Aakash's Korea-payments item and
   landed into `shared/HOTSHEET.md` as a single Needs Attention entry by the merger. Source:

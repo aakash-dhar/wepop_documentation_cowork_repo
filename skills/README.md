@@ -27,6 +27,7 @@ toolkit is Wepop-only and is maintained separately from any other engagement.
 | maintenance | update-tracker | Regenerate the one-screen shared/PROJECT_TRACKER.md status roll-up |
 | maintenance | task-board | Track tasks with lifecycle dates (started, ended, pushed) in shared/TASK-BOARD.md; render the six-view delivery board (shown inline; published at docs/index.html); reconcile pushed dates from git log |
 | maintenance | board-sync | Reconcile the board with what has happened: auto-apply the obvious, evidence-backed card moves (started, finished, pushed, unblocked) and ask Aakash only on the ambiguous ones |
+| maintenance | project-reference | Keep the client project reference page current as Elvis's documents and decisions change: update team/project-reference/data.js with sources, run the two validation passes, rebuild, and publish docs/project-reference.html behind the shared login gate (one login with the dashboard) |
 | maintenance | alignment-check | Cross-check any incoming artifact against DECISIONS + the scope matrix; report divergences tagged MATCH / CHANGED / ADDED / DOCS-DISAGREE / OPEN (the repeatable review aid) |
 | maintenance | compliance-watch | Track legal / privacy items (age gating, PIPA, minors, OTP deliverability, moderation) and flag any decision or design that touches them |
 | delivery | draft-elvis-reply | Draft a client reply to Elvis (chat only) |

@@ -1,29 +1,10 @@
-# Proposed tasks from elvis, 2026-08-30 - for merger review
+# Proposed tasks from elvis - for merger review
 
-> Three tasks from the 2026-08-29 intake of `WePop_Phase1_P1.1_Consolidated_Handoff_Spec_v0.9.docx`.
-> Deliberately kept minimal: TASK-034 already covers standing up moderation (owner, SLA, tooling) and
-> TASK-013 already covers the age/location legal consult, so nothing below duplicates them. Each is work
-> those tasks do not currently reach.
 > No em-dashes. Governance values ALLOW / BLOCK / ESCALATE.
 
-## Proposed Task
-**Date:** 2026-08-30
-**Proposed by:** Elvis
-**Task:** Write the CSAM preservation-and-report runbook as a one-page procedure any reviewer can follow
-unaided, and have DLG Law review it before launch
-**Suggested owner:** Elvis (drafting), Aakash (DLG review)
-**Why / context:** A hard pre-launch legal gate that is not covered by TASK-034's tooling and SLA scope,
-because it is a written legal procedure rather than moderation infrastructure. It matters specifically
-because the intuitive engineering and moderator response (delete it) is the legally wrong action:
-the required handling is preserve, restrict access, and report to the authorities, since deleting
-destroys evidence. The handoff spec is explicit that this must be a written page followable without
-calling Elvis at the moment it happens. With the moderation rota currently at one person plus a
-to-be-hired second reviewer, the runbook is also what makes the procedure transferable to whoever is
-hired, rather than leaving it as knowledge in one head. Source:
-handoff spec §12.5 and legal register L-12 (불법촬영물 obligations under 전기통신사업법); companion
-HOTSHEET entry filed 2026-08-30.
-**Priority:** High
+## Pending
 
+<<<<<<< HEAD
 ## Proposed Task
 **Date:** 2026-08-30
 **Proposed by:** Elvis
@@ -72,7 +53,16 @@ is a separate decision requiring its own review; host rating is out of scope and
 `CLAUDE.md` section 8 has a known stale line flagged 2026-08-26 (the phone-OTP invariant predating
 DEC-011), worth correcting in the same pass. Source: handoff spec §13; intake review item A and Part 5.
 **Priority:** Medium
+=======
+_Queue is empty. Nothing pending._
+>>>>>>> 9232f52265c666b151966dbeb0d86f0f40b141b6
 
 ## Landed
+
+- 2026-08-31: Three tasks landed onto `shared/TASK-BOARD.md` by the merger via task-board, each with a
+  `team/tasks/` detail file. TASK-039 (CSAM preserve-and-report runbook; owner Elvis draft, Aakash DLG
+  review), TASK-040 (route the handoff legal register L-1..L-12 to DLG as one consult, L-3 P0, L-8 into
+  TASK-013; owner Aakash), TASK-041 (adopt the I-N invariant registry into CLAUDE.md, re-scope I-12, fix
+  the stale phone-OTP line; owner Aakash). Source: `handoff-spec-v0.9-intake-2026-08-29.md`.
 
 - 2026-08-18: Landed as TASK-016 (event location map picker) into shared/TASK-BOARD.md, owner Deepak.
