@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wepop Project Reference · BetaCraft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#E63946; --red-d:#C42E3A; --red-t:#fef2f2; --red-t2:#fde4e6;
+  --ink:#17181d; --ink2:#3a3b42; --muted:#6b6b70; --line:#e7e7ea; --line2:#f0f0f2;
+  --bg:#f6f6f7; --card:#ffffff;
+  --green:#1f9d55; --green-t:#e8f6ee; --green-b:#bfe6cf;
+  --amber:#b7791f; --amber-t:#fdf3df; --amber-b:#f1d9a3;
+  --blue:#2a6df4; --blue-t:#eaf1fe;
+  --purple:#6f42c1; --purple-t:#f1ecfa;
+  --grey:#6b7280; --grey-t:#eeeef1;
+  --sh:0 1px 2px rgba(23,24,29,.05); --sh2:0 8px 26px rgba(23,24,29,.10);
+  --font:'Sora',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --sb:264px; --drawer:max(50vw,720px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 var(--font);-webkit-font-smoothing:antialiased}
+a{color:var(--red);text-decoration:none}
+a:hover{text-decoration:underline}
+.topbar{height:4px;background:linear-gradient(90deg,var(--red),#ff7a85 60%,#ffd1d5);}
+.app{display:grid;grid-template-columns:var(--sb) minmax(0,1fr);max-width:1320px;margin:0 auto}
+
+/* ---------- Sidebar ---------- */
+aside{position:sticky;top:0;height:100vh;overflow-y:auto;padding:26px 14px 60px 22px;border-right:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;margin:0 8px 2px;letter-spacing:.1px}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:var(--red);display:inline-block}
+.brand .x{color:var(--muted);font-weight:500;margin-left:2px}
+.brand-sub{color:var(--muted);font-size:11.5px;margin:0 8px 18px}
+.dash{display:inline-block;margin:0 8px 14px;font-size:12px;font-weight:600;color:var(--red);border:1px solid var(--red-t2);background:var(--red-t);padding:4px 10px;border-radius:999px}
+.dash:hover{text-decoration:none;background:var(--red-t2)}
+.grp{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);font-weight:600;margin:18px 8px 6px}
+.nav a{display:flex;align-items:flex-start;gap:10px;padding:6px 8px;border-radius:8px;color:var(--ink2);font-size:13px;line-height:1.35;font-weight:500}
+.nav a:hover{background:var(--red-t);text-decoration:none;color:var(--red-d)}
+.nav a.active{background:var(--red-t);color:var(--red);font-weight:600}
+.nav .g{flex:0 0 14px;font-size:10.5px;font-weight:700;color:var(--red);margin-top:3px;text-align:center;font-family:ui-monospace,Menlo,monospace}
+.nav .g.b{color:var(--blue)} .nav .g.p{color:var(--purple)} .nav .g.gr{color:var(--green)} .nav .g.a{color:var(--amber)} .nav .g.m{color:var(--muted)}
+
+/* ---------- Main ---------- */
+main{padding:38px 56px 120px;min-width:0}
+.eyebrow{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--red);font-weight:700}
+.eyebrow.mu{color:var(--muted)}
+h1{font-size:34px;line-height:1.15;margin:8px 0 8px;letter-spacing:-.4px;font-weight:800}
+.lede{font-size:16px;color:var(--ink2);max-width:760px;margin:0 0 6px}
+.meta{color:var(--muted);font-size:12.5px;margin-top:10px}
+.section{margin-top:54px}
+.section>h2{font-size:24px;letter-spacing:-.3px;margin:0 0 10px;font-weight:800}
+.section>h2 .n{color:var(--red);margin-right:8px}
+.section>p.intro{color:var(--ink2);max-width:780px;margin:0 0 16px}
+hr.sep{border:none;border-top:1px solid var(--line);margin:44px 0 0}
+.note{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px;box-shadow:var(--sh);margin:16px 0}
+.note.warn{background:#fffbeb;border-color:#f1d9a3}
+.note.red{background:var(--red-t);border-color:var(--red-t2)}
+.note b{color:var(--ink)}
+.callout{border:1px solid var(--green-b);background:var(--green-t);border-radius:10px;padding:10px 14px;margin:10px 0;font-size:14px}
+.callout .t{font-weight:700;color:#0f6b3a;font-size:13px;margin-bottom:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:500;color:var(--ink2);box-shadow:var(--sh)}
+.chip.red{background:var(--red-t);border-color:var(--red-t2);color:var(--red-d)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:var(--sh)}
+.tile h4{margin:0 0 6px;font-size:14.5px;font-weight:700}
+.tile p{margin:0;color:var(--ink2);font-size:14px}
+.tile .ref{margin-top:8px;font-size:12px;color:var(--muted)}
+ul.clean{margin:8px 0;padding-left:20px}
+ul.clean li{margin:5px 0;color:var(--ink2)}
+ul.clean li b{color:var(--ink)}
+
+/* ---------- Module cards ---------- */
+.mod{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px 12px;box-shadow:var(--sh);margin:14px 0;transition:box-shadow .15s,border-color .15s;position:relative}
+.mod:hover{box-shadow:var(--sh2);border-color:#dcdce0}
+.mod .head{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.badge{background:var(--ink);color:#fff;font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:700;padding:3px 7px;border-radius:6px;letter-spacing:.5px;margin-top:3px}
+.mod .title{font-size:17px;font-weight:700;letter-spacing:-.1px;cursor:pointer}
+.mod .title:hover{color:var(--red-d)}
+.pill{font-size:10.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:3px 8px;border-radius:999px;margin-top:5px}
+.pill.p1{background:var(--green-t);color:#0f6b3a}
+.pill.p15{background:var(--amber-t);color:#8a5a00}
+.pill.later{background:var(--grey-t);color:var(--grey)}
+.pill.area{background:var(--blue-t);color:#1e4fb8}
+.pill.safety{background:var(--purple-t);color:var(--purple)}
+.pill.fin{background:var(--red-t);color:var(--red-d)}
+.open{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--red);white-space:nowrap;margin-top:4px}
+.open.none{color:var(--green)}
+.mod .sub{color:var(--muted);font-size:13.5px;margin:2px 0 10px 0}
+.mod .summary{color:var(--ink2);font-size:14.5px;margin:6px 0 10px}
+.lbl{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);font-weight:700;margin:12px 0 4px}
+.mod ul{margin:4px 0 6px;padding-left:20px}
+.mod li{margin:5px 0;color:var(--ink2);font-size:14px}
+.mod ul.rules li{list-style:none;position:relative;padding-left:14px}
+.mod ul.rules li::before{content:'';position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;background:var(--green)}
+.mod ul.rules{padding-left:6px}
+.more{margin-top:10px;font-size:12.5px;color:var(--muted);background:var(--line2);border-radius:8px;padding:6px 10px;display:inline-block}
+.full{display:inline-flex;align-items:center;gap:4px;color:var(--red);font-weight:700;font-size:13.5px;margin-top:10px;cursor:pointer;background:none;border:none;padding:0;font-family:inherit}
+.full:hover{color:var(--red-d);text-decoration:underline}
+.mod .foot{border-top:1px solid var(--line2);margin-top:12px;padding-top:9px;font-size:12px;color:var(--muted)}
+.decs{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.dec{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:var(--line2);color:var(--ink2);padding:2px 7px;border-radius:6px;border:1px solid var(--line)}
+.dec.sup{text-decoration:line-through;opacity:.7}
+
+/* ---------- Risks / decision index ---------- */
+.risk{display:grid;grid-template-columns:52px 1fr auto;gap:14px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:10px 0;box-shadow:var(--sh)}
+.risk .id{font-family:ui-monospace,Menlo,monospace;font-weight:800;color:var(--red);font-size:15px}
+.risk .sev{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:var(--amber-t);color:#8a5a00;white-space:nowrap}
+.risk .sev.hi{background:var(--red-t);color:var(--red-d)}
+.risk p{margin:4px 0 0;color:var(--ink2);font-size:14px}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px;margin-top:10px}
+.drow{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13px;box-shadow:var(--sh)}
+.drow .k{font-family:ui-monospace,Menlo,monospace;font-weight:700;color:var(--red);white-space:nowrap;font-size:12px;margin-top:1px}
+.drow.sup .k{color:var(--muted);text-decoration:line-through}
+.drow span{color:var(--ink2)}
+dl.gloss{margin:10px 0}
+dl.gloss dt{font-weight:700;margin-top:10px}
+dl.gloss dd{margin:2px 0 0 0;color:var(--ink2);font-size:14px}
+
+/* ---------- Drawer ---------- */
+.ovl{position:fixed;inset:0;background:rgba(23,24,29,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:40}
+.ovl.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:var(--drawer);background:var(--card);box-shadow:-12px 0 40px rgba(23,24,29,.14);transform:translateX(104%);transition:transform .24s cubic-bezier(.2,.7,.2,1);z-index:50;display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.dh{display:flex;align-items:center;gap:10px;padding:16px 28px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--card)}
+.dh .t{font-weight:700;font-size:16px;flex:1;line-height:1.3}
+.dh .x{border:none;background:none;font-size:22px;line-height:1;color:var(--muted);cursor:pointer;padding:4px 6px;border-radius:8px}
+.dh .x:hover{background:var(--line2);color:var(--ink)}
+.db{padding:16px 30px 70px;overflow-y:auto}
+.db .pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.db .lbl{margin-top:18px}
+.db p,.db li{font-size:14px;color:var(--ink2)}
+.db ul{margin:4px 0;padding-left:20px}
+.db li{margin:5px 0}
+.mini{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 13px;margin:8px 0;font-size:13.5px;color:var(--ink2);box-shadow:var(--sh)}
+.mini.open{border-left:3px solid var(--red)}
+.mini.build{border-left:3px solid var(--blue)}
+.mini.rule{border-left:3px solid var(--green)}
+.mini .k{font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:700;color:var(--red);margin-right:6px}
+.db .decs{margin-top:6px}
+.dfoot{margin-top:22px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+
+/* ---------- Floating ---------- */
+.fab{position:fixed;right:22px;bottom:22px;background:var(--card);border:1px solid var(--line);box-shadow:var(--sh2);border-radius:999px;padding:9px 14px;font-size:13px;font-weight:600;color:var(--ink);z-index:30;display:flex;gap:8px;align-items:center}
+.fab .c{font-size:12px;color:var(--muted);font-weight:500}
+.fab .d{width:8px;height:8px;border-radius:50%;background:var(--red)}
+kbd{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:var(--line2);border:1px solid var(--line);border-radius:5px;padding:1px 5px;color:var(--ink2)}
+
+
+/* ---------- Elvis sourced detail ---------- */
+.etag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:2px 7px;border-radius:999px;margin-right:6px;vertical-align:middle;white-space:nowrap}
+.etag.dec{background:var(--green-t);color:#0f6b3a}
+.etag.ed{background:var(--blue-t);color:#1e4fb8}
+.etag.sup{background:var(--grey-t);color:var(--grey)}
+.etag.conf{background:var(--red-t);color:var(--red-d)}
+.eitem{border:1px solid var(--line);border-left:3px solid var(--line);border-radius:10px;padding:9px 12px;margin:7px 0;font-size:13.5px;color:var(--ink2);background:var(--card);box-shadow:var(--sh)}
+.eitem.dec{border-left-color:var(--green)} .eitem.ed{border-left-color:var(--blue)} .eitem.sup{border-left-color:#b9bcc4;color:var(--muted)} .eitem.conf{border-left-color:var(--red)}
+.src{display:inline-block;margin-top:5px;font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:var(--muted);background:var(--line2);border:1px solid var(--line);border-radius:6px;padding:1px 6px;max-width:100%;overflow-wrap:anywhere}
+.src::before{content:"src ";color:var(--red);font-weight:700}
+.tagq{font-size:11px;color:var(--muted);font-weight:500;text-transform:none;letter-spacing:0;margin-left:2px}
+.mod.elvis{border-left:4px solid var(--blue)}
+.pill.elvis{background:var(--blue-t);color:#1e4fb8}
+.pill.conf{background:var(--red-t);color:var(--red-d)}
+.subhead{margin:34px 0 4px;padding:14px 18px;background:var(--blue-t);border:1px solid #cfdcf7;border-radius:12px;font-size:14px;color:#1e3f8f}
+.subhead b{display:block;font-size:15px;margin-bottom:3px;color:#123577}
+.cnt{display:inline-block;background:var(--line2);border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-size:11.5px;color:var(--ink2);font-weight:600;margin-left:6px}
+
+.plain{background:var(--red-t);border:1px solid var(--red-t2);border-radius:10px;padding:12px 16px;margin:10px 0 4px;font-size:14.5px;line-height:1.6;color:#3a2a2c}
+.plbl{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:4px}
+
+@media (max-width:980px){
+  .app{grid-template-columns:1fr}
+  aside{position:static;height:auto;border-right:none;border-bottom:1px solid var(--line);padding:18px 16px}
+  main{padding:26px 18px 90px}
+  .grid2{grid-template-columns:1fr}
+  :root{--drawer:92vw}
+  .risk{grid-template-columns:44px 1fr}
+  .risk .sev{grid-column:2}
+}
+</style>
+</head>
+<body>
+<div class="topbar"></div>
+<div class="app">
+<aside>
+  <div class="brand"><span class="dot"></span>BetaCraft <span class="x">× Wepop</span></div>
+  <div class="brand-sub">WEP001 · Project reference · as of <span data-meta="asOf"></span></div>
+  <a class="dash" href="index.html">← Delivery dashboard</a>
+  <div class="nav" id="nav">
+    <div class="grp">Overview</div>
+    <a href="#s-what"><span class="g">↑</span>What Wepop is</a>
+    <a href="#s-objects"><span class="g b">◆</span>Core objects</a>
+    <a href="#s-phase"><span class="g gr">▤</span>Phase plan</a>
+    <a href="#s-how"><span class="g m">i</span>How to read this</a>
+    <div class="grp">The modules (24 decided + 7 Elvis-designed)</div>
+    <div id="navmods"></div>
+    <div class="grp">Cross-cutting</div>
+    <a href="#s-principles"><span class="g p">±</span>Principles &amp; invariants</a>
+    <a href="#s-data"><span class="g b">#</span>Data-model notes</a>
+    <a href="#s-legal"><span class="g p">§</span>Legal &amp; compliance</a>
+    <a href="#s-risks"><span class="g">!</span>Risk register</a>
+    <a href="#s-open"><span class="g a">?</span>Open items</a>
+    <a href="#s-gov"><span class="g m">→</span>Governance</a>
+    <a href="#s-decs"><span class="g gr">✓</span>Decision index</a>
+    <a href="#s-gloss"><span class="g m">한</span>Glossary</a>
+  </div>
+</aside>
+
+<main>
+  <div class="eyebrow">Internal · Project reference · Confidential</div>
+  <h1>Wepop - Complete Project Reference</h1>
+  <p class="lede">An in-depth walkthrough of the product: what it is, every module and how its flow works, the phase plan, the data-model and build notes, and the decisions, risks and open items behind it all. Click any module's <b>Full detail ▸</b> to open its write-up, including Elvis's own design detail with a source on every line.</p>
+  <div class="meta">Grounded in <b>shared/DECISIONS.md</b> (DEC-001 to <span data-meta="lastDec"></span>), which wins wherever anything disagrees · generated <span data-meta="asOf"></span> · Team: Aakash (PM, merger, financials), Elvis (client &amp; designer), Deepak (tech lead)</div>
+
+  <!-- ============ WHAT ============ -->
+  <div class="section" id="s-what">
+    <h2><span class="n">01</span>What Wepop is</h2>
+    <p class="intro">Wepop is an <b>invite-first, location-based events and meetup app</b>: a tool for getting people together in the real world around shared activities. It is deliberately a meetup app, <b>not a dating app</b>, and much of the product design exists to hold that line (the anti-stalking visibility model, attendee-list gating, the no-paid-boost rule). Focus launch markets are <b>Korea and the US</b>.</p>
+    <p class="intro">It is being <b>rebuilt on top of an existing Wepop codebase</b>, salvaged and extended with AI-assisted build (DEC-008). That pushes technical choices toward reuse: recurring events are linked copies rather than a new multi-date object, so every existing per-event screen keeps working.</p>
+    <div class="grid2">
+      <div class="tile"><h4>Invite-first</h4><p>New users arrive through an invitation to a specific event or host, or wait on a waitlist that auto-promotes. Both a growth model and a real safety mitigation, cited as structural protection in the age-gate reasoning.</p><div class="ref">DEC-012, DEC-024</div></div>
+      <div class="tile"><h4>Real-world-first</h4><p>The app pushes people toward attending, hosting and remembering real events (moments, ratings, check-in, cohorts) rather than browsing people. Discovery is about activities and who you already know.</p><div class="ref">DEC-006, DEC-020</div></div>
+    </div>
+    <div class="lbl" style="margin-top:18px">Status · <span data-meta="asOf"></span></div>
+    <div class="chips">
+      <span class="chip">Phase 1 design deepening</span><span class="chip">No build tasks started (board)</span><span class="chip">RAG: green with a watch</span>
+      <span class="chip red">Blocker · Moderation capability</span><span class="chip red">Blocker · 위치정보법 KCC registration</span><span class="chip red">Blocker · CSAM runbook</span>
+    </div>
+  </div>
+
+  <!-- ============ OBJECTS ============ -->
+  <div class="section" id="s-objects">
+    <h2><span class="n">02</span>Core objects</h2>
+    <p class="intro">Everything in the app hangs off five objects.</p>
+    <div class="grid2">
+      <div class="tile"><h4>Event</h4><p>A concrete activity at a place and time, with details, a Discussion board, media and chat. Standalone, one occurrence of a recurring group, or a member of one or more Series. Has a seven-status lifecycle (handoff spec section 3) including planning, live, completed and deleted, with a 60-day expiry for a planning event that never gets a date, and becomes largely immutable once completed to protect its rating record.</p><div class="ref">DEC-021, DEC-022, DEC-043</div></div>
+      <div class="tile"><h4>Idea</h4><p>Something a user wants to do but is not hosting. Others rally around it (Interested, Discussion, time/place polls) and can spin a real Event out of it. No fixed date; behaves like a subreddit for a topic, with its own lifecycle. No media upload on Ideas.</p><div class="ref">DEC-009, DEC-040</div></div>
+      <div class="tile"><h4>Event Series</h4><p>A host-created thematic hub page (cover, title, description, tags), not itself joinable but likeable, shareable and discussable, with events attached over time. Like an Idea but with a locked add-permission. Phase 1.5.</p><div class="ref">DEC-022</div></div>
+      <div class="tile"><h4>User profile</h4><p>The person: birthdate, neighborhood, gender, languages, personality and interest tags, university, followers, created events/ideas, saved items and moments. Public in phase 1 (private accounts deferred).</p><div class="ref">DEC-005, DEC-015</div></div>
+      <div class="tile" style="grid-column:1/-1"><h4>Business / Organization profile</h4><p>A multi-member account. University clubs first, promotional accounts later. Ownership transfers cleanly as officers turn over, and enforcement now propagates from a user to the orgs they operate.</p><div class="ref">DEC-024, DEC-044</div></div>
+    </div>
+  </div>
+
+  <!-- ============ PHASE ============ -->
+  <div class="section" id="s-phase">
+    <h2><span class="n">03</span>Phase plan</h2>
+    <p class="intro">Boundaries set by DEC-009 (superseded for chat/calendar by DEC-013), DEC-024 and DEC-025, refined by the later decisions. Per-feature status lives in the scope matrix.</p>
+    <div class="lbl">Phase 1 · the build in front of the team</div>
+    <div class="chips">
+      <span class="chip">Core objects</span><span class="chip">Waitlist auto-promote</span><span class="chip">Social login + phone, Korea PASS</span><span class="chip">Age gate + country cascade</span><span class="chip">Neighborhood home location + map picker</span><span class="chip">Events + Ideas lifecycle</span><span class="chip">Event schedule</span><span class="chip">Ratings + feedback (check-in = badge)</span><span class="chip">Moments with video</span><span class="chip">Live stories</span><span class="chip">DMs + group chat (text)</span><span class="chip">Busy-time ingestion + add-to-calendar</span><span class="chip">Cohorts + recommendation</span><span class="chip">Free Now</span><span class="chip">Icebreakers, tips</span><span class="chip">General user blocking</span><span class="chip">Change notifications</span><span class="chip">Host accountability</span><span class="chip">Korean localization</span><span class="chip">A/B testing (proposed, phase unconfirmed)</span><span class="chip red">Payments built, gated off</span>
+    </div>
+    <div class="lbl">Phase 1.5 · the go-live wave</div>
+    <div class="chips"><span class="chip">Payments go live (ticketing + fee)</span><span class="chip">Individual premium tier (held)</span><span class="chip">Full in-app calendar</span><span class="chip">Recurring events</span><span class="chip">Event Series</span><span class="chip">Co-hosts</span></div>
+    <div class="lbl">Later</div>
+    <div class="chips"><span class="chip">Sunday Deck</span><span class="chip">Apply-to-join</span><span class="chip">Annual Wrapped</span><span class="chip">Memories resurfacing</span><span class="chip">Private accounts</span><span class="chip">Learned per-user weights</span><span class="chip">Look-alike host affinity</span><span class="chip">Gamification / ads / marketplace / web</span></div>
+  </div>
+
+  <div class="section" id="s-how">
+    <h2><span class="n">04</span>How to read the modules</h2>
+    <div class="note">Each module card opens with an <b>In plain terms</b> explainer for non-technical readers, then <b>what it is</b>, the full <b>user flow</b> and <b>rules</b>, its <b>phase</b> and area, the <b>decisions</b> it rests on, and a count of <b>open items</b>. Click <b style="color:var(--red)">Full detail ▸</b> (or the title) to open the drawer with the <b>user flow</b>, the <b>rules</b>, the <b>build notes for Deepak</b>, and the <b>open items</b>. Press <kbd>Esc</kbd> or click outside to close. Where the older product overview and compliance register (2026-08-26) describe the pre-DEC-034 state, this reference reflects the current decisions.</div>
+  </div>
+
+  <hr class="sep">
+  <!-- ============ MODULES ============ -->
+  <div class="section" id="s-modules">
+    <h2><span class="n">05</span>The modules</h2>
+    <p class="intro">Twenty-four modules backed by landed decisions, ordered the way a user meets them, followed by seven modules Elvis has designed but that have not yet landed as decisions. Every module drawer now carries Elvis's own design detail with a source citation on each line: <span class="etag dec">Decided</span> is backed by a DEC, <span class="etag ed">Elvis design</span> is in his file but not yet a decision, <span class="etag sup">Superseded</span> is what an earlier draft said before a DEC changed it.</p>
+    <div id="mods"></div>
+  </div>
+
+  <hr class="sep">
+  <!-- ============ PRINCIPLES ============ -->
+  <div class="section" id="s-principles">
+    <h2><span class="n">06</span>Cross-cutting principles and invariants</h2>
+    <p class="intro">These hold across modules and are the quickest sanity check for any new design.</p>
+    <div class="grid2" id="principles"></div>
+  </div>
+
+  <!-- ============ DATA ============ -->
+  <div class="section" id="s-data">
+    <h2><span class="n">07</span>Data-model notes</h2>
+    <p class="intro">Not a schema, but the recurring model decisions that shape the build.</p>
+    <ul class="clean" id="datamodel"></ul>
+  </div>
+
+  <!-- ============ LEGAL ============ -->
+  <div class="section" id="s-legal">
+    <h2><span class="n">08</span>Legal, privacy and compliance</h2>
+    <p class="intro">Tracked in the compliance register (dated 2026-08-26, so it predates the handoff-spec legal register and DEC-034 to DEC-044; a compliance-watch refresh is due).</p>
+    <div id="legal"></div>
+  </div>
+
+  <!-- ============ RISKS ============ -->
+  <div class="section" id="s-risks">
+    <h2><span class="n">09</span>Risk register</h2>
+    <p class="intro">From the HOTSHEET Risk Register Snapshot. Severity is Likelihood x Impact.</p>
+    <div id="risks"></div>
+  </div>
+
+  <!-- ============ OPEN ============ -->
+  <div class="section" id="s-open">
+    <h2><span class="n">10</span>Open items and decisions still pending</h2>
+    <ul class="clean" id="openitems"></ul>
+  </div>
+
+  <!-- ============ GOV ============ -->
+  <div class="section" id="s-gov">
+    <h2><span class="n">11</span>Governance: how the record works</h2>
+    <div class="grid2" id="gov"></div>
+  </div>
+
+  <!-- ============ DECS ============ -->
+  <div class="section" id="s-decs">
+    <h2><span class="n">12</span>Decision index · DEC-001 to <span data-meta="lastDec"></span></h2>
+    <p class="intro">One line each. Struck-through entries are superseded (never deleted; they keep a pointer to their replacement).</p>
+    <div class="dgrid" id="decindex"></div>
+  </div>
+
+  <!-- ============ GLOSS ============ -->
+  <div class="section" id="s-gloss">
+    <h2><span class="n">13</span>Glossary of Korean terms</h2>
+    <dl class="gloss" id="gloss"></dl>
+    <div class="meta" style="margin-top:36px;text-align:center">BetaCraft · Unlock growth through custom software · Generated <span data-meta="asOf"></span> from shared/DECISIONS.md and the phase-plan source files. When this and DECISIONS.md disagree, DECISIONS.md wins.</div>
+  </div>
+</main>
+</div>
+
+<div class="ovl" id="ovl"></div>
+<div class="drawer" id="drawer" role="dialog" aria-modal="true">
+  <div class="dh"><span class="badge" id="dbadge">M00</span><div class="t" id="dtitle">Title</div><button class="x" id="dclose" aria-label="Close">×</button></div>
+  <div class="db" id="dbody"></div>
+</div>
+<div class="fab"><span class="d"></span><span id="fabcounts"></span> <span class="c">· Esc closes detail</span></div>
+<script>
+/*__DATA__*/
+function phaseOf(ph){ if(!ph) return ""; if(ph.includes("1.5")) return "1.5"; if(/^1\b/.test(ph.trim())) return "1"; if(/later/i.test(ph)) return "later"; return ""; }
+function splitSrc(t){ const i=t.lastIndexOf(" | src: "); return i<0?{text:t,src:""}:{text:t.slice(0,i),src:t.slice(i+8)}; }
+ELVIS.new.forEach((n,i)=>{
+  const sm=splitSrc(n.summary);
+  M.push({id:"M"+(25+i), num:"4."+(25+i), t:n.title, area:"Elvis design", ph:phaseOf(n.phase), phRaw:n.phase, tags:["elvis"], sub:n.sub, sum:sm.text, sumSrc:sm.src,
+    flow:n.flow.map(x=>x.text), rules:n.rules.map(x=>x.text), build:n.build.map(x=>x.text), decs:[], open:n.open.map(x=>x.text),
+    raw:n, elvisStatus:n.status, conflict:/conflict/i.test(n.status)});
+});
+function tagClass(tag){ const t=tag.toUpperCase(); if(t.startsWith("SUPERSEDED")) return "sup"; if(t.startsWith("DECIDED")) return "dec"; return "ed"; }
+function tagLabel(tag){ const m=tag.match(/^(DECIDED[^;,(]*|SUPERSEDED by DEC-\d+|ELVIS DESIGN)/i); const head=m?m[1].trim():tag; const rest=tag.slice(head.length).replace(/^[;,\s]+/,""); return `<span class="etag ${tagClass(tag)}">${head}</span>${rest?`<span class="tagq">${rest}</span>`:""}`; }
+const eitem = it => `<div class="eitem ${tagClass(it.tag)}">${tagLabel(it.tag)}<div style="margin-top:4px">${it.text}</div>${it.src?`<span class="src">${it.src}</span>`:""}</div>`;
+const sitem = (x,cls) => `<div class="eitem ${cls}"><div>${x.text}</div>${x.src?`<span class="src">${x.src}</span>`:""}</div>`;
+
+/* ---------- render ---------- */
+const esc = s => s;
+const phPill = p => p==="1" ? '<span class="pill p1">Phase 1</span>' : p==="1.5" ? '<span class="pill p15">Phase 1.5</span>' : p==="later" ? '<span class="pill later">Later</span>' : '<span class="pill later">Phase unstated</span>';
+const tagPill = t => ({elvis:'<span class="pill elvis">Elvis design · no DEC yet</span>',safety:'<span class="pill safety">Safety</span>',legal:'<span class="pill safety">Legal</span>',financials:'<span class="pill fin">Financials</span>',korea:'<span class="pill area">Korea</span>'})[t]||'';
+const decChip = d => { const [k,f]=d.split(":"); return `<span class="dec${f==="sup"?" sup":""}" title="${f==="sup"?"superseded":"active"}">${k}</span>`; };
+
+function card(m){
+  const openN = m.open.length;
+  const eN = (ELVIS.modules[m.id]||[]).length;
+  return `${m.id==="M25"?'<div class="subhead"><b>Elvis-designed modules, not yet decisions</b>The seven modules below come from design documents Elvis wrote in his workspace. Each is grounded only in his file and carries its source on every line. None has landed as a DEC yet; where one conflicts with a landed decision it is flagged in red rather than treated as scope.</div>':""}<div class="mod${m.raw?" elvis":""}" id="${m.id}">
+    <div class="head"><span class="badge">${m.id}</span><span class="title" data-id="${m.id}">${m.num} · ${m.t}</span>${phPill(m.ph)}${m.raw?"":`<span class="pill area">${m.area}</span>`}${m.tags.map(tagPill).join("")}${m.conflict?'<span class="pill conf">Conflicts with a landed DEC</span>':""}
+      <span class="open${openN?"":" none"}">${openN?"● "+openN+" open":"✓ no open items"}</span></div>
+    <div class="sub">${m.sub}</div>
+    ${PLAIN[m.id]?`<div class="plain"><div class="plbl">In plain terms</div>${PLAIN[m.id]}</div>`:""}
+    <div class="lbl">What it is</div><div class="summary">${m.sum}</div>
+    <div class="lbl">User flow</div><ul>${m.flow.map(x=>`<li>${x}</li>`).join("")}</ul>
+    ${m.rules.length?`<div class="lbl">Rules that govern it</div><ul class="rules">${m.rules.map(x=>`<li>${x}</li>`).join("")}</ul>`:""}
+    <div class="more">In the drawer: ${m.build.length} build note${m.build.length===1?"":"s"} for Deepak · ${openN} open item${openN===1?"":"s"} · ${m.raw?"every line with its source":`${eN} sourced Elvis detail${eN===1?"":"s"}`}</div>
+    <button class="full" data-id="${m.id}">Full detail ▸</button>
+    <div class="foot">${m.raw?`Elvis design · ${m.flow.length} flow steps · ${m.rules.length} rules · ${m.build.length} build notes · ${openN} open · every line sourced`:`${m.decs.length} decision${m.decs.length>1?"s":""} · ${m.flow.length} flow steps · ${m.rules.length} rules · ${m.build.length} build notes · ${openN} open · <b style="color:var(--blue)">${eN} sourced Elvis details</b>`}<div class="decs">${m.decs.map(decChip).join("")}</div></div>
+  </div>`;
+}
+document.getElementById("mods").innerHTML = M.map(card).join("");
+document.getElementById("navmods").innerHTML = M.map((m,i)=>`<a href="#${m.id}"><span class="g">${m.num.split(".")[1]}</span>${m.t}</a>`).join("");
+
+document.getElementById("principles").innerHTML = PRINCIPLES.map(p=>`<div class="tile"><h4>${p[0]}</h4><p>${p[1]}</p><div class="ref">${p[2]}</div></div>`).join("");
+document.getElementById("datamodel").innerHTML = DATAMODEL.map(x=>`<li>${x}</li>`).join("");
+document.getElementById("legal").innerHTML = LEGAL.map(l=>`<div class="note ${l[0]}"><b>${l[1]}.</b> ${l[2]}</div>`).join("");
+document.getElementById("risks").innerHTML = RISKS.map(r=>`<div class="risk"><div class="id">${r[0]}</div><div><b>${r[1]}</b><p>${r[2]}</p><p style="font-size:12.5px;color:var(--muted)">Owner: ${r[4]} · ACTIVE</p></div><span class="sev ${r[5]}">${r[3]}</span></div>`).join("");
+document.getElementById("openitems").innerHTML = OPEN.map(x=>`<li>${x}</li>`).join("");
+document.getElementById("gov").innerHTML = GOV.map(g=>`<div class="tile"><h4>${g[0]}</h4><p>${g[1]}</p></div>`).join("");
+document.getElementById("decindex").innerHTML = DECS.map(d=>`<div class="drow${d[2]?" sup":""}"><span class="k">${d[0]}</span><span>${d[1]}${d[2]?" (superseded)":""}</span></div>`).join("");
+document.getElementById("gloss").innerHTML = GLOSS.map(g=>`<dt>${g[0]}</dt><dd>${g[1]}</dd>`).join("");
+
+document.querySelectorAll("[data-meta]").forEach(el=>{ el.textContent = META[el.dataset.meta]||""; });
+(function(){ const sourced = Object.values(ELVIS.modules).reduce((a,v)=>a+v.length,0) + ELVIS.new.reduce((a,n)=>a+["flow","rules","build","open"].reduce((b,k)=>b+(n[k]||[]).length,0),0);
+  document.getElementById("fabcounts").textContent = `${M.length} modules · ${DECS.length} decisions · ${RISKS.length} risks · ${sourced} sourced Elvis details`; })();
+/* ---------- drawer ---------- */
+const drawer=document.getElementById("drawer"), ovl=document.getElementById("ovl");
+function openDrawer(id){
+  const m = M.find(x=>x.id===id); if(!m) return;
+  document.getElementById("dbadge").textContent = m.id;
+  document.getElementById("dtitle").textContent = m.num+" · "+m.t;
+  document.getElementById("dbody").innerHTML = `
+    <div class="pills">${phPill(m.ph)}${m.raw?"":`<span class="pill area">${m.area}</span>`}${m.tags.map(tagPill).join("")}${m.conflict?'<span class="pill conf">Conflicts with a landed DEC</span>':""}</div>
+    ${PLAIN[m.id]?`<div class="plain"><div class="plbl">In plain terms</div>${PLAIN[m.id]}</div>`:""}
+    <div class="lbl">What it is</div><p style="font-size:14.5px;color:var(--ink);margin-top:4px">${m.sum}</p>
+    <div class="lbl">User flow</div><ul>${m.flow.map(x=>`<li>${x}</li>`).join("")}</ul>
+    <div class="lbl">Rules that govern it</div>${m.rules.map(x=>`<div class="mini rule">${x}</div>`).join("")}
+    <div class="lbl">Build notes for Deepak</div>${m.build.map(x=>`<div class="mini build">${x}</div>`).join("")}
+    <div class="lbl">Open items ${m.open.length?`<span style="color:var(--red)">(${m.open.length})</span>`:""}</div>${m.open.length?m.open.map((x,i)=>`<div class="mini open"><span class="k">O${i+1}</span>${x}</div>`).join(""):`<div class="mini" style="color:var(--green)">No open items on this module.</div>`}
+    ${m.raw?`<div class="lbl">Status, in Elvis's file</div><div class="eitem ${m.conflict?"conf":"ed"}">${m.elvisStatus}${m.phRaw?`<div style="margin-top:4px;color:var(--muted)">Phase, as stated: ${m.phRaw}</div>`:""}${m.sumSrc?`<span class="src">${m.sumSrc}</span>`:""}</div>
+    <div class="lbl">Sources per line</div>${["flow","rules","build","open"].map(k=>m.raw[k].length?`<div style="font-size:11px;color:var(--muted);margin:8px 0 2px;text-transform:uppercase;letter-spacing:1px">${k}</div>`+m.raw[k].map(x=>sitem(x,"ed")).join(""):"").join("")}`
+    :`<div class="lbl">Elvis's design detail, sourced <span class="cnt">${(ELVIS.modules[m.id]||[]).length}</span></div>${(ELVIS.modules[m.id]||[]).length?(ELVIS.modules[m.id]).map(eitem).join(""):`<div class="mini" style="color:var(--muted)">No additional sourced detail beyond the decisions for this module.</div>`}`}
+    <div class="lbl">Governing decisions</div><div class="decs">${m.decs.length?m.decs.map(decChip).join(""):'<span class="dec">none landed</span>'}</div>
+    <div class="dfoot">Source: shared/DECISIONS.md. When this write-up and DECISIONS.md disagree, DECISIONS.md wins.</div>`;
+  drawer.classList.add("on"); ovl.classList.add("on"); document.body.style.overflow="hidden";
+  document.getElementById("dbody").scrollTop=0;
+  history.replaceState(null,"","#"+m.id);
+}
+function closeDrawer(){ drawer.classList.remove("on"); ovl.classList.remove("on"); document.body.style.overflow=""; }
+document.addEventListener("click",e=>{
+  const b=e.target.closest(".full,.title"); if(b){ openDrawer(b.dataset.id); return; }
+  if(e.target.id==="dclose"||e.target.id==="ovl") closeDrawer();
+});
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeDrawer(); });
+
+/* ---------- scroll spy ---------- */
+const links=[...document.querySelectorAll("#nav a")];
+const targets=links.map(a=>document.querySelector(a.getAttribute("href"))).filter(Boolean);
+const io=new IntersectionObserver(es=>{
+  es.forEach(en=>{ if(en.isIntersecting){ links.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+en.target.id)); } });
+},{rootMargin:"-20% 0px -70% 0px",threshold:0});
+targets.forEach(t=>io.observe(t));
+/* open drawer if URL hash points at a module */
+if(location.hash && /^#M\d\d$/.test(location.hash)){ setTimeout(()=>openDrawer(location.hash.slice(1)),300); }
+</script>
+</body>
+</html>

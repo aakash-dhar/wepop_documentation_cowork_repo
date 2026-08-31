@@ -33,6 +33,9 @@ body{background:var(--plane);color:var(--ink);font:15px/1.6 "Inter",system-ui,-a
 .logomark{width:23px;height:23px;border-radius:6px;background:var(--brand);color:#fff;font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;line-height:1}
 .logomark-img{height:26px;width:auto;display:block}
 .brandnav{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.66);letter-spacing:.02em}
+.brandlink{margin-left:14px;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.38);padding:4px 11px;border-radius:999px;transition:background .15s}
+.brandlink:hover{background:rgba(255,255,255,.14);text-decoration:none}
+.brandbar .inner{display:flex;align-items:center;gap:8px}
 /* page header */
 .hdr{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px}
 .kicker{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);margin:0 0 6px}
@@ -279,7 +282,7 @@ body{background:var(--plane);color:var(--ink);font:15px/1.6 "Inter",system-ui,-a
 </style></head>
 <body>
 <div class="topaccent"></div>
-<div class="brandbar"><div class="container inner"><span class="logo"><img class="logomark-img" src="https://betacraft.com/logo.svg" alt="BetaCraft" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'" /><span class="logo-fallback"><span class="logomark">b</span>betacraft</span></span><span class="brandnav">Delivery status</span></div></div>
+<div class="brandbar"><div class="container inner"><span class="logo"><img class="logomark-img" src="https://betacraft.com/logo.svg" alt="BetaCraft" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'" /><span class="logo-fallback"><span class="logomark">b</span>betacraft</span></span><span class="brandnav">Delivery status</span><a class="brandnav brandlink" href="project-reference.html" title="The complete module-by-module project reference">Project reference →</a></div></div>
 <div class="container pagepad">
 <div class="hdr">
   <div><div class="kicker">Delivery status</div><div class="h1">Wepop</div><div class="hsub">WEP001 &middot; as of 2026-08-31</div></div>

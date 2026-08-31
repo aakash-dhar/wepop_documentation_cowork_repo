@@ -98,6 +98,9 @@ mechanism (DEC-030 removed location from the formula), and the Event multi-day d
 | Strategy | `shared/PROJECT_STRATEGY.md` | Commercial narrative |
 | Merge queue | `shared/MERGE-REVIEW.md` | |
 | Product overview | `architecture/phase-plan/wepop-product-overview.md` | App feature map and phase-1 scope |
+| Full project reference | `architecture/phase-plan/wepop-project-reference.md` | Complete module-by-module walkthrough, flows, data-model notes, decisions, risks (2026-08-31) |
+| Project reference (client page) | `docs/project-reference.html` | BetaCraft-styled module reference with detail drawers and sourced Elvis detail; behind the dashboard login gate; linked from the dashboard header |
+| Project reference (pipeline) | `team/project-reference/` | template.html + data.js + build.py; maintained by the project-reference skill; never hand-edit the built HTML |
 | Scope matrix | `architecture/phase-plan/wepop-scope-matrix.md` | Per-feature phase, status, owner, linked DEC |
 | Emails | `comms/emails/` | `NN_YYYY-MM-DD_kebab-subject.md` |
 | Meeting notes | `comms/meeting-notes/` | summary + `_TRANSCRIPT.md` |

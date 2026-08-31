@@ -119,12 +119,12 @@ GATE_TEMPLATE = """{marker}
 """
 
 
-def gate_html(html: str, user: str, password: str) -> str:
+def gate_html(html: str, user: str, password: str, salt: str = None) -> str:
     if MARKER in html:
         # strip any previous gate block so re-running is idempotent
         html = re.sub(re.escape(MARKER) + r".*?</script>\s*",
                       "", html, count=1, flags=re.DOTALL)
-    salt = secrets.token_hex(8)
+    salt = salt or secrets.token_hex(8)
     digest = hashlib.sha256((salt + user + ":" + password).encode("utf-8")).hexdigest()
     block = GATE_TEMPLATE.format(marker=MARKER, salt=salt, hash=digest)
     m = re.search(r"<body[^>]*>", html, flags=re.IGNORECASE)
@@ -141,11 +141,13 @@ def main():
                     help="output path (repeatable)")
     ap.add_argument("--user", required=True, help="username")
     ap.add_argument("--password", required=True, help="password (not stored in the page)")
+    ap.add_argument("--salt", default=None,
+                    help="optional fixed salt (16 hex chars). Use the same salt across pages so one login unlocks all of them")
     args = ap.parse_args()
 
     with open(args.src, "r", encoding="utf-8") as f:
         html = f.read()
-    gated = gate_html(html, args.user, args.password)
+    gated = gate_html(html, args.user, args.password, args.salt)
     for out in args.outs:
         os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
         with open(out, "w", encoding="utf-8") as f:
