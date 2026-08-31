@@ -4,6 +4,61 @@
 
 ---
 
+## 2026-08-31 - Items #9 and #10 closed: stars fixed, check-in reversed to ticketing-standard and reduced to
+an operations tool, a verification layer designed then removed, and an invariant reverted after finding the
+error was mine
+
+Start-session found the previous session's nine files committed as `f6a76c7` but the merger queue untouched,
+so flagged that items #9 and #10 sit on top of proposals that supersede active decisions; Elvis chose to
+proceed on his own calls and chase the merge separately. Closed two items DEC-014 flagged open on 2026-08-19
+and never resolved: **stars are 1 to 5 with unrated as NULL** (a 0 is not expressible in a star widget, a
+skippable field needs its own sentinel, and a 0 in the average would penalise every host whose attendees
+skipped feedback), and the Moments-as-one-door question, which the handoff already answered. Feedback stays
+**uniformly anonymous** (optional attribution would destroy anonymity for whoever used it, and anonymity is
+doing the work Airbnb needs double-blind publication for), gets a **7-day edit/withdraw window measured from
+submission** (Airbnb's pattern only works because their review period closes and §5.2 says ours never does),
+and becomes visible to its author via a **"My feedback" profile entry** slotted into the P1.1 three-tab
+restructure, with the rule that this is the only surface where the author-to-feedback link ever appears.
+On item #10, researched ticketing practice and **reversed check-in to host-scans-attendee**: staff scanning
+is universal, and the structural reason is enforcement, since a gate must be able to deny entry. Check-in
+became **non-universal** (required on ticketed, host-toggle on capacity events, free for every host, with
+analytics the paid part) and attendee self-scan deferred as **self-service mode**, a naming correction worth
+keeping since it is not offline-capable. That **likely de-blocks L-3**, since the 위치정보법 exposure attaches
+to the printed poster which exists to serve self-scan; filed as a scoped DLG question rather than dropped.
+The 2026-08-29 badge-plus-weight model then unravelled in a chain worth recording: two-state weighting broke
+once check-in was optional (every rating at an open event would weight 0.4 forever, so a host running only
+open events would never get a public star average at all); a three-state fix introduced a perverse incentive
+where a host who turned check-in **on** reached the display gate *later* than one who did not; and Elvis
+asked whether to drop weighting and badge entirely. Agreed, and it dissolved a governance escalation that was
+about to be filed, since paid-gating check-in only conflicted with DEC-018 and I-16 because the *attendee*
+lost a badge through their host's payment choice. Condition recorded so this is a deferral not a deletion:
+`attendance` stays first-class and transactional. Elvis then pushed back on treating no-shows as an accepted
+cost, correctly: two problems had been conflated, *rating integrity* (mitigation withdrawn) and *attendee
+reliability* (tracked from launch, acted on later). Two corrections of my own followed. **The I-12 clause
+blocking that tracking was my overreach**: the handoff scopes it to ratings "visible to anyone", and my
+2026-08-29 replacement wording widened it to "whether visible or internal", which was never asked for and
+contradicted DEC-014's explicitly permitted internal-only attendee signal. Reverted to the visibility scope,
+and withdrew an earlier warning that I-12 was "carved out twice and eroding", since one of the two was this
+error. **Self-reported lateness does exist**, in Elvis's designs though not in the repo, so it is a
+documentation gap rather than new scope. Attendance resolved into **two independent axes**: observed
+attendance (attended / claimed-unconfirmed / no-show / not-tracked, only where check-in ran) and
+self-reported intent (on my way / running late / cannot make it, on every event). That flipped an assumption,
+since self-report reaches every event while check-in reaches few, making it the *primary* reliability source
+at launch. One rule locked from day one: declining in advance must never score like a silent no-show, or the
+product teaches users that warning the host costs the same as ghosting.
+Open: thirteen decision proposals plus five hotsheet entries, two risks and three tasks, none merged; the
+2026-08-29 amendment has been revised in place twice and the merger must take the current version. Self-
+reported intent needs proper documenting. L-3's de-blocking needs DLG confirmation. Unresolved: how no-show
+data is eventually used, whether claimed-unconfirmed is visible to the attendee, what check-in analytics
+means against DEC-018's split, and whether an edited rating shows as edited. Carried: three retention
+refinements, the video total-duration cap, per-stop dates, the calendar-picker design, the DM/group-chat gap,
+four scope-matrix rows, I-N adoption into CLAUDE.md (now with two I-12 corrections), the wave-to-phase
+mapping, and the [D]-tag sign-off pass. Item #11 (Moments) not started. No `shared/` edits made.
+
+**Detail:** [session_log_2026-08-31.md](session_log_2026-08-31.md)
+
+---
+
 ## 2026-08-30 - Hotsheet/risk/task backlog filed, phase-1/1.5 items #7 and #8 closed, host-accountability
 model built from Korean-practice research; eleven decision proposals now pending
 

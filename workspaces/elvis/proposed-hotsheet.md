@@ -94,6 +94,12 @@ because UGC ships at launch and Korean takedown obligations attach from day one.
 **Type:** Blocking
 **Summary:** The printed-poster check-in mode collects location data and may require
 위치기반서비스사업 신고 to the KCC under 위치정보법, which the handoff marks BLOCKING before P0.
+**LIKELY DE-BLOCKED 2026-08-31, needs DLG confirmation rather than assumption.** Elvis reversed the
+check-in direction the same week: phase 1 now has the host scan the attendee (ticketing-standard), and
+attendee self-scan moves to a later self-service mode. The printed poster exists to support attendee
+self-scan, so the poster and its location radius defer with it. If that holds, L-3 stops being a gate before
+P0 and becomes a later-phase legal question. File it to DLG as a scoped question rather than dropping it,
+since the exposure returns intact whenever self-service mode is built.
 **Key Points:**
 - Check-in has three host-side modes. The printed-poster mode uses a static event-scoped token, so its
   only anti-forgery controls are a server-side time window and a **location radius**. That radius is

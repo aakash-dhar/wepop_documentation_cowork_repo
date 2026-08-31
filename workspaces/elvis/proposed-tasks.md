@@ -61,7 +61,14 @@ may create a persistent peer rating of an individual that is visible to anyone,"
 ratings on its face and therefore contradicts DEC-014. Elvis confirmed 2026-08-29 that host rating and
 attendee rating are separate concepts and host rating is permitted; replacement wording carrying that
 distinction explicitly is drafted in `handoff-spec-v0.9-intake-2026-08-29.md` item A. Adopting the
-numbering without that fix would land a contradiction into the invariant registry. Note also that
+numbering without that fix would land a contradiction into the invariant registry. **A correction to that correction, 2026-08-31**
+(`ratings-checkin-2026-08-31.md`): the 2026-08-29 replacement wording also widened the invariant from the
+handoff's "visible to anyone" to "whether visible or internal". That widening was a drafting error, not a
+decision, and it contradicts DEC-014 a second way, since DEC-014 explicitly permits an internal-only
+attendee signal ("attendee thumbs are an internal recommendation signal only, never shown to anyone").
+Adopt the **visibility-scoped** version: I-12 prohibits a persistent peer rating of a participant that is
+visible to anyone; internal signals are permitted, and making one visible or using it to gate event access
+is a separate decision requiring its own review; host rating is out of scope and permitted. Note also that
 `CLAUDE.md` section 8 has a known stale line flagged 2026-08-26 (the phone-OTP invariant predating
 DEC-011), worth correcting in the same pass. Source: handoff spec §13; intake review item A and Part 5.
 **Priority:** Medium
