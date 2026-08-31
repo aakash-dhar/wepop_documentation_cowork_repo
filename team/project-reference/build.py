@@ -10,6 +10,7 @@
          docs/index.html, docs/board-public.html (from team/board.html, the rendered board)
       Run team/board-render.py first if the board data changed. Never commits; the human pushes.
 
+DECS and DECFULL (the decision index and the full records) are generated from shared/DECISIONS.md on every build.
 Checks before writing: no em-dashes anywhere; every ELVIS item carries a src; module counts printed.
 """
 import argparse, importlib.util, json, os, re, secrets, sys
@@ -23,6 +24,30 @@ OUT_CLIENT = os.path.join(ROOT, "docs", "project-reference.html")
 BOARD_SRC = os.path.join(ROOT, "team", "board.html")
 BOARD_OUTS = [os.path.join(ROOT, "docs", "index.html"), os.path.join(ROOT, "docs", "board-public.html")]
 LOCK = os.path.join(ROOT, "team", "board-lock.py")
+DECISIONS = os.path.join(ROOT, "shared", "DECISIONS.md")
+
+def parse_decisions():
+    """Verbatim decision records from shared/DECISIONS.md (the source of truth). Never hand-maintained."""
+    src = open(DECISIONS, encoding="utf-8").read()
+    body = src.split("\n## Decisions\n", 1)[1]
+    decs = {}
+    for e in re.split(r"\n(?=### DEC-\d{3}: )", body):
+        m = re.match(r"### (DEC-\d{3}): (.+)\n", e)
+        if not m: continue
+        did, title = m.group(1), m.group(2).strip()
+        blocks = re.findall(r"^\*\*([^*]+?):\*\*\s*(.*?)(?=\n\*\*[^*]+?:\*\*|\Z)", e[m.end():], flags=re.S | re.M)
+        fields = [[lab.strip(), " ".join(txt.split())] for lab, txt in blocks]
+        d = {"id": did, "title": title, "fields": fields}
+        for lab, txt in fields:
+            if lab == "Date": d["date"] = txt
+            if lab == "Status": d["status"] = txt
+            if lab == "Participants": d["participants"] = txt
+            if lab == "Decision" and "decision" not in d: d["decision"] = txt
+        if "decision" not in d or "status" not in d: fail(f"{did} in DECISIONS.md has no Decision or Status field")
+        decs[did] = d
+    if not decs: fail("no decisions parsed from shared/DECISIONS.md")
+    index = [[k, v["title"]] + (["sup"] if "SUPERSEDED" in v["status"].upper() else []) for k, v in sorted(decs.items())]
+    return decs, index
 
 def fail(msg):
     print("BUILD FAILED:", msg); sys.exit(1)
@@ -47,7 +72,11 @@ def build():
     data = open(DATA, encoding="utf-8").read()
     validate(data)
     if "/*__DATA__*/" not in tpl: fail("template.html has no /*__DATA__*/ marker")
-    html = tpl.replace("/*__DATA__*/", data, 1)
+    decs, index = parse_decisions()
+    gen = ("/* generated at build time from shared/DECISIONS.md */\nconst DECFULL = " + json.dumps(decs, ensure_ascii=False)
+           + ";\nconst DECS = " + json.dumps(index, ensure_ascii=False) + ";\n")
+    print(f"decisions: {len(decs)} parsed from shared/DECISIONS.md ({sum(1 for i in index if len(i)==3)} superseded)")
+    html = tpl.replace("/*__DATA__*/", data + gen, 1)
     if "—" in html: fail("em-dash found in built page")
     os.makedirs(os.path.dirname(OUT_INTERNAL), exist_ok=True)
     open(OUT_INTERNAL, "w", encoding="utf-8").write(html)

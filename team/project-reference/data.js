@@ -1,5 +1,5 @@
 /* Wepop project reference data. Generated/maintained by the project-reference skill.
-   M: the 24 decided modules. ELVIS: sourced detail per module + 7 Elvis-designed modules (new). PLAIN: plain-language explainers.
+   M: the 24 decided modules. DECS and DECFULL are NOT here: build.py generates them from shared/DECISIONS.md at build time. ELVIS: sourced detail per module + 7 Elvis-designed modules (new). PLAIN: plain-language explainers.
    Every ELVIS item must carry a src. No em-dashes. */
 const META = {"asOf":"2026-08-31","lastDec":"DEC-044","statusLine":"Phase 1 design deepening. No build tasks started (board). RAG: green with a watch."};
 const M = [
@@ -235,12 +235,6 @@ const GOV = [
  ["House rules","No em-dashes anywhere; governance values are ALLOW / BLOCK / ESCALATE, never DENY."]
 ];
 
-const DECS = [
- ["DEC-001","Central GitHub repo + Cowork PM harness"],["DEC-002","Age gate tied to country legal age","sup"],["DEC-003","Google-style map picker"],["DEC-004","Auth: OTP + optional password","sup"],["DEC-005","Extensible tag list replaces MBTI"],["DEC-006","Anti-stalking visibility model"],["DEC-007","No in-app AI image/video generation"],["DEC-008","Salvage and build on the existing code"],["DEC-009","Phase-1 scope boundaries","sup"],
- ["DEC-010","Payments and monetization phasing"],["DEC-011","Auth: social login + phone, password deferred"],["DEC-012","Age gate and country cascade (provisional)"],["DEC-013","Chat and calendar into phase 1"],["DEC-014","Post-event feedback: ratings and reviews"],["DEC-015","Moments content and visibility, video"],["DEC-016","Location at registration"],["DEC-017","Pre-join visibility of gender and photos"],["DEC-018","Freemium model and commercial structure"],["DEC-019","Community segmentation (cohorts)"],["DEC-020","Recommendation algorithm architecture"],["DEC-021","Recurring events (1.5)"],["DEC-022","Event Series + co-hosts (1.5)"],["DEC-023","Group dynamics as recommendation factors"],["DEC-024","Phase triage of undiscussed surfaces"],["DEC-025","New-feature scoping batch (12 items)"],
- ["DEC-026","Korea PASS authentication"],["DEC-027","Localization and Korean language"],["DEC-028","A/B testing framework"],["DEC-029","Language storage, cascade, i18n scope"],["DEC-030","Cohort simplified to student-vs-not"],["DEC-031","Home-location mechanism and mutability"],["DEC-032","Explore country gate, premium lift"],["DEC-033","Apply-to-join screening quota"],
- ["DEC-034","Peer feedback positive-only; check-in decoupled"],["DEC-035","Gender removed from attendee pre-join"],["DEC-036","Avoid signal block-only; positive affinity"],["DEC-037","General user blocking, phase 1"],["DEC-038","Event cover media caps"],["DEC-039","Tiered 6-month media retention"],["DEC-040","Ideas lifecycle"],["DEC-041","Event schedule multi-day, propagation"],["DEC-042","Change notifications on events and ideas"],["DEC-043","Completed events immutable; ratings persist"],["DEC-044","Host accountability: reputation/enforcement split"]
-];
 
 const GLOSS = [
  ["PASS","The common Korean carrier real-name authentication (government-linked); returns identity and age. Used for Korean carrier numbers (DEC-026)."],

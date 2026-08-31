@@ -111,11 +111,27 @@ ul.clean li b{color:var(--ink)}
 .risk .sev{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:var(--amber-t);color:#8a5a00;white-space:nowrap}
 .risk .sev.hi{background:var(--red-t);color:var(--red-d)}
 .risk p{margin:4px 0 0;color:var(--ink2);font-size:14px}
-.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px;margin-top:10px}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px;margin-top:10px}
 .drow{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13px;box-shadow:var(--sh)}
 .drow .k{font-family:ui-monospace,Menlo,monospace;font-weight:700;color:var(--red);white-space:nowrap;font-size:12px;margin-top:1px}
 .drow.sup .k{color:var(--muted);text-decoration:line-through}
 .drow span{color:var(--ink2)}
+.dcard{display:block;cursor:pointer;padding:12px 14px;transition:box-shadow .15s,border-color .15s}
+.dcard:hover{box-shadow:var(--sh2);border-color:#dcdce0}
+.dcard .dtop{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.dcard .dst{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:2px 7px;border-radius:999px}
+.dcard .dst.act{background:var(--green-t);color:#0f6b3a} .dcard .dst.sup{background:var(--grey-t);color:var(--grey)}
+.dcard .ddate{margin-left:auto;font-size:11.5px;color:var(--muted)}
+.dcard .dtitle{font-weight:700;font-size:14px;color:var(--ink);margin-bottom:4px}
+.dcard.sup .dtitle{color:var(--muted)}
+.dcard .dprev{font-size:13px;color:var(--ink2);line-height:1.5}
+.dcard .dmore{margin-top:8px;font-size:12.5px;font-weight:700;color:var(--red)}
+.dec[data-dec]{cursor:pointer} .dec[data-dec]:hover{background:var(--red-t);border-color:var(--red-t2);color:var(--red-d)}
+.declink{font-family:ui-monospace,Menlo,monospace;font-size:12px;font-weight:700;color:var(--red);cursor:pointer;text-decoration:none;border-bottom:1px dotted var(--red)}
+.dtext{font-size:14px;color:var(--ink2);line-height:1.65;margin:4px 0 2px}
+.dtext.main{font-size:14.5px;color:var(--ink);background:var(--red-t);border:1px solid var(--red-t2);border-radius:10px;padding:12px 14px}
+.dtext.hist{background:var(--amber-t);border:1px solid var(--amber-b);border-radius:10px;padding:10px 13px;color:#4a3a10;font-size:13.5px}
+.modlink{cursor:pointer} .modlink:hover{background:var(--blue-t);color:#1e4fb8;border-color:#cfdcf7}
 dl.gloss{margin:10px 0}
 dl.gloss dt{font-weight:700;margin-top:10px}
 dl.gloss dd{margin:2px 0 0 0;color:var(--ink2);font-size:14px}
@@ -315,7 +331,7 @@ kbd{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:var(--lin
   <!-- ============ DECS ============ -->
   <div class="section" id="s-decs">
     <h2><span class="n">12</span>Decision index · DEC-001 to <span data-meta="lastDec"></span></h2>
-    <p class="intro">One line each. Struck-through entries are superseded (never deleted; they keep a pointer to their replacement).</p>
+    <p class="intro">Every decision in the log, with a preview of what it says. Click a card, or any <span class="dec" style="cursor:default">DEC-nnn</span> chip anywhere on the page, to open the full record: the decision, the reasoning, the impact, what it supersedes and which modules rest on it. Greyed cards are superseded; they are never deleted and keep a pointer to their replacement.</p>
     <div class="dgrid" id="decindex"></div>
   </div>
 
@@ -353,7 +369,7 @@ const sitem = (x,cls) => `<div class="eitem ${cls}"><div>${x.text}</div>${x.src?
 const esc = s => s;
 const phPill = p => p==="1" ? '<span class="pill p1">Phase 1</span>' : p==="1.5" ? '<span class="pill p15">Phase 1.5</span>' : p==="later" ? '<span class="pill later">Later</span>' : '<span class="pill later">Phase unstated</span>';
 const tagPill = t => ({elvis:'<span class="pill elvis">Elvis design · no DEC yet</span>',safety:'<span class="pill safety">Safety</span>',legal:'<span class="pill safety">Legal</span>',financials:'<span class="pill fin">Financials</span>',korea:'<span class="pill area">Korea</span>'})[t]||'';
-const decChip = d => { const [k,f]=d.split(":"); return `<span class="dec${f==="sup"?" sup":""}" title="${f==="sup"?"superseded":"active"}">${k}</span>`; };
+const decChip = d => { const [k,f]=d.split(":"); return `<span class="dec${f==="sup"?" sup":""}" data-dec="${k}" title="${f==="sup"?"superseded, click for the record":"click for the full decision"}">${k}</span>`; };
 
 function card(m){
   const openN = m.open.length;
@@ -380,7 +396,9 @@ document.getElementById("legal").innerHTML = LEGAL.map(l=>`<div class="note ${l[
 document.getElementById("risks").innerHTML = RISKS.map(r=>`<div class="risk"><div class="id">${r[0]}</div><div><b>${r[1]}</b><p>${r[2]}</p><p style="font-size:12.5px;color:var(--muted)">Owner: ${r[4]} · ACTIVE</p></div><span class="sev ${r[5]}">${r[3]}</span></div>`).join("");
 document.getElementById("openitems").innerHTML = OPEN.map(x=>`<li>${x}</li>`).join("");
 document.getElementById("gov").innerHTML = GOV.map(g=>`<div class="tile"><h4>${g[0]}</h4><p>${g[1]}</p></div>`).join("");
-document.getElementById("decindex").innerHTML = DECS.map(d=>`<div class="drow${d[2]?" sup":""}"><span class="k">${d[0]}</span><span>${d[1]}${d[2]?" (superseded)":""}</span></div>`).join("");
+document.getElementById("decindex").innerHTML = DECS.map(d=>{ const f=DECFULL[d[0]]||{}; const st=(f.status||"").toUpperCase(); const sup=/SUPERSEDED/.test(st)||!!d[2];
+  const prev=(f.decision||"").slice(0,190)+((f.decision||"").length>190?"...":"");
+  return `<div class="drow dcard${sup?" sup":""}" data-dec="${d[0]}"><div class="dtop"><span class="k">${d[0]}</span><span class="dst ${sup?"sup":"act"}">${sup?"Superseded":"Active"}</span><span class="ddate">${f.date||""}</span></div><div class="dtitle">${d[1]}</div><div class="dprev">${prev}</div><div class="dmore">Full decision ▸</div></div>`; }).join("");
 document.getElementById("gloss").innerHTML = GLOSS.map(g=>`<dt>${g[0]}</dt><dd>${g[1]}</dd>`).join("");
 
 document.querySelectorAll("[data-meta]").forEach(el=>{ el.textContent = META[el.dataset.meta]||""; });
@@ -409,8 +427,30 @@ function openDrawer(id){
   document.getElementById("dbody").scrollTop=0;
   history.replaceState(null,"","#"+m.id);
 }
+function linkDecs(html){ return html.replace(/\b(DEC-\d{3})\b/g, (m)=>DECFULL[m]?`<a class="declink" data-dec="${m}">${m}</a>`:m); }
+function openDec(id){
+  const f=DECFULL[id]; if(!f) return;
+  const sup=/SUPERSEDED/i.test(f.status||"");
+  const used=M.filter(m=>m.decs.some(x=>x.split(":")[0]===id));
+  document.getElementById("dbadge").textContent=id;
+  document.getElementById("dtitle").textContent=f.title;
+  const skip=new Set(["Date","Participants","Status"]);
+  const order=["Change history","Decision","Reasoning","Reasoning cont.","Impact","Open, not decided here","Relates to / Supersedes"];
+  const fields=[...f.fields].sort((a,b)=>order.indexOf(a[0])-order.indexOf(b[0])).filter(x=>!skip.has(x[0]));
+  document.getElementById("dbody").innerHTML=`
+    <div class="pills"><span class="pill ${sup?"later":"p1"}">${f.status||""}</span>${f.date?`<span class="pill area">${f.date}</span>`:""}</div>
+    ${f.participants?`<div class="lbl">Participants</div><p>${f.participants}</p>`:""}
+    ${fields.map(([lab,txt])=>`<div class="lbl">${lab}</div><div class="dtext${lab==="Decision"?" main":""}${lab==="Change history"?" hist":""}">${linkDecs(txt)}</div>`).join("")}
+    <div class="lbl">Modules that rest on this decision</div>${used.length?`<div class="decs">${used.map(m=>`<span class="dec modlink" data-id="${m.id}">${m.id} · ${m.t}</span>`).join("")}</div>`:`<div class="mini" style="color:var(--muted)">Not referenced by a module card directly (a foundational or governance decision).</div>`}
+    <div class="dfoot">Verbatim from shared/DECISIONS.md, the source of truth. Superseded decisions are never deleted; they keep a pointer to their replacement.</div>`;
+  drawer.classList.add("on"); ovl.classList.add("on"); document.body.style.overflow="hidden";
+  document.getElementById("dbody").scrollTop=0; history.replaceState(null,"","#"+id);
+}
 function closeDrawer(){ drawer.classList.remove("on"); ovl.classList.remove("on"); document.body.style.overflow=""; }
 document.addEventListener("click",e=>{
+  const dl=e.target.closest(".declink,.dec[data-dec],.dcard"); if(dl && dl.dataset.dec){ openDec(dl.dataset.dec); return; }
+  const dc=e.target.closest(".dec"); if(dc && !dc.dataset.id && /^DEC-\d{3}/.test(dc.textContent)){ openDec(dc.textContent.trim().slice(0,7)); return; }
+  const ml=e.target.closest(".modlink"); if(ml){ openDrawer(ml.dataset.id); return; }
   const b=e.target.closest(".full,.title"); if(b){ openDrawer(b.dataset.id); return; }
   if(e.target.id==="dclose"||e.target.id==="ovl") closeDrawer();
 });
@@ -425,6 +465,7 @@ const io=new IntersectionObserver(es=>{
 targets.forEach(t=>io.observe(t));
 /* open drawer if URL hash points at a module */
 if(location.hash && /^#M\d\d$/.test(location.hash)){ setTimeout(()=>openDrawer(location.hash.slice(1)),300); }
+if(location.hash && /^#DEC-\d{3}$/.test(location.hash)){ setTimeout(()=>openDec(location.hash.slice(1)),300); }
 </script>
 </body>
 </html>

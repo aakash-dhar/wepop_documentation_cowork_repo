@@ -5,9 +5,13 @@ generated, not hand-edited.
 
 - `template.html` - the page shell: styling, sidebar, sections, drawer, rendering script. Contains one
   marker, `/*__DATA__*/`, where the data is inlined at build time.
-- `data.js` - all content. Three constants: `M` (the 24 decided modules), `ELVIS` (sourced detail per
-  module under `modules`, and the Elvis-designed modules under `new`), `PLAIN` (plain-language explainers
-  keyed by module id). Every ELVIS item carries a `src` naming the file and section it came from.
+- `data.js` - all authored content: `META` (as-of date, last DEC), `M` (the 24 decided modules), `ELVIS`
+  (sourced detail per module under `modules`, and the Elvis-designed modules under `new`), `PLAIN`
+  (plain-language explainers keyed by module id), plus `RISKS`, `OPEN`, `LEGAL`, `GOV`, `PRINCIPLES`,
+  `DATAMODEL`, `GLOSS`. Every ELVIS item carries a `src` naming the file and section it came from.
+- The decision index and the full decision records (`DECS`, `DECFULL`) are NOT in data.js: `build.py`
+  parses `shared/DECISIONS.md` on every build, so the page's decisions can never drift from the source
+  of truth. Clicking a decision card or any DEC chip opens the verbatim record in the drawer.
 - `build.py` - assembles the page and runs checks (no em-dashes, every ELVIS item has a src). Writes the
   internal copy to `team/wepop-project-reference.html`; with `--lock --user --password` also publishes
   `docs/project-reference.html` and re-gates the board pages with ONE shared salt, so unlocking the

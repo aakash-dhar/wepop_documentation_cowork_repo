@@ -34,7 +34,8 @@ description: >
 ## Pre-read (mandatory)
 1. `team/project-reference/README.md` - how the pipeline works.
 2. `team/project-reference/data.js` - read `META` (`asOf`, `lastDec`) to learn the last build point,
-   then skim `M`, `ELVIS.modules`, `ELVIS.new`, `PLAIN`, `DECS`, `RISKS`, `OPEN`, `LEGAL`.
+   then skim `M`, `ELVIS.modules`, `ELVIS.new`, `PLAIN`, `RISKS`, `OPEN`, `LEGAL` (the decision index and
+   records are generated from `shared/DECISIONS.md` at build time, not kept here).
 3. `shared/DECISIONS.md` - every `DEC-NNN` above `META.lastDec`, and any change-history note dated
    after `META.asOf`.
 4. What Elvis changed since the last build: `git log --date=short --name-only --since=<META.asOf> --
@@ -63,7 +64,9 @@ For every change decide where it lands in `data.js`, and nowhere else:
   in `status` so the page flags it red.
 - A new module (decided or Elvis-designed) -> write its `PLAIN` explainer: two to four plain sentences
   that only restate what the module's own data says, for a reader with no context. Never a new fact.
-- A new decision -> append to `DECS`. A retired one is never removed; mark it `sup`.
+- A new or changed decision -> nothing to do in `data.js`: `build.py` regenerates the decision index and
+  the full decision records (`DECS`, `DECFULL`) from `shared/DECISIONS.md` on every build, so the page's
+  decisions can never drift from the source of truth. Only the module `decs` chips need updating.
 - Risks, open items, legal items -> `RISKS`, `OPEN`, `LEGAL`, mirroring the HOTSHEET wording.
 - Finally set `META.asOf` to today and `META.lastDec` to the highest landed DEC.
 
