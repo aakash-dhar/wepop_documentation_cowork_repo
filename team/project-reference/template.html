@@ -221,7 +221,7 @@ kbd{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:var(--lin
     <a href="#s-objects"><span class="g b">◆</span>Core objects</a>
     <a href="#s-phase"><span class="g gr">▤</span>Phase plan</a>
     <a href="#s-how"><span class="g m">i</span>How to read this</a>
-    <div class="grp">The modules (24 decided + 7 Elvis-designed)</div>
+    <div class="grp">The modules (24 decided + 8 Elvis-authored)</div>
     <div id="navmods"></div>
     <div class="grp">Cross-cutting</div>
     <a href="#s-principles"><span class="g p">±</span>Principles &amp; invariants</a>
@@ -296,7 +296,7 @@ kbd{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:var(--lin
   <!-- ============ MODULES ============ -->
   <div class="section" id="s-modules">
     <h2><span class="n">05</span>The modules</h2>
-    <p class="intro">Twenty-four modules backed by landed decisions, ordered the way a user meets them, followed by seven modules Elvis has designed but that have not yet landed as decisions. Every module drawer now carries Elvis's own design detail with a source citation on each line: <span class="etag dec">Decided</span> is backed by a DEC, <span class="etag ed">Elvis design</span> is in his file but not yet a decision, <span class="etag sup">Superseded</span> is what an earlier draft said before a DEC changed it.</p>
+    <p class="intro">Twenty-four modules backed by landed decisions, ordered the way a user meets them, followed by eight modules Elvis authored in his workspace, several of which have since landed as decisions (shown by their Decided tags). Every module drawer now carries Elvis's own design detail with a source citation on each line: <span class="etag dec">Decided</span> is backed by a DEC, <span class="etag ed">Elvis design</span> is in his file but not yet a decision, <span class="etag sup">Superseded</span> is what an earlier draft said before a DEC changed it.</p>
     <div id="mods"></div>
   </div>
 
@@ -430,7 +430,7 @@ const decChip = d => { const [k,f]=d.split(":"); return `<span class="dec${f==="
 function card(m){
   const openN = m.open.length;
   const eN = (ELVIS.modules[m.id]||[]).length;
-  return `${m.id==="M25"?'<div class="subhead"><b>Elvis-designed modules, not yet decisions</b>The seven modules below come from design documents Elvis wrote in his workspace. Each is grounded only in his file and carries its source on every line. None has landed as a DEC yet; where one conflicts with a landed decision it is flagged in red rather than treated as scope.</div>':""}<div class="mod${m.raw?" elvis":""}" id="${m.id}">
+  return `${m.id==="M25"?'<div class="subhead"><b>Elvis-authored modules</b>The modules below come from design documents Elvis wrote in his workspace, each grounded in his file with a source on every line. Several have since landed as decisions (shown by their Decided tags); the rest are design only. Where one conflicts with a landed decision it is flagged in red rather than treated as scope.</div>':""}<div class="mod${m.raw?" elvis":""}" id="${m.id}">
     <div class="head"><span class="badge">${m.id}</span><span class="title" data-id="${m.id}">${m.num} · ${m.t}</span>${phPill(m.ph)}${m.raw?"":`<span class="pill area">${m.area}</span>`}${m.tags.map(tagPill).join("")}${m.conflict?'<span class="pill conf">Conflicts with a landed DEC</span>':""}
       <span class="open${openN?"":" none"}">${openN?"● "+openN+" open":"✓ no open items"}</span></div>
     <div class="sub">${m.sub}</div>

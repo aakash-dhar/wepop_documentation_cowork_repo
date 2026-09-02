@@ -65,6 +65,8 @@ edit window. The reversal likely de-blocks the 위치정보법 entry, pending DL
 
 ### Needs Attention
 
+- **Korea map provider (Google vs Naver/Kakao) is now a decision, not a distant concern.** The zoom-determines-precision picker (DEC-054) depends on the provider's POI and reverse-geocode quality at each zoom tier, so the provider choice now affects a phase-1 feature. Open question whether a non-Korean business can even open a Naver or Kakao developer account, which constrains the choice; Elvis researched a dual Google/Naver design (per-session provider lock, reusing the current-location signal), but the decision is unmade. Elevated from the Watching "Korean map coverage" item below. Owner Aakash with Deepak on feasibility. Since 2026-09-02. Source: `workspaces/elvis/event-location-map-picker-2026-08-27.md`; 2026-09-02 call.
+
 - **Korea payments need a non-Stripe path (org tier is live now, so not distant).** Stripe's actual support for Korea-based merchant payouts, KRW, and Korean local methods (KakaoPay, Naver Pay, bank transfer/virtual account) is unconfirmed, and Korean consumers strongly prefer local methods over cards. DEC-010 assumed Programination's Stripe account and DEC-018's org tier is proceeding now. Evaluate Korea-specific processors (Toss Payments, NHN KCP, PortOne/Iamport). App-store IAP also in play (15 to 30 percent; virtual-goods vs physical-experience distinction; web-payment workaround). Financials owner (Aakash); raises the urgency of the DEC-010 payments conversation (TASK-036). Since 2026-08-26. Source: 2026-08-26 team sync; elvis proposal (`internationalization-korea-2026-08-26.md`).
 
 - **Cohort/algorithm mechanism transitions unconfirmed.** Whether the cohort hard retrieval filter
@@ -85,7 +87,7 @@ edit window. The reversal likely de-blocks the 위치정보법 entry, pending DL
 
 ### Watching
 
-- **Korean map coverage is a known future concern; Google Maps acceptable for now.** South Korea restricts map-data export, so local providers have richer data and Google has historically been thinner in Korea; Google is reportedly expanding Korean coverage. Use Google (DEC-003) for now; revisit only if it becomes a real issue. Since 2026-08-26. Source: 2026-08-26 team sync.
+- **Korean map coverage is a known future concern; Google Maps acceptable for now.** South Korea restricts map-data export, so local providers have richer data and Google has historically been thinner in Korea; Google is reportedly expanding Korean coverage. Use Google (DEC-003) for now. Elevated to Needs Attention 2026-09-02 because the zoom-precision picker (DEC-054) now depends on provider POI quality. Since 2026-08-26. Source: 2026-08-26 team sync.
 
 - **No-show rating abuse, now unmitigated by weighting (rewritten again 2026-08-31 on DEC-045).** DEC-045
   withdraws DEC-034's badge and 1.0/0.4 scoring weight, so eligibility is simply joined plus event

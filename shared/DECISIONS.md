@@ -497,3 +497,362 @@
 **Impact:** Deepak flags, one easy to build wrong first: weighted aggregates must be recomputed from rows rather than accumulated as a running sum, since an incremental aggregate is silently corrupted by the first edit or withdrawal. The "My feedback" screen is the only place the author-to-feedback link ever surfaces to a human: private to that user, never to a host, never in an admin UI that could leak it, never in an export; anonymity is doing structural work here and this linkage is the single point at which it could be undone. The screen slots into the profile three-tab restructure already scheduled in the handoff's P1.1 wave rather than being added separately.
 **Open, not decided here:** whether an edited rating shows as edited to viewers or changes silently within the window; where feedback aggregates surface to the host and in what form.
 **Relates to / Supersedes:** Extends DEC-014 and DEC-034 as corrected by DEC-045. Source: `workspaces/elvis/ratings-checkin-2026-08-31.md`.
+
+### DEC-048: Amend DEC-015: private accounts pulled into phase 1 (Elvis confirmed 2026-09-02)
+**Date:** 2026-09-02
+**Participants:** Elvis (design), Aakash (merger)
+**Status:** ACTIVE
+
+**Decision:** Private accounts ship in phase 1, reversing DEC-015's deferral. A private account restricts the whole profile (moments, events attended, upcoming RSVPs) to approved followers, not just moments. Following a private account creates a pending follow-request that the owner accepts or declines; only accepted followers see restricted content. Accounts are public by default with private an opt-in toggle; switching to private grandfathers existing followers, and only new follow attempts after the switch require approval. A private account is distinct from a private event: the account setting gates the profile view, not an event's own visibility. Composes with DEC-015's most-restrictive-wins rule.
+**Reasoning:** Private accounts were deferred only because the follow-request/approval machinery was new scope; Elvis has decided that machinery is worth building for phase 1.
+**Impact:** Amends DEC-015. Needs a follow-request state (pending/accepted/declined), an approval queue, and bidirectional notifications. Sub-items: what a stranger sees on a private profile and whether the user stays findable are answered by Elvis's 2026-09-02 Moments/org proposals (a non-mutual sees name, username, cover and background photo; mutual followers see the full profile including Moments; the account stays findable by name and username, not suppressed from search). Two remain open (agenda Q1): the approval-queue UX and whether declining a follow request notifies the requester. The pre-join anti-stalking logic (DEC-006/DEC-017) needs a consistency check against this.
+**Relates to / Supersedes:** Amends DEC-015; interacts with DEC-006, DEC-017, DEC-020. Source: workspaces/elvis/private-accounts-2026-08-26.md; confirmed by Elvis on the 2026-09-02 call (comms/meeting-notes/2026-09-02_Wepop_open-questions-and-repo-migration.md).
+
+### DEC-049: Auth login, session, and account-linking model
+**Date:** 2026-09-02
+**Participants:** Elvis (design), Aakash (merger)
+**Status:** ACTIVE
+
+**Decision:** The returning-login and session layer, never previously decided, is set. Any valid credential (Kakao/Apple/Google, phone OTP, or username-or-email plus password when set) resolves to the user's one account, with the verified phone number as the account anchor. Biometric quick-unlock (Face ID / Touch ID / Android equivalent) gates an already-active session locally via the OS API and is not a server credential. The session is always active (Instagram-style), ending only on explicit logout or app deletion, via a secure long-lived refresh token. Account linking across providers is consent-based, not silent: a new-provider signup on an already-registered phone completes phone verification, logs the user into their existing account, then explicitly asks before adding the new provider as a credential.
+**Reasoning:** Adding a password made the login/session side a real gap; Elvis resolved it to the consumer-social-app standard rather than inventing bespoke behavior.
+**Impact:** Deepak flags: first-launch-after-install check to wipe a leftover iOS Keychain session, and a server-side revocation capability held in reserve. Open and parked: username-change login continuity, multi-device concurrent sessions, and the customer-service recovery workflow.
+**Relates to / Supersedes:** Extends DEC-011; relates to DEC-026. Source: workspaces/elvis/auth-flow-2026-08-26.md (RESOLVED 2026-08-26, confirmed by Elvis).
+
+### DEC-050: Founder-seed invite and the invite-first invariant exceptions
+**Date:** 2026-09-02
+**Participants:** Elvis (design), Aakash (merger)
+**Status:** ACTIVE
+
+**Decision:** Records that two invite types are scoped exceptions to the invite-first invariant (CLAUDE.md section 8: invites always tie to a specific event or idea). (1) Founder-seed invites: at launch Elvis personally invites an initial batch of users with WePop itself as the inviter, no org and no event/idea, landing on the home feed. (2) Org membership grants are the second exception (a user joins the org itself, not an event/idea); their mechanics are set by Elvis's org-membership proposal (membership by request-and-approve or invite-only per org, distinct from following), which this defers to rather than re-deciding. The 2026-08-26 org-invite details remain valid and consistent: the invite shows inviter and org identity for credibility, and an invited member lands on the org discussion board. Individual person-to-person invites stay event/idea-tied and unchanged.
+**Reasoning:** The invite-first rule exists to give the invitee a credible, non-spam reason to trust the invite; WePop's own identity (founder-seed) and an org's identity (membership) supply that credibility without an event.
+**Impact:** Modifies the CLAUDE.md section 8 invariant, which needs the two exceptions recorded. Org-invite and membership mechanics are owned by Elvis's 2026-09-02 org-membership proposal; this proposal adds the founder-seed type and the invariant-exception framing only, to avoid duplicating that model.
+**Relates to / Supersedes:** Scoped exception to CLAUDE.md section 8; defers org-membership mechanics to Elvis's 2026-09-02 org-membership proposal; relates to DEC-009, DEC-013, DEC-019, DEC-024. Source: workspaces/elvis/onboarding-flow-2026-08-26.md; workspaces/elvis/org-invites-2026-08-26.md; reconciled with Elvis's 2026-09-02 org-membership proposal (org-membership-2026-09-02.md).
+
+### DEC-051: Categories and taxonomy v2.0 adopted
+**Date:** 2026-09-02
+**Participants:** Elvis (design), Aakash (merger)
+**Status:** ACTIVE
+
+**Decision:** Adopt the v2.0 taxonomy: eight real top-level categories plus Other, 85 canonical subcategories, each node paired EN/KO under one canonical ID, colors respecified as 3-token sets (brand-palette AA conformance waived for small text). Selection limits are up to 5 subcategories from at most 3 categories for events, and up to 8 subcategories from at most 5 categories for profiles, enforced in the UI and validated server-side. Selecting a subcategory auto-selects its parent. "Other" is locked with zero user-submitted subcategories. "Casino & poker night" is removed for 도박죄 (gambling-offence) exposure. "travel_companion" is excluded from the initial set pending trust infrastructure, re-addable later via the Other-review promotion path.
+**Reasoning:** Coverage over minimalism (every unfound node becomes a permanent hole in discovery data); the taxonomy gives concrete shape to DEC-020's previously-abstract internal keyword layer and to onboarding step 11.
+**Impact:** Gives DEC-020's hidden keyword layer real content. Companion tasks: add gambling to the moderation blocklist (compliance) and a Korean-label review (owned by role, name withheld per Elvis). Backend needs a tag layer with canonical IDs and server-side limit validation.
+**Relates to / Supersedes:** Gives shape to DEC-020; relates to DEC-005. Source: workspaces/elvis/categories-taxonomy-2026-08-27.md (adapted into repo 2026-08-27, confirmed with Elvis).
+
+### DEC-052: Onboarding sequence adopted; profile completion moved out of onboarding
+**Date:** 2026-09-02
+**Participants:** Elvis (design), Aakash (merger)
+**Status:** ACTIVE
+
+**Decision:** Adopt the assembled 15-step account-creation sequence as the build reference, with one Get Started entry screen for all branches (individual, org, founder-seed, promoted-waitlist) differing only in landing destination. Profile completion (optional email, optional password, profile description) moves out of the onboarding sequence into editable profile fields with periodic completion-nudge reminders. A distinct "languages I speak" profile field is added, separate in name and storage from the display-language field (DEC-027). Campus affiliation is optional, verified by school-email code with a suggest-a-school fallback. A device-permissions review screen presents location, notifications, camera, gallery, contacts, and calendar together as explanation only, firing no native OS dialogs (generalizing DEC-016's contextual-permission stance).
+**Reasoning:** The full sequence had never been assembled; moving profile completion out keeps onboarding short and non-blocking.
+**Impact:** The optional-password move is the same one in the DEC-011 amendment above. Cohort computation (DEC-019) must degrade gracefully to city plus age bucket when campus affiliation is skipped. Open/parked: nudge cadence and founder-seed invite copy.
+**Relates to / Supersedes:** Assembles DEC-011, DEC-012, DEC-016, DEC-019, DEC-005, DEC-024, DEC-026, DEC-027; relates to the invite-model proposal. Source: workspaces/elvis/onboarding-flow-2026-08-26.md (RESOLVED 2026-08-26).
+
+### DEC-053: Shake-to-create gesture (phase 1)
+**Date:** 2026-09-02
+**Participants:** Elvis (design), Aakash (merger)
+**Status:** ACTIVE
+
+**Decision:** Shaking the phone while the app is foregrounded opens the standard creation flow in a bottom tray, a second entry point to the same flow as the primary create button (no separate quick-create variant). The gesture is suppressed during active input (focused text field, open form/modal, active call/video/camera), and the creation flow already being open is explicitly one of those suppression states. The gesture is open-only: it never closes anything, and the listener stays off while the creation flow is open, re-arming only on dismiss or completion. A settings toggle (default on) fully disables it.
+**Reasoning:** A secondary physical entry point to creation; suppression and open-only behavior guard against the real false-positive risk (a phone in a bag or on rough transit).
+**Impact:** Deepak flags: foreground-only motion listener torn down on background, on-device sensitivity tuning, distinct interaction-logging tag. Open/parked: exact suppression-state list, sensitivity threshold, whether it is taught via tips/guides.
+**Relates to / Supersedes:** New phase-1 feature; relates to DEC-020 (interaction logging). Source: workspaces/elvis/shake-to-create-2026-08-26.md (RESOLVED 2026-08-26).
+
+### DEC-054: Event-location map picker extends DEC-003; location poll scoped
+**Date:** 2026-09-02
+**Participants:** Elvis (design), Aakash (merger)
+**Status:** ACTIVE
+
+**Decision:** One map-plus-search component serves three surfaces: event/idea location capture, a newly-scoped location poll (creator adds options, attendees vote, host confirms the final location after voting), and Explore's browse map. Zoom determines precision with no minimum floor: a tap zoomed in resolves to a POI/address, zoomed out to a neighborhood, extending DEC-003 (which implied always-specific capture). An event's top-level location need not be its exact meeting point; the host supplies the findable spot separately, so no precision floor is forced. Each capture stores a canonical ID, centroid/boundary, and display name at the resolved tier, plus DEC-003's optional per-location comment, applied uniformly across all three surfaces and event-schedule stops.
+**Reasoning:** Reuses one component rather than three; Elvis's correction that an event's headline location is not its meeting point removes the need for a precision floor that QR check-in seemed to require.
+**Impact:** Extends DEC-003; reuses across DEC-025 schedule stops. Zoom-to-precision thresholds are tunable, not locked, and depend on the map-provider decision (raised separately on the HOTSHEET). Location-poll sub-mechanics (min/max options, vote changeability, anonymity, close condition, placement in the create flow) are open and go to the meeting.
+**Relates to / Supersedes:** Extends DEC-003; relates to DEC-025, TASK-016. Source: workspaces/elvis/event-location-map-picker-2026-08-27.md (RESOLVED 2026-08-27, confirmed by Elvis).
+
+### DEC-055: Redacted-ID verification fallback (Korea); feedback channel; flexible name field
+**Date:** 2026-09-02
+**Participants:** Elvis (design), Aakash (merger)
+**Status:** ACTIVE
+
+**Decision:** Three resolved items captured. (1) A Korea-based user without a Korean phone number gets a redacted-ID fallback (government photo ID, user self-redacts the ID number, name/DOB/photo/expiry visible, reviewed by a trained human, no facial recognition or biometrics), following Bumble's Korea flow, covering DEC-012's international-in-Korea and visiting cases without a Korean phone as a hard gate. (2) A single "Give Feedback" profile menu item (issues, general feedback, comments to WePop) lands in a distinct Admin Portal table, separate from the content-moderation queue and reusing existing Admin Portal access control. (3) The name field is a single flexible full-name field, not a Western first/last split, per Korean naming convention.
+**Reasoning:** Each closes a real gap DEC-026 (which covered only PASS-for-Korean-numbers plus standard OTP) left open, without expanding scope.
+**Impact:** Adds a human-review verification path (PIPA implications, its own review queue and tooling, open) and a feedback table. Extends DEC-026/DEC-012.
+**Relates to / Supersedes:** Extends DEC-026, DEC-012. Source: workspaces/elvis/internationalization-korea-2026-08-26.md (RESOLVED 2026-08-26).
+
+### DEC-056: Apply-to-join placed in phase 1.5
+**Date:** 2026-09-02
+**Participants:** Elvis (design), Aakash (merger)
+**Status:** ACTIVE
+
+**Decision:** Apply-to-join (host screening questions on join) is placed in phase 1.5. This is the placement proposal that DEC-033 (the screening-question quota) explicitly depends on and that was lost in the 2026-08-28 queue-clear.
+**Reasoning:** DEC-033 set the quota but references a phase placement that never landed, leaving a live decision resting on an unrecorded dependency.
+**Impact:** Closes the DEC-033 dangling dependency. Scope-matrix apply-to-join row gets a confirmed phase.
+**Relates to / Supersedes:** Completes a dependency of DEC-033; relates to DEC-024. Source: workspaces/elvis/session_log_2026-08-26_session2.md; DEC-033 (which notes the placement is still unmerged).
+
+### DEC-057: Personality-tags catalog restructures DEC-005
+**Date:** 2026-09-02
+**Participants:** Elvis (design), Aakash (merger)
+**Status:** ACTIVE
+
+**Decision:** DEC-005's flat "top 10-20 tags" picker is restructured into three named sections: MBTI (closed set, 16 values), social energy (closed set, 3 values), and general vibe/self-descriptors (open, searchable, user-addable, the section DEC-005's original design maps to). The self-reported nature and searchable/user-extensible behavior from DEC-005 are unchanged; only the flat list becomes sectioned, which supersedes the "10-20 tags" figure (MBTI alone is 16). Zodiac and Enneagram are considered and not included in the initial catalog.
+**Reasoning:** Onboarding needs real seed content, and named sections make the picker scannable rather than one long list.
+**Impact:** Refines DEC-005. Open and going to the meeting: whether MBTI and social energy are single-select while general vibe is multi-select, or all three allow multiple (onboarding step 10 says multiple at the step level, written before sections existed).
+**Relates to / Supersedes:** Refines DEC-005. Source: workspaces/elvis/personality-tags-catalog-2026-08-27.md.
+
+### DEC-058: Explore filters are free, not a paid tier
+**Date:** 2026-09-02
+**Participants:** Elvis (design), Aakash (merger)
+**Status:** ACTIVE
+
+**Decision:** Standard Explore filters are free functionality, not a paid tier, applying DEC-018's "never gate marketplace/discovery actions" bucket. This confirms filters stay out of the individual premium tier.
+**Reasoning:** Gating discovery filters would contradict DEC-018's rule that marketplace and discovery actions are never gated.
+**Impact:** Confirms and applies DEC-018; a scope note so filters are not later mistaken for a paid lever.
+**Relates to / Supersedes:** Applies DEC-018. Source: workspaces/elvis/paid-tier-features-2026-08-27.md (RESOLVED 2026-08-27, confirmed by Elvis).
+
+### DEC-059: Cohort is a soft ranking signal, not a hard filter (amends DEC-019/DEC-020)
+**Date:** 2026-09-02
+**Participants:** Elvis (design), Aakash (merger)
+**Status:** ACTIVE
+
+**Decision:** The cohort is a ranking signal, not a hard retrieval gate. Recommendations combine cohort, the user's direct network (people they follow, for example a parent or older sibling), and location/distance. Events from people in the user's network surface even when those people are outside the user's cohort. Location remains a hard constraint: far-away events are searchable but never recommended. There is no automatic density-based de-hardening logic in phase 1; whether to loosen the cohort emphasis further is a manual decision made later, and the naturally growing network is expected to address density on its own.
+**Reasoning:** A student may invite older family members who then host events; hard-gating those out of the student's feed would be wrong once the two are connected. The follow graph should cut across cohorts.
+**Impact:** Amends DEC-019 (hard retrieval filter at launch) and the retrieval framing in DEC-020; the previously flagged density-transition open item resolves to "manual, decided later, no auto logic." Deepak: cohort, network proximity, and geo_distance are ranking inputs, not a pre-filter that removes out-of-cohort events a network edge would have surfaced.
+**Relates to / Supersedes:** Amends DEC-019, DEC-020; relates to DEC-030, DEC-031. Source: 2026-09-02 call (comms/meeting-notes/2026-09-02_Wepop_open-questions-and-repo-migration.md).
+
+### DEC-060: Ideas lifecycle: ownerless survival, auto-archive, quiet
+**Date:** 2026-09-02
+**Participants:** Elvis (design), Aakash (merger)
+**Status:** ACTIVE
+
+**Decision:** An idea survives with no owner once its creator leaves; there is no owner-takeover mechanism in phase 1 (deferred to a future phase, because a taker could hijack an active idea's topic). Archiving is automatic, driven by inactivity of roughly six months, not a user action. An archived idea is not recommended or shown in feed but stays reachable by direct link or save, and nothing is deleted. Interested users are not notified when an idea is archived; it happens quietly.
+**Reasoning:** Ideas are meant to be independent of a single owner; notifying on a six-month-inactive archive would be noise. Starting a fresh idea is easier than reviving a dead one, so archived ideas leave the feed while staying reachable.
+**Impact:** Answers three of DEC-040's open items (detached idea does not need a new owner in phase 1; archived ideas surface by direct link only, not in recommendations; no notify on archive). Two remain open, now Elvis research: whether an archived idea can be un-archived, and whether commenting on an archived idea is allowed (commenting would effectively revive it). Deepak: inactivity-driven archive sweep with an archived_at plus last-activity timestamp (already flagged under DEC-040). RECONCILE: DEC-040 sets the auto-archive window at 90 days while this decision says roughly six months (Elvis's phrasing on the 2026-09-02 call); the two conflict, so treat 90 days as the standing value until Elvis confirms the change.
+**Relates to / Supersedes:** Answers open items in DEC-040; relates to DEC-042. Source: 2026-09-02 call (comms/meeting-notes/2026-09-02_Wepop_open-questions-and-repo-migration.md).
+
+### DEC-061: Free Now design direction (deferred feature)
+**Date:** 2026-09-02
+**Participants:** Elvis (design), Aakash (merger)
+**Status:** ACTIVE
+
+**Decision:** Free Now is not phase 1; this records its direction. Individuals only, not organizations. It is a free feature with no account-standing gate to create a room. The creator sets how long they are free when creating the room; a timer runs, and the room auto-closes at the end of that window and also on inactivity. Rooms are per-area chat rooms keyed to a location tier (a sub-city neighborhood, since a whole city is too large to meet across); a user marking themselves free with no theme joins their area's open room, or can set a theme and pin a meeting location.
+**Reasoning:** Free Now is a sudden, short-lived "who wants to meet now" chat, not an event, so it should not require event search. Knowing how long someone is free is what makes it worth traveling to meet them, so duration must be asked (Aakash's point, accepted). The feature is more useful once there is a real free-user density, hence deferred.
+**Impact:** Answers the DEC-025 Free Now open items (creation standing, duration cap, auto-archival, org-created rooms). Still a deferred feature; build later, possibly built-but-not-enabled.
+**Relates to / Supersedes:** Answers open items in DEC-025. Source: 2026-09-02 call (comms/meeting-notes/2026-09-02_Wepop_open-questions-and-repo-migration.md).
+
+### DEC-062: Live stories are ephemeral and uncapped (deferred feature)
+**Date:** 2026-09-02
+**Participants:** Elvis (design), Aakash (merger)
+**Status:** ACTIVE
+
+**Decision:** Live stories are not phase 1; this records the direction. A live story is an ephemeral 24-hour post (Instagram-story style, in the moment, not live streaming), archived after 24 hours and then visible only to its owner. Live stories do not count against the organization 50-item media cap and are not capped in number for now.
+**Reasoning:** A live story is not a durable upload and expires on its own, so a per-event or per-account count cap does not fit it. Live streaming proper is out of scope for cost and infrastructure reasons.
+**Impact:** Answers the DEC-025 live-stories open item (separate allowance, uncapped, not counted against the org media cap). Deferred feature.
+**Relates to / Supersedes:** Answers an open item in DEC-025. Source: 2026-09-02 call (comms/meeting-notes/2026-09-02_Wepop_open-questions-and-repo-migration.md).
+
+### DEC-063: Extended paid-plan free trial at launch
+**Date:** 2026-09-02
+**Participants:** Elvis (design), Aakash (merger)
+**Status:** ACTIVE
+
+**Decision:** At launch every user is given the paid plan for free as an extended trial (likely around six months, exact length to be set later), after which they choose to continue paid or move to the free tier. Paid-tier limits (including media retention downgrade) do not apply during the trial.
+**Reasoning:** The product is new and the team wants users to experience paid features and give feedback before any gating bites; a long trial defers the retention and cap decisions past the launch window.
+**Impact:** Defers the practical effect of the media-retention window (six vs twelve months, DEC-039) and other paid gates until the trial ends. Financials owner (Aakash) territory; interacts with DEC-018 and the retention window, which stays undecided.
+**Relates to / Supersedes:** Relates to DEC-018, DEC-039. Source: 2026-09-02 call (comms/meeting-notes/2026-09-02_Wepop_open-questions-and-repo-migration.md).
+
+### DEC-064: Multiple Moments per event; card anchor loses the badge; DEC-015's stale video and cap text
+**Date:** 2026-09-02
+**Participants:** Elvis (design), Aakash (merger)
+**Status:** ACTIVE
+
+**Decision:** Three amendments to DEC-015. (1) **A user may post multiple Moments to a completed event**,
+replacing "one post per user per event". The motivation is structural rather than volumetric: a long event
+may warrant the afternoon and the evening as separate posts instead of a false choice about which half to
+keep. **There is no count limit on Moments.** A user may create as many as they want for an event; what is
+bounded is their total media across all of them, per the clarification below. The constraint is on volume of
+media rather than on number of posts, so someone who wants ten Moments of one photo each may have them.
+(2) **The Moment card's event anchor frame is three elements, not four.** Handoff spec §3.5 defines the
+anchor as structurally part of the Moment card and lists name, date, org and the attendance badge; DEC-045
+withdrew that badge, so the component needs redesigning rather than shipping with an empty slot. (3)
+**DEC-015's text on video length and media caps is corrected**, having been overtaken twice: its "flat
+15-second cap and flat 10-media-item cap for everyone" was written while the paid tier was deferred, and
+video is now 15 seconds free / 30 seconds paid at 720p H.264 on both Moments and event cover media, as
+DEC-038 already asserts as standing.
+**Clarification carried with this, not a change:** DEC-018's media caps are enforced **per attendee per
+event**, summed across that attendee's Moments for the event, not per Moment.
+`freemium-model-2026-08-19.md` states them that way in as many words ("50 media items per attendee, per
+event") and gives the reason: per-user rather than a shared total, so every attendee independently gets their
+allowance regardless of how many others already posted, with no blocked-after-the-cap-fills dynamic. The cap
+only looked per-Moment because one Moment per event made the two the same object.
+**Recap grid: every Moment is its own tile.** No grouping by author. The tradeoff is accepted rather than
+overlooked and is recorded so it is not later filed as a bug: someone who posts eight Moments occupies
+roughly eight times the grid space of someone who posts one, and at a twenty-person event a single prolific
+poster can take a visible share of the recap page. Grouping by author was considered and rejected in favour
+of the simpler flat treatment.
+**Reasoning:** On the caps, moving to per-Moment would be a departure from what is decided rather than a
+continuation, and it would remove any per-event bound: five Moments at ten items each is fifty items for a
+free user, running straight through DEC-018's tiering and DEC-039's retention economics, which model 8 to 30
+items per attendee per event. Holding the cap per attendee per event is also what makes an unlimited post
+count safe, since the bound that matters is already enforced elsewhere and a second limit on post count would
+constrain nothing that the media cap does not. Comparable practice supports the per-attendee shape for this
+product specifically: Apple Shared Albums caps a shared album at 5,000 items **combined across all
+contributors**, with per-contributor limits acting only as anti-abuse rate limits, which works at 5,000
+because nobody reaches it but would bite constantly at 10 or 20 or 50, letting an enthusiastic early poster
+consume the budget before other attendees get home. On the anchor frame, the denormalized fields are
+unaffected and this is worth stating so nobody "fixes" it: `event_name`, `event_date` and `org_name` are
+copied at creation so the card survives event deletion, and the badge was always derived at render time
+rather than stored.
+**Impact:** Amends DEC-015 on three points. Deepak flags: media caps are enforced per attendee per event,
+summed across that attendee's Moments; the anchor component drops to three elements with no change to the
+denormalized fields or the tombstone path. The recap page grid previously never had to render more than one
+Moment per person and now does, as flat tiles with no author grouping.
+**Relates to / Supersedes:** Amends DEC-015. Consistent with DEC-018 and DEC-038 (caps and video), DEC-039
+(retention economics), and DEC-045 (badge withdrawal, which forces the anchor change).
+**Source:** `workspaces/elvis/moments-2026-09-02.md`, phase-1/1.5 review item #11; amends DEC-015
+
+### DEC-065: Moment visibility composes two gates; org scope is not a special case; comments; org analytics
+**Date:** 2026-09-02
+**Participants:** Elvis (design), Aakash (merger)
+**Status:** ACTIVE
+
+**Decision:** **Moment visibility caps at its source event's audience, whatever that audience is.** A public
+event lets the author publish anywhere; a private event caps at that event's attendees; an org event
+restricted to members caps at that event's attendees, who are the members. One rule with three instances
+rather than three policies, which **closes handoff open item O-4** (organization-scoped Moment visibility)
+rather than deferring it. The Moment row still carries the source event's scope from day one.
+**Profile privacy and item visibility are two independent gates that compose, and both must pass.** A
+private profile shows only name, username, cover photo and background photo to non-mutuals, while mutual
+followers see the full profile including Moments; the Moment's own visibility is capped as above.
+Most-restrictive-wins across both.
+**Comments are governed by two orthogonal controls, and separating them removes a class of special case.**
+**Moment visibility** (only me / attendees / public) governs who can *see* the Moment and therefore who is
+able to comment at all. A separate **comments toggle** (on / off) governs whether comments are *displayed*:
+when off, only the author sees them and no new ones can be added. Consequences of keeping the two separate:
+visibility changes need no special handling, so an only-me Moment simply behaves normally (it has exactly one
+viewer, who is therefore the only possible commenter, and a note to self is harmless); **setting a public
+Moment to only-me does not hide its comments**, since nobody else can reach the Moment at all and the
+author continues to see them. Hiding is the toggle's job and only the toggle's job. The toggle **defaults on
+for public and attendees-only Moments**; off hides existing comments from everyone except the author and
+prevents new ones; on restores them and allows new ones. Copy at the point of turning it back on:
+**"Turning on comments will restore 8 comments."** Comments are never deleted by either control. **The
+toggle's state is stored on the Moment as its own field rather than derived from visibility**, since the two
+controls are fully orthogonal and deriving one from the other would silently discard a choice the author
+already made. Comments continue to inherit the Moment's visibility, so a commenter can never be seen by
+someone who cannot see the Moment.
+**Org analytics never include Moment content, and there is no org exception to the attendee cap.** An org
+event restricted to its attendees keeps its Moments capped to those attendees. **An org admin receives no
+elevation**: they see exactly what any user in their position would see, plus the counts the org is entitled
+to because the event carries its flag. An admin who did not join a members-only event sees general
+information and counts, meaning how many Moments, how many media items and how much engagement, and no
+content, meaning no images, no captions and no author names. An admin who did join sees the Moments the
+ordinary way through the event page, as any attendee would.
+**Reasoning:** Both gates are needed because **a Moment is reachable from two places**, the author's profile
+and the event page. Someone who cannot see a private profile may still legitimately reach that person's
+Moment through an event they both attended, so profile privacy alone would wrongly hide it and item
+visibility alone would wrongly expose the profile. Meetup composes the same two gates the same way and is
+worth recording as precedent: a member can independently hide their group membership from their profile,
+while in a public group member details stay visible to outsiders regardless of that setting, so the item's
+context governs the item and the profile setting governs the profile. Meetup also keeps private groups
+**discoverable** in search, shielding membership data rather than the group's existence, which is the reason
+a private WePop profile should stay findable by name and username rather than becoming invisible. On
+comments, the handoff's "hidden entirely when private" line is tagged [D] (derived, never confirmed) and
+does not survive the two-control model: it conflates who may see a Moment with whether its comments are
+displayed, and once those are separate controls the private case needs no rule of its own. On org analytics,
+granting content access through the analytics surface would quietly make "capped to that event's attendees"
+untrue whenever an org hosts, because an admin who was not there would reach the content through a side door.
+Counts give the org the operational figure it is paying for without touching the cap, and the split matches
+DEC-018's own line between operational numbers and content. A stronger version giving admins full access to
+org-flagged events was considered and withdrawn, since honouring it would have required disclosing at join
+time and in the composer that club officers who did not attend can see attendees' photos.
+**Impact:** Closes handoff open item O-4. Deepak flags: visibility checks compose two gates and must both be
+evaluated at render time, since the same Moment is reachable from a profile and from an event page by
+different viewers; the comment toggle is a stored field rather than a function of visibility; comment hiding
+is a visibility filter and never a delete, and restoring must bring back the original rows; the org analytics pipeline reads
+counts only and must not join to Moment content, including author identity. Org admins get no elevated read
+path, so no admin bypass should be written on the event object.
+**Also filed here, since the handoff carries them but no decision does:** the Moment composer is the sole
+media intake path, with one uploader, one EXIF and GPS stripping pipeline and one moderation queue, and the
+Event Media tab and recap grid are filtered views with no upload of their own (§6.1); tagging requires opt-in
+consent as a request the tagged person accepts (§12.6); Moments never display a private venue's exact address
+(§12.6); host takedown is a request routed to review rather than an instant delete (§12.6); and a Moment
+under review is hidden from public surfaces with a neutral owner-facing status (§12.6).
+**What counts as an org event** is settled by the companion proposal below: an event is an org event when it
+was explicitly org-flagged at creation, not by virtue of who created it. That prevents a member's personal
+events from appearing in the dashboards of every org they belong to.
+**Not resolved by this proposal:** whether an org's analytics distinguish Moment counts on member-only events
+from those on public events, or report them together.
+**Relates to / Supersedes:** Extends DEC-015's most-restrictive-wins principle. Closes handoff O-4. Relates
+to DEC-006 and DEC-017 (the anti-stalking reasoning these gates serve), and to DEC-018 (the operational
+numbers versus content line that the org analytics rule follows).
+**Source:** `workspaces/elvis/moments-2026-09-02.md`, phase-1/1.5 review item #11; closes handoff open item
+
+### DEC-066: One account rather than personas; membership versus following; org-flagged content and what the
+**Date:** 2026-09-02
+**Participants:** Elvis (design), Aakash (merger)
+**Status:** ACTIVE
+
+**Decision:** **A user has one individual account.** An org is a page they may create and administer, or
+belong to, never a second identity. Admins switch from their personal account into the org account to reach
+analytics and management surfaces, so the org account is an administration console; **members do not switch
+at all** and stay in their personal account.
+**Membership and following are two distinct relations.** Anyone may follow. Membership is granted by
+**request-and-approve (the default) or invite-only, at the admin's choice per org**, and it grants the org's
+discussion board, member-only content, and the "Create as Member" button when enabled. **The org's privacy
+setting shields members and member-only content, never the org's existence**: a private org still appears in
+search by name.
+**The org admin controls whether members may create events and ideas for the org.** When enabled, a **"Create
+as Member"** button exists on the org's profile and content created through it is **org-flagged**. The
+ordinary create flow offers the same choice as a second door, listing only orgs where the user actually holds
+permission. Content not created that way is an ordinary personal event or idea, absent from the org page and
+discoverable normally through search, home feed and the creator's profile.
+**Org-flagged content is still hosted and attributed to the individual who created it, not to the org.** The
+flag makes content appear on the org's page and count in the org's analytics. It does **not** display the org
+as host, and it does **not** restrict the audience, since audience scope stays the separate per-event control
+from item #11 and an org event open to the public is a normal thing a club wants.
+**An org admin gets general information about an org-flagged event, and if they did not join it they see
+neither its details nor its Moments.** Stated as implementation rather than policy: **the admin receives no
+elevation.** They see exactly what any user in their position would see, plus the basic counts the org is
+entitled to because the event carries its flag. A public event's page looks the same to an admin as to
+anyone; attendee-gated content stays gated; counts are the org's, never content. **An org admin may detach
+the org flag from an event or idea without ever having had access to its content**, which removes it from the
+org page and from the org's analytics. **The org profile shows an aggregate rating derived from its org-flagged
+events**, while the individual host keeps their own rating unchanged from DEC-045 to DEC-047; both exist. **A
+creator leaving the org triggers no host takeover**, since the event was always theirs: past events keep the
+flag so analytics history does not rewrite itself, and upcoming ones may be detached.
+**Enforcement, restated for this model:** a **conduct sanction** (spam, no-shows, rudeness, low-grade policy
+violations) means the org removes the member and they keep using WePop, while a **safety ban** on a short
+**closed** list (violence or credible threats, sexual misconduct, CSAM, fraud, stalking or doxxing) suspends
+the account, with DEC-044's propagation carrying it to any org that person operates (corrected from DEC-041, a cross-reference typo; DEC-044 is the enforcement-propagation decision). The list is enumerated
+rather than left to reviewer discretion on severity.
+**Reasoning:** A persona model was worked through and withdrawn. It solves a business-account problem student
+orgs do not have, and it costs a linkage that must never be inferable from recommendations or mutual-contact
+counts, a persistent mode with its own class of posting-to-the-wrong-account errors, a double-join problem on
+capacity-limited events, and a ban model scoped across identities. Withdrawing it also keeps DEC-041 to
+DEC-044 as written rather than extending them. Attribution to the individual reads better than org-as-host
+for an in-person product, since someone deciding whether to meet strangers wants a human name attached, and
+it keeps host accountability pointed at an account that can be sanctioned. Placing the create entry point on
+the org's own page means location supplies the context, removing any persistent global mode to lose track of.
+On admin access, a stronger version was drafted and withdrawn in which admins saw everything on an org-flagged
+event including its Moments, on the reasoning that a club must be able to moderate what appears under its
+name. It would have made item #11's attendee cap untrue whenever an org is involved, and honouring it would
+have required telling attendees at join time and again in the composer that club officers who did not attend
+can see their photos. Framing the result as no-elevation rather than as a carve-out also matters for
+implementation, since there is no special admin path to write and therefore none to get wrong. The accepted
+cost is that detach is the only moderation tool an admin holds over a member's event, which for student orgs
+is proportionate, with the create-permission toggle covering a member who should not be posting under the
+club's name at all. Membership defaults follow Meetup, which keeps private groups discoverable and
+shields membership data rather than the group, since invisible orgs cannot be found in order to be joined.
+**Impact:** Answers what an org event is, which item #11's analytics rule depended on. Deepak flags: an event
+carries a nullable org reference set at creation and org analytics filters on it, with no second account
+table and nothing to propagate; the create-permission setting is per org and must filter the create flow's
+picker rather than merely hide it; org admins receive no elevated read path on the event
+object, so existing visibility checks already produce the correct result and no admin bypass should be added;
+the org's entitlement from the flag is counts only, and the analytics pipeline must not join to event details,
+Moment content or author identity; the detach lever mutates only the org reference and must neither require
+nor grant read access to content, and detaching a past event moves that slice of analytics history; org rating is derived at read time rather than stored; membership and following
+are separate relations; a private org stays indexed for search by name.
+**Not resolved by this proposal:** whether an org admin needs any moderation power beyond detaching, given
+they cannot see a members-only event's details; whether org analytics distinguish counts on member-only events from public
+ones; and whether a suspended member's org-flagged upcoming events are auto-detached or left for an admin.
+**Relates to / Supersedes:** Consistent with DEC-041 to DEC-044 (host accountability, suspension propagation,
+admin transfer) and DEC-045 to DEC-047 (host rating). Supplies the org-event definition the companion item
+#11 visibility proposal depends on. Extends DEC-018's operational-numbers-versus-content line.
+**Source:** `workspaces/elvis/org-membership-2026-09-02.md`; arose from phase-1/1.5 review item #11

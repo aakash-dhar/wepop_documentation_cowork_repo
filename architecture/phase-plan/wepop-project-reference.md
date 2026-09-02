@@ -1,6 +1,6 @@
 # Wepop - Complete Project Reference (WEP001)
 
-> Generated 2026-08-31 by `team/project-reference/build.py` from `team/project-reference/data.js` and `shared/DECISIONS.md` (DEC-001 to DEC-044). Do not edit by hand: it is overwritten on every build. The interactive version is `docs/project-reference.html` (client, behind the login gate) and `team/wepop-project-reference.html` (internal).
+> Generated 2026-09-02 by `team/project-reference/build.py` from `team/project-reference/data.js` and `shared/DECISIONS.md` (DEC-001 to DEC-066). Do not edit by hand: it is overwritten on every build. The interactive version is `docs/project-reference.html` (client, behind the login gate) and `team/wepop-project-reference.html` (internal).
 > `shared/DECISIONS.md` is the source of truth and wins wherever anything here disagrees. Items marked **Elvis design** come from Elvis's own documents and have not landed as decisions; anything that conflicts with a landed decision is flagged, never treated as scope. Every sourced item names its file and section. No em-dashes; governance values are ALLOW / BLOCK / ESCALATE.
 
 ## Contents
@@ -27,7 +27,7 @@ Wepop is an **invite-first, location-based events and meetup app**: a tool for g
 - **Invite-first.** New users arrive through an invitation to a specific event or host, or wait on a waitlist that auto-promotes; both a growth model and a real safety mitigation cited in the age-gate reasoning (DEC-012, DEC-024).
 - **Real-world-first.** The app pushes people toward attending, hosting and remembering real events rather than browsing people (DEC-006, DEC-020).
 
-**Status (2026-08-31).** Phase 1 design deepening. No build tasks started (board). RAG: green with a watch. Three launch blockers are open on the HOTSHEET: moderation capability, Korea 위치정보법 KCC registration for the geofenced check-in mode, and the CSAM preserve-and-report runbook.
+**Status (2026-09-02).** Phase 1 design deepening (DEC-045 to DEC-066). Private accounts pulled into phase 1; cohort is a soft ranking signal, not a hard filter; Moments now allow multiple posts per event with media capped per attendee per event; an org-membership model (one account, membership versus following) lands; categories taxonomy v2.0 adopted. Check-in is reversed to a host-run operations tool that gates nothing; Free Now and live stories are deferred. Every user gets the paid plan free as an extended launch trial. RAG: green with a watch. Three launch blockers are open on the HOTSHEET: moderation capability, Korea 위치정보법 KCC registration for the geofenced check-in mode, and the CSAM preserve-and-report runbook.
 
 ### The journey, end to end
 
@@ -148,6 +148,7 @@ _What happens to a lapsed claim is not specified in the record._
 1. Waitlist collects email, phone, location and university.
 2. Users are auto-promoted off the waitlist with a claim window (a bounded time to accept). What happens to a lapsed claim is not yet specified.
 3. An invited user's onboarding screen names the inviter and the event/host, setting context before signup.
+4. Founder-seed invites (WePop itself as inviter, no org and no event or idea) and org-membership grants are the two scoped exceptions to the invite-first rule; individual person-to-person invites stay event- or idea-tied (DEC-050).
 
 **Rules that govern it.**
 
@@ -158,12 +159,13 @@ _What happens to a lapsed claim is not specified in the record._
 
 - Claim-window timer; behaviour for a lapsed claim is unspecified in the record.
 - Inviter/event attribution must survive into the new account for first-session context.
+- Onboarding is one 15-step sequence from a shared Get Started screen differing only in landing destination; profile completion (optional email, optional password, description) moved out of onboarding into editable profile fields with completion-nudge reminders (DEC-052).
 
 **Open items.**
 
 - None on this module.
 
-**Governing decisions.** DEC-024
+**Governing decisions.** DEC-024, DEC-050, DEC-052
 
 **Elvis's design detail, sourced (7).**
 
@@ -227,6 +229,9 @@ _No password in phase 1. PASS returns identity and age, which also strengthens t
 2. If the provider supplies a verified phone (Kakao only, business-reviewed scope, Korea in practice) that satisfies verification; otherwise the app runs its own phone OTP.
 3. Korean carrier numbers verify through PASS (carrier real-name auth, government-linked; returns success/fail plus identity and age). Non-Korean numbers stay on standard OTP.
 4. Password is deferred; recovery is an email magic-link (email is collected from every account, so it covers 100 percent); biometrics for day-to-day re-login.
+5. Returning login: any valid credential (social, phone OTP, or username-or-email plus password when set) resolves to the one account anchored on the verified phone; biometric quick-unlock gates an already-active local session and is not a server credential; the session stays active until explicit logout or app deletion (DEC-049).
+6. Account linking is consent-based: a new-provider signup on an already-registered phone verifies the phone, logs into the existing account, then explicitly asks before adding the new provider (DEC-049).
+7. A Korea-based user without a Korean phone number gets a redacted-ID human-review fallback (government photo ID with the ID number self-redacted, no facial recognition or biometrics), following Bumble's Korea flow; the name field is a single flexible full-name field, not a first/last split (DEC-055).
 
 **Rules that govern it.**
 
@@ -239,13 +244,15 @@ _No password in phase 1. PASS returns identity and age, which also strengthens t
 - One global flow with two branches (Korea PASS, everyone else OTP) plus the Kakao verified-phone skip.
 - PASS brings CI/DI sensitive-identity data and PIPA / designated-agency handling.
 - A freelancer may be engaged for the PASS integration; Deepak to research PASS first.
+- The optional post-signup password is the held DEC-011 amendment (filed via DEC-052, not yet landed); day-to-day recovery stays the email magic-link.
+- The redacted-ID path adds a human-review verification queue and tooling with its own PIPA implications (DEC-055).
 
 **Open items.**
 
 - Confirm PASS adoption with Elvis before build (directional today).
 - PASS data-handling obligations pending counsel.
 
-**Governing decisions.** DEC-011, DEC-026, DEC-004 (superseded)
+**Governing decisions.** DEC-011, DEC-026, DEC-004 (superseded), DEC-049, DEC-055
 
 **Elvis's design detail, sourced (13).**
 
@@ -409,6 +416,7 @@ _Current-location-only edits stop a free user re-picking a foreign home to defea
 3. The confirmed point is reverse-geocoded to a canonical neighborhood ID, centroid and country code; the precise tapped coordinate is discarded and never persisted. Fallback chain: neighborhood, then postal code, then city.
 4. After onboarding, home location changes only by granting device location and selecting current location (a live GPS read through the same reverse-geocode-and-discard flow). The free picker does not reopen. No fallback for a user who never grants permission, deliberately.
 5. At runtime the stored value is only the default anchor: when GPS is granted, live current location is preferred, pulled per screen load, never persisted, with a manual refresh on the home feed.
+6. The one map-plus-search picker now serves three surfaces (event/idea location, a location poll where attendees vote and the host confirms the final spot, and Explore's browse map); zoom sets precision with no minimum floor, extending DEC-003 (DEC-054).
 
 **Rules that govern it.**
 
@@ -425,7 +433,7 @@ _Current-location-only edits stop a free user re-picking a foreign home to defea
 - Whether Explore needs its own manual refresh distinct from the home feed's.
 - Whether a GPS-granted user can opt back into the coarser stored default.
 
-**Governing decisions.** DEC-003, DEC-016, DEC-031
+**Governing decisions.** DEC-003, DEC-016, DEC-031, DEC-054
 
 **Elvis's design detail, sourced (15).**
 
@@ -472,6 +480,8 @@ _Current-location-only edits stop a free user re-picking a foreign home to defea
 
 1. Onboarding captures birthdate, neighborhood, gender, languages, personality and interest tags, and university affiliation.
 2. Personality is an extensible searchable tag list (MBTI values included as tags): show the top 10-20, searchable, users add their own.
+3. Personality tags are three named sections: MBTI (closed, 16 values), social energy (closed, 3 values), and general vibe/self-descriptors (open, searchable, user-addable); this supersedes DEC-005's flat 10-20 tag figure (DEC-057). Zodiac and Enneagram are considered and not in the initial catalog.
+4. A distinct 'languages I speak' profile field is added, separate in name and storage from the display-language field, and profile completion is editable profile fields rather than an onboarding gate (DEC-052).
 
 **Rules that govern it.**
 
@@ -485,8 +495,9 @@ _Current-location-only edits stop a free user re-picking a foreign home to defea
 **Open items.**
 
 - Profile screens and description field pending from Elvis.
+- Whether MBTI and social energy are single-select while general vibe is multi-select, or all three allow multiple (DEC-057, to the meeting).
 
-**Governing decisions.** DEC-005
+**Governing decisions.** DEC-005, DEC-057, DEC-052
 
 **Elvis's design detail, sourced (14).**
 
@@ -567,6 +578,7 @@ _Seven-status machine in the handoff spec; a planning event that never gets a da
 
 - Closes a laundering hole: a host cannot delete a completed event to erase a bad rating (protects DEC-014 reputation and the DEC-024 org track record).
 - Everything is enforced server-side, not by hiding the button.
+- An event's headline location need not be its exact meeting point; the host supplies the findable spot separately, so no precision floor is forced on capture (DEC-054).
 
 **Build notes for Deepak.**
 
@@ -579,7 +591,7 @@ _Seven-status machine in the handoff spec; a planning event that never gets a da
 - Elvis's calendar-picker design has not landed; revisit the schedule against it.
 - Save-as-draft screen still to be added (todos #6).
 
-**Governing decisions.** DEC-003, DEC-025, DEC-041, DEC-043
+**Governing decisions.** DEC-003, DEC-025, DEC-041, DEC-043, DEC-054
 
 **Elvis's design detail, sourced (17).**
 
@@ -831,15 +843,15 @@ _Views do not count as activity._
 
 1. Post an Idea (summary, details, Discussion, time/location polls). Others tap Interested, comment, vote; anyone can spin an Event out. Spawning never closes the Idea.
 2. Pause new joins: the old "close to new joiners" toggle is a reversible membership freeze, renamed, and now shipped visible in phase 1 (superseding DEC-009's do-not-expose). The existing group keeps full access.
-3. Auto-archive after 90 days with no activity (Interested, comment, spawned event; views do not count): visible, read-only, links survive.
-4. Delete outright only while nobody else has interacted (created-by-mistake; friction-free).
-5. Once interaction exists: no delete, but the creator may detach; the Idea becomes system-owned (admin-only).
-6. Moderation removal leaves inspired events standing with an "Idea removed" tombstone.
+3. Auto-archive after 90 days with no activity (Interested, comment, spawned event; views do not count): visible, read-only, links survive. DEC-060 phrased the window as roughly six months; 90 days stands until Elvis confirms the change.
+4. An idea survives with no owner once its creator leaves; there is no owner-takeover mechanism in phase 1, deferred because a taker could hijack an active idea's topic (DEC-060).
+5. Delete outright only while nobody else has interacted (created-by-mistake; friction-free).
+6. Archiving is quiet: an archived idea is not recommended or shown in feed but stays reachable by direct link or save, and interested users are not notified when it archives (DEC-060). Moderation removal leaves inspired events standing with an "Idea removed" tombstone.
 
 **Rules that govern it.**
 
 - "Pause" beats "Close"/"Lock": reversibility is the semantic that separates it from archive.
-- 90 days vs events' 60 because Ideas are slower-burning by design.
+- 90 days vs events' 60 because Ideas are slower-burning by design; DEC-060's roughly-six-months phrasing conflicts and is unreconciled, so 90 days is standing.
 - Views excluded so a passive viewer cannot block a creator from deleting a mistyped draft.
 
 **Build notes for Deepak.**
@@ -851,12 +863,11 @@ _Views do not count as activity._
 
 **Open items.**
 
-- Un-archiving.
-- Whether a detached Idea can regain an owner.
-- Whether archived Ideas surface in Explore or only by link.
-- Whether interested users are notified on pause/archive.
+- Whether an archived idea can be un-archived (Elvis research).
+- Whether commenting on an archived idea is allowed, since it would effectively revive it (Elvis research).
+- Auto-archive window: DEC-040 sets 90 days, DEC-060 says roughly six months; treat 90 days as standing until Elvis confirms.
 
-**Governing decisions.** DEC-040, DEC-009 (superseded), DEC-022
+**Governing decisions.** DEC-040, DEC-009 (superseded), DEC-022, DEC-060
 
 **Elvis's design detail, sourced (16).**
 
@@ -907,13 +918,12 @@ flowchart LR
   end
   subgraph M10L1["Retrieval (cheap filter)"]
     direction TB
-    M10_coh{{"Cohort hard filter: university-affiliated or not"}}
-    M10_fol[["Content from people you follow bypasses the filter"]]
+    M10_loc{{"Location is the hard constraint: far-away events are searchable, never recommended"}}
     M10_blk[/"Blocked users excluded on every surface"/]
   end
   subgraph M10L2["Ranking (weighted sum)"]
     direction TB
-    M10_rank[["Tags / keywords, cohort, recency, distance, popularity, social proximity, new-host boost, group fit, positive affinity"]]
+    M10_rank[["Cohort (soft signal), follow network, distance, tags/keywords, recency, popularity, social proximity, new-host boost, group fit, positive affinity"]]
   end
   subgraph M10L3["Surfaces"]
     direction TB
@@ -921,14 +931,12 @@ flowchart LR
     M10_list(["Explore list (ranked)"])
     M10_map(["Explore map (unranked, viewport-bounded)"])
   end
-  M10_all --> M10_coh
-  M10_all --> M10_fol
+  M10_all --> M10_loc
   M10_all --> M10_blk
-  M10_coh --> M10_rank
-  M10_fol --> M10_rank
+  M10_loc --> M10_rank
   M10_rank --> M10_home
   M10_rank --> M10_list
-  M10_coh -.->|"no ranking; viewport-bounded"| M10_map
+  M10_loc -.->|"no ranking; viewport-bounded"| M10_map
   classDef start fill:#fef2f2,stroke:#E63946,color:#17181d;
   classDef fin fill:#e8f6ee,stroke:#1f9d55,color:#0f3d24;
   classDef decision fill:#fdf3df,stroke:#d9a441,color:#4a3a10;
@@ -936,8 +944,7 @@ flowchart LR
   classDef warn fill:#fff5f5,stroke:#C42E3A,color:#7a1f28;
   classDef muted fill:#f2f2f4,stroke:#d5d6db,color:#6b6b70;
   class M10_all start;
-  class M10_coh decision;
-  class M10_fol system;
+  class M10_loc decision;
   class M10_blk warn;
   class M10_rank system;
   class M10_home fin;
@@ -945,17 +952,18 @@ flowchart LR
   class M10_map fin;
 ```
 
-_Rule-based at launch; logging from day one so a learned ranker can replace the ranking stage later._
+_Cohort is a soft ranking signal, not a hard retrieval gate (DEC-059): events from people you follow surface even outside your cohort. Rule-based at launch; logging from day one so a learned ranker can replace the ranking stage later._
 
 **What it is.** The engine behind the home feed and Explore: cheap retrieval then a weighted ranking, rule-based at launch and built so a learned ranker slots in later.
 
 **User flow.**
 
-1. Cohorts: simplified to a single binary value, university-affiliated or not (location removed from the formula). Affiliation via self-declared status, a school email domain, or membership in a university-flagged Org. At launch a hard retrieval filter, relaxed by a single global density call. Content from people you follow bypasses the filter via social proximity.
+1. Cohorts: university-affiliated or not (affiliation via self-declared status, a school email domain, or a university-flagged Org). Now a soft ranking signal, not a hard retrieval gate (DEC-059 amends DEC-019/DEC-020): recommendations combine cohort, the user's follow network, and location/distance, and events from people in the user's network surface even when those people are outside the cohort. Location stays a hard constraint (far-away events are searchable, never recommended). No automatic density-based de-hardening in phase 1; loosening cohort emphasis is a manual decision made later.
 2. Ranking: a normalized weighted sum over tag/keyword overlap, cohort, recency, geo distance, popularity, social proximity, a new-host fairness boost, and group-composition fit. Keyword extraction and a per-user interest profile feed the tag signal; a hidden admin-visible keyword layer spans all content. Logging ships day one.
 3. Explore: an unranked viewport-bounded map view and a fully ranked list view; filters and search scoped to a location.
 4. Group dynamics: the avoid signal is block-only (the inferred low-rating half is dropped; absence-of-positive was rejected as noise). A positive affinity signal boosts events attended by people you tapped "want to meet again" on. Look-alike host affinity parked. Personality-mix is a ranking signal only.
 5. General user blocking: phase 1, earliest wave. Bidirectional and total across every surface; scope stated to the user at block time; checked at retrieval time.
+6. The hidden admin-visible internal keyword layer is populated by the v2.0 categories taxonomy (eight top-level categories plus Other, 85 subcategories, EN/KO under one canonical ID; DEC-051).
 
 **Rules that govern it.**
 
@@ -970,10 +978,9 @@ _Rule-based at launch; logging from day one so a learned ranker can replace the 
 
 **Open items.**
 
-- The cohort softening trigger (the global density threshold).
 - Behavioral-inference disclosure in the privacy policy.
 
-**Governing decisions.** DEC-019, DEC-020, DEC-023, DEC-030, DEC-036, DEC-037
+**Governing decisions.** DEC-019, DEC-020, DEC-023, DEC-030, DEC-036, DEC-037, DEC-059, DEC-051
 
 **Elvis's design detail, sourced (27).**
 
@@ -1040,25 +1047,23 @@ _Rule-based at launch; logging from day one so a learned ranker can replace the 
 
 ```mermaid
 flowchart LR
-  M11_done(["Event completes (checked in at the event, or not)"])
-  M11_s1["Step 1: rate the event 0-5 (+ optional anonymous text)"]
-  M11_s2["Step 2: rate the host 0-5, one positive tap per attendee"]
+  M11_done(["Event completes (joined through the app)"])
+  M11_s1["Step 1: rate the event 1-5 (+ optional anonymous text)"]
+  M11_s2["Step 2: rate the host 1-5, one positive tap per attendee"]
   M11_s3["Step 3: add Moments"]
-  M11_chk{{"Checked in?"}}
-  M11_v["Verified badge; rating weight 1.0"]
-  M11_u["No badge; rating weight 0.4"]
-  M11_rep(["Host reputation (public average only after 3 verified ratings)"])
-  M11_rec[["Recommendation signal via Bayesian smoothing, C = 5"]]
+  M11_anon{{"Feedback is uniformly anonymous; editable or withdrawable for 7 days"}}
+  M11_rep(["Host reputation (public average only after 3 ratings)"])
+  M11_rec[["Recommendation signal: unweighted Bayesian smoothing, C = 5"]]
+  M11_chk["Check-in (host scans attendee): ticketed events, or a host toggle on capacity events"]
+  M11_ops["Operational record only: no badge, no weight, gates nothing"]
   M11_done --> M11_s1
   M11_s1 --> M11_s2
   M11_s2 --> M11_s3
+  M11_s3 --> M11_anon
+  M11_anon --> M11_rep
+  M11_anon --> M11_rec
   M11_done --> M11_chk
-  M11_chk -->|"yes"| M11_v
-  M11_chk -->|"no"| M11_u
-  M11_v --> M11_rep
-  M11_u --> M11_rep
-  M11_v --> M11_rec
-  M11_u --> M11_rec
+  M11_chk --> M11_ops
   classDef start fill:#fef2f2,stroke:#E63946,color:#17181d;
   classDef fin fill:#e8f6ee,stroke:#1f9d55,color:#0f3d24;
   classDef decision fill:#fdf3df,stroke:#d9a441,color:#4a3a10;
@@ -1066,45 +1071,47 @@ flowchart LR
   classDef warn fill:#fff5f5,stroke:#C42E3A,color:#7a1f28;
   classDef muted fill:#f2f2f4,stroke:#d5d6db,color:#6b6b70;
   class M11_done start;
-  class M11_chk decision;
-  class M11_u muted;
+  class M11_anon decision;
   class M11_rep fin;
   class M11_rec system;
+  class M11_chk muted;
+  class M11_ops muted;
 ```
 
-_Every step is optional. Check-in no longer gates anything; no negative peer record exists anywhere._
+_Every step is optional. Eligibility is joined plus event completed; check-in gates nothing (DEC-045/046). Attendee self-scan (self-service mode) is deferred._
 
-**What it is.** The loop that produces host reputation, the recommendation signal and moments. DEC-034 reshaped it: check-in no longer gates anything.
+**What it is.** The loop that produces host reputation, the recommendation signal and Moments. DEC-045 to DEC-047 reshaped it: the check-in badge and scoring weight are withdrawn, check-in reverses to host-scans-attendee as an operations tool, and feedback is uniformly anonymous.
 
 **User flow.**
 
-1. Step 1: rate the event 0-5 stars plus optional anonymous text with an everyone/host-only toggle (default everyone).
-2. Step 2: rate the host 0-5 plus a comment, and give other attendees a single positive-only tap (thumbs up/down is gone; no negative peer record exists anywhere).
-3. Step 3: add moments.
-4. No bulk follow: individual follow taps only.
-5. Check-in grants a visible verification badge and an invisible weight: verified feedback 1.0, unverified 0.4 (joined and completed but never checked in, or self-attested and unresolved at the 7-day auto-close).
-6. A host or org public average shows only after 3 verified ratings; below that only event count and rating count.
-7. Internal signal reads the weighted rows through Bayesian smoothing toward the global mean, C = 5.
+1. Step 1: rate the event 1 to 5 stars (an unrated field is NULL, not 0) plus optional anonymous text; feedback is uniformly anonymous with no name-attach option (DEC-045, DEC-047).
+2. Step 2: rate the host 1 to 5 plus a comment, and give other attendees a single positive-only tap; the follow button is the signed channel, on the same screen but separated from the rating controls.
+3. Step 3: add Moments. Eligibility is simply joined-through-the-app plus event completed; check-in gates nothing (DEC-045).
+4. A user may edit or withdraw their own feedback for 7 days from submission (matching the self-attest auto-resolve window); after that removal goes through moderation. A 'My feedback' profile entry is the only place the author-to-feedback link ever surfaces, private to that user (DEC-047).
+5. Check-in reverses to host-scans-attendee (ticketing standard), producing an operational record only: no 참석 인증 badge, no scoring weight, gates nothing. Required on ticketed events; a host toggle on capacity-limited events; not available on open events in phase 1. Attendee self-scan (self-service mode) is deferred (DEC-046).
+6. A public star average displays once a host has 3 ratings (not 3 verified ratings), showing event and rating counts below that; the internal signal applies unweighted Bayesian smoothing toward the global mean, R = (C·m + Σrᵢ)/(C + n) with C = 5 (DEC-045).
+7. Attendance is recorded as two independent axes: observed attendance where check-in ran, and self-reported intent on every event (on my way / running late / cannot make it); declining in advance is never scored like a silent no-show (DEC-046).
 
 **Rules that govern it.**
 
-- Decoupling removes check-in as a single point of failure: a host who forgets to run it costs attendees a badge, not their memories.
-- 0.4 keeps a cluster of no-shows from moving a host's score against people who attended.
-- Smoothing protects the new-host boost from a single early low rating.
+- The badge and scoring weight are withdrawn in full: once check-in is optional and rare they created more problems than they solved (DEC-045).
+- A gate must be able to deny entry, so the host scans the attendee rather than the reverse (DEC-046).
+- Anonymity does the work double-blind publication does elsewhere; optional attribution would identify the few who declined to sign (DEC-047).
 
 **Build notes for Deepak.**
 
-- Store method and verified_at on the feedback row; compute the weight at read time from a config table.
-- A badge on anonymous feedback discloses attendance, not identity; it coexists with anonymity.
-- Weights, threshold and C are starting points, not data-backed.
-- Printed-poster check-in mode constrains scans to a location radius, raising a 위치정보법 question (R5); fallback is time window plus a live QR that regenerates every 60s.
+- No weight column and no badge surfaces; aggregates are recomputed from rows rather than accumulated, since a single edit or withdrawal corrupts a running sum (DEC-045, DEC-047).
+- attendance(event_id, user_id, method, verified_at, approved_by) stays a first-class transactional table so weighting can be reinstated later as a config change plus a runnable backfill (DEC-045); attendance.method stays an open discriminator (host-scan now, self-service later) (DEC-046).
+- Once the host scans a person in front of them a static per-attendee credential suffices; the 60-second rotating QR is no longer needed (DEC-046).
+- The 'My feedback' link is private to the user, never to a host, an admin UI, or an export (DEC-047).
 
 **Open items.**
 
-- Whether 0 stars is a real value or means unrated.
-- 위치정보법 registration for the geofence (R5, before P0).
+- What "surfaces in analytics" means concretely, and how no-show and punctuality data is eventually used (DEC-046).
+- Whether an edited rating shows as edited or changes silently within the 7-day window (DEC-047).
+- 위치정보법 registration: DEC-046 likely defers the trigger with attendee self-scan, pending DLG confirmation (R5).
 
-**Governing decisions.** DEC-014, DEC-034
+**Governing decisions.** DEC-014, DEC-034, DEC-045, DEC-046, DEC-047
 
 **Elvis's design detail, sourced (15).**
 
@@ -1174,39 +1181,45 @@ flowchart LR
   class M12_retro muted;
 ```
 
-_Nothing is ever deleted. Caps: 10 / 20 / 50 items, video 15s free / 30s paid; event cover media separate (5 items)._
+_Nothing is ever deleted. Media caps are per attendee per event: 10 / 20 / 50 items, video 15s free / 30s paid; event cover media separate (5 items). The retention downgrade is deferred while every user is on the launch free trial (DEC-063)._
 
-**What it is.** The evergreen memory-keeping layer, with reactions, comments and share, most-restrictive-wins visibility, and video at 720p.
+**What it is.** The evergreen memory-keeping layer, with reactions, comments and share, two composing visibility gates, and video at 720p. DEC-064 and DEC-065 reshaped it: multiple Moments per event, caps per attendee per event, and visibility that composes profile privacy with the Moment's own scope.
 
 **User flow.**
 
-1. One moment per user per event (never a paid lever). Visible-beyond-owner moments support reactions, comments and share. Visibility inherits the event; owner can set a moment private; most-restrictive wins.
-2. Media caps: 10 items free / 20 individual-paid / 50 at org-paid events (most-generous-wins); video 15s free / 30s paid at 720p H.264, roughly 3 Mbps; server-side transcode of every upload.
-3. Event cover media is a separate surface: up to 5 items, photos/videos any mix, video 15s free / 30s paid.
-4. Retention: tiered and active at launch. Nothing deleted. After 6 months, free-tier media moves to cheaper storage (thumbnail plus download of the original); paid accounts keep full-res indefinitely. Warnings at T-14 and T-3 days with bulk download. Thumbnails (~400px) persist forever. Retrospective surfaces restore from cold at full quality.
+1. A user may post multiple Moments to a completed event (replacing one-post-per-user); there is no count limit on Moments, only on total media (DEC-064). Visible-beyond-owner Moments support reactions, comments and share.
+2. Visibility composes two independent gates that must both pass: profile privacy (a private profile shows non-mutuals only name, username, cover and background photo, while mutual followers see the full profile including Moments) and the Moment's own visibility, which caps at its source event's audience (a public event publishes anywhere, a private or members-only org event caps at that event's attendees). Most-restrictive-wins (DEC-065, DEC-048).
+3. Media caps are enforced per attendee per event, summed across that attendee's Moments rather than per Moment (50 items at org-paid events, 20 individual-paid, 10 free; most-generous-wins); video 15s free / 30s paid at 720p H.264 (DEC-064).
+4. The Moment card's event anchor frame is three elements (name, date, org), not four; DEC-045 withdrew the attendance badge, so the slot is removed rather than left empty (DEC-064).
+5. Comments are governed by two orthogonal controls: Moment visibility governs who can see and therefore comment; a separate comments toggle (default on for public and attendees-only Moments) governs whether comments are displayed. Off hides existing comments from everyone except the author and blocks new ones; comments are never deleted by either control, and the toggle state is stored on the Moment, not derived from visibility (DEC-065).
+6. Event cover media is a separate surface: up to 5 items, any mix of photos and videos, video 15s free / 30s paid; there is no total-duration cap (DEC-038, DEC-064).
+7. Org analytics never include Moment content: an admin who did not join a members-only event sees counts only (how many Moments, media items and engagement), no images, captions or author names, and receives no read elevation (DEC-065).
+8. Retention is tiered and active in principle (after 6 months free-tier media moves to cheaper storage, thumbnail plus download of the original, paid keeps full-res; nothing deleted, thumbnails persist forever), but every user is on the paid plan free as an extended launch trial, so the free-tier downgrade does not bite until the trial ends (DEC-063).
 
 **Rules that govern it.**
 
 - A cover is a cover, not a gallery; volume belongs in the composer, keeping one uploader and one moderation queue.
-- Silent degradation is not acceptable.
-- Financials: the 6-month window roughly halves the storage assumption behind DEC-018's pricing; re-check the org cost model before ship.
+- Media caps are per attendee per event, which is what makes an unlimited Moment count safe: the bound that matters is already enforced elsewhere (DEC-064).
+- The recap grid renders every Moment as its own flat tile with no author grouping; a prolific poster takes proportionally more grid space, an accepted tradeoff recorded so it is not later filed as a bug (DEC-064).
+- Financials: the retention window roughly halves the storage assumption behind DEC-018's pricing; re-check the org cost model before ship.
 
 **Build notes for Deepak.**
 
 - storage_tier and expires_at on the media row with a scheduled job; a designed loading state for cold retrieval.
-- Per-clip 50MB ceiling is an abuse guard; client-side compression is mandatory.
-- Infra: Cloudflare R2 over S3+CloudFront; self-hosted 720p transcode.
+- Visibility checks compose two gates evaluated at render time, since the same Moment is reachable from a profile and an event page by different viewers; the org analytics pipeline reads counts only and must not join to Moment content or author identity (DEC-065).
+- The Moment composer is the sole media intake path (one uploader, one EXIF and GPS stripping pipeline, one moderation queue); the Event Media tab and recap grid are filtered views with no upload of their own (DEC-065).
+- Per-clip 50MB ceiling is an abuse guard; client-side compression is mandatory; Cloudflare R2 with self-hosted 720p transcode.
 
 **Open items.**
 
-- Total-video-duration cap per moment (150s free / 300s paid recommended, not confirmed).
-- Org-paid moment video length (DEC-018 never set it).
+- Org-paid Moment video length (DEC-018 never set it).
+- The media-retention window (six versus twelve months, DEC-039) stays undecided and its effect is deferred by the launch free trial (DEC-063).
 - Three DEC-039 refinements pending Elvis: restore-from-cold Wrapped path; a general retrospective-surface capability; a 1080px mid-tier for free full-screen.
-- Per-uploader vs per-room retention scope.
+- Whether org analytics distinguish Moment counts on member-only events from public events (DEC-065).
 
-**Governing decisions.** DEC-015, DEC-018, DEC-038, DEC-039, DEC-014
+**Governing decisions.** DEC-015, DEC-018, DEC-038, DEC-039, DEC-014, DEC-064, DEC-065, DEC-063, DEC-048
 
-**Elvis's design detail, sourced (24).**
+**Elvis's design detail, sourced (34).**
 
 - **[DECIDED DEC-018]** R2 storage is $0.015/GB-month against S3 Standard $0.023/GB-month; R2 charges nothing for egress while CloudFront charges $0.085/GB after a 1TB monthly allowance; for a social app egress, not storage, is normally the dominant cost.  
   src: `freemium-model-2026-08-19.md > "Media infrastructure cost model, added 2026-08-24"`
@@ -1256,20 +1269,40 @@ _Nothing is ever deleted. Caps: 10 / 20 / 50 items, video 15s free / 30s paid; e
   src: `freemium-model-2026-08-19.md > "Explicitly considered and cut"`
 - **[ELVIS DESIGN]** Handoff [D] items still needing sign-off: server-side transcode and poster-frame generation (§6.2), comments hidden on private Moments (§6.3), comment visibility inheritance and bidirectional block filtering in threads (§6.3). The share mechanism (in-app reshare vs external share sheet) is Deepak's implementation call. Public moment comments (identity-attached) and anonymous host-rating comments should read visually distinct, not merged.  
   src: `handoff-spec-v0.9-intake-2026-08-29.md > "Part 5" item 4; conflict-review-2026-08-19.md > "Item 4 - Comments on moments: RESOLVED"`
+- **[DECIDED DEC-064]** A user may post multiple Moments to a completed event, replacing one-post-per-user; a long event may warrant the afternoon and the evening as separate posts. There is no count limit on Moments.  
+  src: `moments-2026-09-02.md > "Multiple Moments per event, RESOLVED 2026-09-02"`
+- **[DECIDED DEC-064]** DEC-018's media caps are enforced per attendee per event, summed across that attendee's Moments; the freemium file states them as '50 media items per attendee, per event', per-user rather than a shared total so every attendee independently gets their allowance regardless of how many others posted.  
+  src: `moments-2026-09-02.md > "The media cap does not change, and this is a clarification rather than a decision"`
+- **[DECIDED DEC-064]** The Moment card's event anchor frame drops to three elements (name, date, org); DEC-045 withdrew the attendance badge, so the component is redesigned rather than shipped with an empty slot. The denormalized event_name, event_date and org_name are unaffected and copied at creation.  
+  src: `moments-2026-09-02.md > "The DEC-045 consequence nobody traced, RESOLVED 2026-09-02"`
+- **[DECIDED DEC-064]** Video is 15 seconds free / 30 seconds paid at 720p H.264 on both Moments and event cover media, correcting DEC-015's stale flat 15-second and flat 10-item text written while the paid tier was deferred.  
+  src: `moments-2026-09-02.md > "Video length: DEC-015's text is stale, RESOLVED 2026-09-02"`
+- **[DECIDED DEC-064]** The recap grid renders every Moment as its own tile with no grouping by author; a prolific poster occupies proportionally more grid space, an accepted tradeoff recorded so it is not later filed as a bug.  
+  src: `moments-2026-09-02.md > "Recap grid: every Moment is its own tile, RESOLVED 2026-09-02"`
+- **[DECIDED DEC-065]** Moment visibility caps at its source event's audience: a public event lets the author publish anywhere, a private or members-only org event caps at that event's attendees. One rule with three instances, closing handoff open item O-4.  
+  src: `moments-2026-09-02.md > "Org-scoped Moments follow the event's scope, RESOLVED 2026-09-02"`
+- **[DECIDED DEC-065]** Profile privacy and item visibility are two independent gates that both must pass: a private profile shows non-mutuals only name, username, cover and background photo, while mutual followers see the full profile including Moments. Most-restrictive-wins.  
+  src: `moments-2026-09-02.md > "Private profiles compose with item visibility, RESOLVED 2026-09-02"`
+- **[DECIDED DEC-065]** Comments have two orthogonal controls: visibility governs who can see and therefore comment; a separate comments toggle (default on for public and attendees-only Moments) governs whether comments are displayed. Off hides existing comments from all but the author and blocks new ones; comments are never deleted, and the toggle is a stored field, not derived from visibility.  
+  src: `moments-2026-09-02.md > "The toggle"`
+- **[DECIDED DEC-065]** Org analytics never include Moment content: an admin who did not join a members-only event sees counts only (how many Moments, how many media items, how much engagement), no images, captions or author names, and receives no read elevation.  
+  src: `moments-2026-09-02.md > "Org analytics never include Moment content, RESOLVED 2026-09-02"`
+- **[DECIDED DEC-065]** The Moment composer is the sole media intake path (one uploader, one EXIF and GPS stripping pipeline, one moderation queue); the Event Media tab and recap grid are filtered views with no upload of their own.  
+  src: `moments-2026-09-02.md > "In the handoff spec, never filed as decisions"`
 
 ### 4.13 Live stories
 
-**Phase 1** · Content
+**Later** · Content
 
 > **In plain terms.** Live stories are quick, 24-hour posts you can share from the moment you have RSVP'd, even on the way to the event. You choose who sees each one, from mutual follows only up to public, and the safest option is the default.
 
-**What it is.** In-the-moment, ephemeral content kept deliberately separate from evergreen moments.
+**What it is.** In-the-moment, ephemeral content kept deliberately separate from evergreen Moments; not phase 1 (DEC-062).
 
 **User flow.**
 
-1. RSVP (not check-in) to post.
-2. Poster chooses the audience from four tiers, defaulting to most restrictive.
-3. Content disappears after 24 hours.
+1. A live story is an ephemeral 24-hour post (Instagram-story style, in the moment, not live streaming), archived after 24 hours and then visible only to its owner (DEC-062).
+2. RSVP (not check-in) to post; the poster chooses the audience from four tiers, defaulting to most restrictive.
+3. Live stories do not count against the organization 50-item media cap and are not capped in number for now (DEC-062).
 
 **Rules that govern it.**
 
@@ -1281,9 +1314,9 @@ _Nothing is ever deleted. Caps: 10 / 20 / 50 items, video 15s free / 30s paid; e
 
 **Open items.**
 
-- Whether stories count against the org 50-item media cap (likely a separate allowance).
+- None on this module.
 
-**Governing decisions.** DEC-025
+**Governing decisions.** DEC-025, DEC-062
 
 **Elvis's design detail, sourced (8).**
 
@@ -1306,24 +1339,19 @@ _Nothing is ever deleted. Caps: 10 / 20 / 50 items, video 15s free / 30s paid; e
 
 ### 4.14 Free Now
 
-**Phase 1** · Real-time · safety
+**Later** · Real-time · safety
 
 > **In plain terms.** Free Now is for spontaneous meetups: mark yourself as free, see who else nearby is free too, and converge in a location-based room. Because it involves real-time location it is the most carefully guarded feature: locations are rounded, you see counts before identities, and only accounts in good standing can create rooms.
 
 ```mermaid
 flowchart LR
-  M14_free(["Mark yourself free: rounded location + duration"])
-  M14_browse["Browse rooms: which exist and roughly how many are free (open to anyone)"]
-  M14_join{{"Mark free inside a room"}}
-  M14_create[/"Create a pinned room: needs account standing"/]
+  M14_free(["Mark yourself free: rounded location + how long you are free"])
+  M14_room["Join your area's open room (per neighborhood), or set a theme and pin a spot"]
   M14_ids(["Identities and chat revealed on reciprocal join"])
-  M14_exp["Expires on its own"]
-  M14_free --> M14_browse
-  M14_browse --> M14_join
-  M14_browse --> M14_create
-  M14_join --> M14_ids
-  M14_create --> M14_ids
-  M14_ids -.->|"duration ends"| M14_exp
+  M14_exp["Timer runs; room auto-closes at the window's end and on inactivity"]
+  M14_free --> M14_room
+  M14_room --> M14_ids
+  M14_ids -.->|"window ends"| M14_exp
   classDef start fill:#fef2f2,stroke:#E63946,color:#17181d;
   classDef fin fill:#e8f6ee,stroke:#1f9d55,color:#0f3d24;
   classDef decision fill:#fdf3df,stroke:#d9a441,color:#4a3a10;
@@ -1331,21 +1359,20 @@ flowchart LR
   classDef warn fill:#fff5f5,stroke:#C42E3A,color:#7a1f28;
   classDef muted fill:#f2f2f4,stroke:#d5d6db,color:#6b6b70;
   class M14_free start;
-  class M14_join decision;
-  class M14_create warn;
   class M14_ids fin;
   class M14_exp muted;
 ```
 
-_One always-on public room per city created by WePop. Moderation is a required baseline (Elvis's flag to Deepak: report, block, rate limiting)._
+_Individuals only, free, no account-standing gate to create a room (DEC-061). Deferred; build later. Moderation is a required baseline._
 
-**What it is.** Spontaneous meetups: signal you are free, converge in nearby rooms, with heavy safety baselines.
+**What it is.** Spontaneous meetups: signal you are free, converge in nearby rooms, with heavy safety baselines. Not phase 1; DEC-061 records the direction.
 
 **User flow.**
 
-1. A user signals they are free now; location-tied rooms let nearby available people converge.
-2. Location is rounded (never precise); the view is aggregate-first with identities revealed only on reciprocal join.
-3. Room creation is gated on account standing. Moderation is a required baseline.
+1. Individuals only, not organizations; a free feature with no account-standing gate to create a room (DEC-061).
+2. The creator sets how long they are free when creating the room; a timer runs and the room auto-closes at the end of that window and also on inactivity (DEC-061).
+3. Rooms are per-area chat rooms keyed to a location tier (a sub-city neighborhood, since a whole city is too large to meet across); marking yourself free with no theme joins your area's open room, or you can set a theme and pin a meeting location (DEC-061).
+4. Location is rounded (never precise); the view is aggregate-first with identities revealed only on reciprocal join. Moderation is a required baseline.
 
 **Rules that govern it.**
 
@@ -1354,16 +1381,13 @@ _One always-on public room per city created by WePop. Moderation is a required b
 **Build notes for Deepak.**
 
 - Concrete location-rounding method; reciprocal join enforced server-side.
-- Standing threshold, duration cap, auto-archival, and org-created rooms to confirm before build.
+- Deferred feature; build later, possibly built-but-not-enabled (DEC-061).
 
 **Open items.**
 
-- Account-standing threshold.
-- Duration cap and room auto-archival.
-- Org-created rooms.
-- The location-rounding method.
+- The concrete location-rounding method.
 
-**Governing decisions.** DEC-025
+**Governing decisions.** DEC-025, DEC-061
 
 **Elvis's design detail, sourced (10).**
 
@@ -1714,8 +1738,9 @@ _Danggeun model: 매너온도 dies with the account, suspensions carry over. Org
 
 **Rules that govern it.**
 
-- Danggeun's Karrot Score is not adopted; DEC-014's 0-5 stars stand.
+- Danggeun's Karrot Score is not adopted; DEC-014's star ratings stand (now 1 to 5, DEC-045).
 - A cap on orgs per user and public display of connected profiles were rejected (deanonymization surface).
+- Enforcement under the org-membership model: a conduct sanction (spam, no-shows, rudeness, low-grade policy violations) removes the member from the org and they keep using WePop, while a safety ban on a short closed list (violence or credible threats, sexual misconduct, CSAM, fraud, stalking or doxxing) suspends the account, with DEC-044's propagation carrying it to any org that person operates (DEC-066).
 
 **Build notes for Deepak.**
 
@@ -1730,9 +1755,9 @@ _Danggeun model: 매너온도 dies with the account, suspensions carry over. Org
 - Whether propagation is automatic or reviewer-gated.
 - DLG review of retaining a ban list against an erasure request.
 
-**Governing decisions.** DEC-044, DEC-043, DEC-024, DEC-026
+**Governing decisions.** DEC-044, DEC-043, DEC-024, DEC-026, DEC-066
 
-**Elvis's design detail, sourced (14).**
+**Elvis's design detail, sourced (16).**
 
 - **[DECIDED DEC-044]** Danggeun's rule quoted verbatim: 동일한 환경에서 탈퇴 후 재가입한 경우 기존 이용정지 내용이 새 계정에도 적용될 수 있다 (existing suspensions may carry over to a new account created in the same environment). 매너온도 is attached to the account and disappears on withdrawal.  
   src: `host-accountability-2026-08-30.md > "The load-bearing split: reputation is not enforcement"`
@@ -1762,6 +1787,10 @@ _Danggeun model: 매너온도 dies with the account, suspensions carry over. Org
   src: `host-accountability-2026-08-30.md > "Escalations for DLG, via the legal-register consult"`
 - **[DECIDED DEC-043]** Three escape routes closed on 2026-08-30 before this file: deleting a completed event, detaching from one, and deleting an event to launder its ratings; three more (statutory erasure, delete-and-re-register, disposable orgs) are what this file resolves.  
   src: `host-accountability-2026-08-30.md > "Problem"`
+- **[DECIDED DEC-066]** Enforcement under the org model: a conduct sanction (spam, no-shows, rudeness, low-grade policy violations) removes the member from the org and they keep using WePop; a safety ban on a short closed list (violence or credible threats, sexual misconduct, CSAM, fraud, stalking or doxxing) suspends the account, with DEC-044's propagation carrying it to any org that person operates.  
+  src: `org-membership-2026-09-02.md > "Conduct sanction versus safety ban, RESOLVED 2026-09-02"`
+- **[DECIDED DEC-066]** A creator leaving the org triggers no host takeover: the event was always theirs, past events keep the org flag so analytics history does not rewrite itself, and upcoming ones may be detached.  
+  src: `org-membership-2026-09-02.md > "When the creator leaves the org, RESOLVED 2026-09-02"`
 
 ### 4.20 Anti-stalking pre-join visibility
 
@@ -1808,6 +1837,7 @@ _A one-way follow never unlocks photos; follow-state is checked in both directio
 2. Gender is not shown to attendees pre-join in any form (even the aggregate, which is re-identifiable on a small event); hosts keep a host-facing aggregate.
 3. Gender never appears on a per-person row in any accept/decline or selection UI (invariant I-13). A host with a real balance need declares it at creation and it is enforced at join eligibility.
 4. Individual photos pre-join only between two users who mutually follow each other; a one-way follow never unlocks them.
+5. A private account (DEC-048) restricts the whole profile to approved followers and composes with pre-join visibility: a non-mutual sees only name, username, cover and background photo, a mutual sees the full profile including Moments (DEC-065). The account stays findable by name and username, not suppressed from search.
 
 **Rules that govern it.**
 
@@ -1822,9 +1852,9 @@ _A one-way follow never unlocks photos; follow-state is checked in both directio
 
 **Open items.**
 
-- None on this module.
+- The private-account approval-queue UX, and whether declining a follow request notifies the requester (DEC-048).
 
-**Governing decisions.** DEC-006, DEC-017, DEC-035
+**Governing decisions.** DEC-006, DEC-017, DEC-035, DEC-048, DEC-065
 
 **Elvis's design detail, sourced (8).**
 
@@ -1865,6 +1895,8 @@ _A one-way follow never unlocks photos; follow-state is checked in both directio
 - Three-bucket rule: never gate marketplace actions; quota-gate personal expression; insight-gate analytics.
 - A paid ranking or discovery boost is explicitly locked out.
 - Retention, not sticker price, is the real cost lever.
+- At launch every user is given the paid plan free as an extended trial (likely around six months, exact length set later); paid-tier limits, including the media-retention downgrade, do not apply during the trial (DEC-063).
+- Apply-to-join (host screening questions on join) is placed in phase 1.5, completing the DEC-033 screening-quota dependency (DEC-056).
 
 **Build notes for Deepak.**
 
@@ -1877,8 +1909,9 @@ _A one-way follow never unlocks photos; follow-state is checked in both directio
 - Ticketing/payments build scope and whether it is phase 1 (TASK-036).
 - The Korea payment path.
 - Grandfathering.
+- The extended free-trial exact length (DEC-063).
 
-**Governing decisions.** DEC-010, DEC-018, DEC-032, DEC-033, DEC-039
+**Governing decisions.** DEC-010, DEC-018, DEC-032, DEC-033, DEC-039, DEC-063, DEC-056
 
 **Elvis's design detail, sourced (20).**
 
@@ -1970,6 +2003,7 @@ _Compares against current location (live GPS if granted, else stored home). Enfo
 
 - Compares against current location, so a user physically abroad sees it in full; a travelling free user losing home-country detail unless they disable GPS is a deliberate, examined consequence.
 - Cleared by the financials owner against the paid-boost lockout: it never touches ranking within a user's own market.
+- Standard Explore filters are free functionality, not a paid tier, applying DEC-018's rule that marketplace and discovery actions are never gated (DEC-058).
 
 **Build notes for Deepak.**
 
@@ -1981,7 +2015,7 @@ _Compares against current location (live GPS if granted, else stored home). Enfo
 - Teaser markers at country and world zoom.
 - Whether the ranked list view gets the same treatment or excludes those results.
 
-**Governing decisions.** DEC-032, DEC-018, DEC-031
+**Governing decisions.** DEC-032, DEC-018, DEC-031, DEC-058
 
 **Elvis's design detail, sourced (5).**
 
@@ -2043,6 +2077,7 @@ flowchart LR
 1. First-launch cascade: device language, then app/store region, then phone number. A manual override always wins.
 2. Notifications (push, SMS, email) read the same profile field.
 3. Every WePop-authored string ships fully bilingual; user-generated content renders as authored (on-demand translation deferred).
+4. A distinct 'languages I speak' profile field is added, separate in name and storage from the display-language field, extending DEC-027 (DEC-052).
 
 **Rules that govern it.**
 
@@ -2058,7 +2093,7 @@ flowchart LR
 - Fallback for a WePop string with no Korean at ship (English fallback vs blocking launch).
 - Whether the field re-reads device signals after initial set.
 
-**Governing decisions.** DEC-027, DEC-029
+**Governing decisions.** DEC-027, DEC-029, DEC-052
 
 **Elvis's design detail, sourced (10).**
 
@@ -2192,7 +2227,7 @@ _Elvis design, assembled from DEC-011, 012, 016, 019, 005, 024, 026, 027; not it
 - Nudge cadence ("every so often"), decay, dismiss/snooze.
 - Discrepancy between docs on the onboarding selection limit: onboarding-flow says "up to 5 subcategories from at most 3 categories here at onboarding, matching the 'user profile' row"; categories-taxonomy's table gives User profile as 5 categories / 8 subcategories and Event/Idea as 3 / 5. Not reconciled in either file.
 
-**Status, in Elvis's file.** ELVIS DESIGN (assembles DEC-011, DEC-012, DEC-016, DEC-019, DEC-005, DEC-024, DEC-026, DEC-027 plus resolutions not yet merged; password relocation filed as a proposal) Phase, as stated: 1.
+**Status, in Elvis's file.** DECIDED DEC-052 (onboarding sequence adopted; profile completion moved out of onboarding). Assembles DEC-011, DEC-012, DEC-016, DEC-019, DEC-005, DEC-024, DEC-026, DEC-027. The optional-password relocation is the held DEC-011 amendment, filed but not yet landed. Phase, as stated: 1.
 
 **Sources per line.**
 
@@ -2274,7 +2309,7 @@ _Elvis design, assembled from DEC-011, 012, 016, 019, 005, 024, 026, 027; not it
 - Where poll creation lives in the creation flow (a toggle instead of a single location, "most likely, not confirmed"); min/max number of options; whether votes are changeable and what closes the poll; whether votes are anonymous.
 - Map provider decision (stay Google with degraded Korea precision, or a Korea branch on Naver/Kakao); Naver/Kakao API eligibility for a non-Korean business.
 
-**Status, in Elvis's file.** ELVIS DESIGN (extends DEC-003; map-provider call is a recommendation, not a decision) Phase, as stated: 1 / 1.5 review list item #6; location poll phase unstated.
+**Status, in Elvis's file.** DECIDED DEC-054 (event-location map picker extends DEC-003; location poll scoped). The Korea map-provider call (Google vs Naver/Kakao) is open on the HOTSHEET. Phase, as stated: 1 / 1.5 review list item #6; location poll phase unstated.
 
 **Sources per line.**
 
@@ -2349,7 +2384,7 @@ _Elvis design, assembled from DEC-011, 012, 016, 019, 005, 024, 026, 027; not it
 - TX-2 Korean label naturalness sweep of all 85 + 9 labels (KR ops/localization reviewer); TX-3 dark-mode color triplets; TX-4 verify Learning & Career's 14 nodes + 2 headers on a 375pt viewport.
 - Known accepted tradeoff: overlapping nodes fragment browse filters past roughly 10k events; "Do not 'fix' it by pruning nodes."
 
-**Status, in Elvis's file.** ELVIS DESIGN (authored by Elvis, adapted into the repo 2026-08-27 with three confirmed changes) Phase, as stated: unstated (content behind onboarding step 11 and event/idea creation).
+**Status, in Elvis's file.** DECIDED DEC-051 (categories and taxonomy v2.0 adopted: eight top-level categories plus Other, 85 subcategories). Gives DEC-020's hidden keyword layer real content. Phase, as stated: unstated (content behind onboarding step 11 and event/idea creation).
 
 **Sources per line.**
 
@@ -2423,7 +2458,7 @@ _Elvis design, assembled from DEC-011, 012, 016, 019, 005, 024, 026, 027; not it
 
 - Single-select vs multi-select per section; the 37-vs-"10-20" count confirmation; zodiac/Enneagram later; display order and whether MBTI nicknames are launch copy.
 
-**Status, in Elvis's file.** ELVIS DESIGN (initial seed under DEC-005) Phase, as stated: unstated (content for onboarding step 10).
+**Status, in Elvis's file.** DECIDED DEC-057 (personality-tags catalog restructures DEC-005 into MBTI, social energy, and general-vibe sections). Phase, as stated: unstated (content for onboarding step 10).
 
 **Sources per line.**
 
@@ -2477,7 +2512,7 @@ _Elvis design, assembled from DEC-011, 012, 016, 019, 005, 024, 026, 027; not it
 
 - Full org discussion-board design (permissions, moderation, same or distinct thread mechanism) deferred to a dedicated organizational-accounts pass; invite copy/UI (org logo, admin photo) for a ux-copy pass.
 
-**Status, in Elvis's file.** ELVIS DESIGN (resolved with Elvis 2026-08-26; no DEC yet) Phase, as stated: 1 (admin-only); configurable invite policy later phase.
+**Status, in Elvis's file.** DECIDED DEC-050 (founder-seed invite and invite-first invariant exceptions) and DEC-066 (org-membership model). Membership mechanics are set by the org-membership module below. Phase, as stated: 1 (admin-only); configurable invite policy later phase.
 
 **Sources per line.**
 
@@ -2506,19 +2541,19 @@ _Elvis design, assembled from DEC-011, 012, 016, 019, 005, 024, 026, 027; not it
 
 ### 4.30 Private accounts
 
-**Phase 1** · Elvis design · **Elvis design, no DEC yet** · **Conflicts with a landed DEC**
+**Phase 1** · Elvis design · **Elvis design, no DEC yet**
 
-> **In plain terms.** A private account hides your whole profile (moments, past events, upcoming plans) from anyone who is not an approved follower, and following you becomes a request you accept or decline. Elvis has designed this for phase 1, but the current decision still lists it as deferred, so it is not settled.
+> **In plain terms.** A private account hides your whole profile (moments, past events, upcoming plans) from anyone who is not an approved follower, and following you becomes a request you accept or decline. A non-mutual sees only your name, username, cover and background photo, while approved mutual followers see everything. DEC-048 pulled this into phase 1, and you stay findable by name and username.
 
 ```mermaid
 flowchart LR
   M30_f(["Someone taps Follow on a private account"])
-  M30_req{{"Pending request; owner accepts or declines"}}
-  M30_ok(["Approved follower sees moments, events attended, upcoming RSVPs"])
-  M30_no["Declined or pending: restricted content stays hidden (stub page undecided)"]
+  M30_req{{"Pending follow-request; owner accepts or declines"}}
+  M30_ok(["Approved follower sees the full profile: Moments, events attended, upcoming RSVPs"])
+  M30_no["Non-mutual sees only name, username, cover and background photo"]
   M30_f --> M30_req
   M30_req -->|"accept"| M30_ok
-  M30_req -->|"decline"| M30_no
+  M30_req -->|"decline or pending"| M30_no
   classDef start fill:#fef2f2,stroke:#E63946,color:#17181d;
   classDef fin fill:#e8f6ee,stroke:#1f9d55,color:#0f3d24;
   classDef decision fill:#fdf3df,stroke:#d9a441,color:#4a3a10;
@@ -2531,7 +2566,7 @@ flowchart LR
   class M30_no muted;
 ```
 
-_Elvis pulled this into phase 1; DEC-015 still says deferred and no revised decision has landed._
+_Pulled into phase 1 by DEC-048. The account stays findable by name and username; composes with Moment visibility, most-restrictive-wins (DEC-065)._
 
 **What it is.** Elvis pulled private accounts from deferred (DEC-015, conflict-review item 4) into phase 1; the file scopes what "private" gates and the follow-request/approval flow it requires.
 
@@ -2557,7 +2592,7 @@ _Elvis pulled this into phase 1; DEC-015 still says deferred and no revised deci
 
 - What a stranger sees on a private profile (full stub page vs more minimal); whether private status affects feed/Explore; exact approval-queue UX; whether declining notifies the requester or fails silently.
 
-**Status, in Elvis's file.** ELVIS DESIGN, pulled into phase 1 by Elvis (conflicts with DEC-015 "private accounts are deferred", which the page currently reflects; no DEC revision landed) Phase, as stated: 1 per Elvis.
+**Status, in Elvis's file.** DECIDED DEC-048 (private accounts pulled into phase 1, reversing DEC-015's deferral). Phase, as stated: 1.
 
 **Sources per line.**
 
@@ -2584,7 +2619,7 @@ _Elvis pulled this into phase 1; DEC-015 still says deferred and no revised deci
 
 ### 4.31 Shake-to-create gesture
 
-**Phase unstated** · Elvis design · **Elvis design, no DEC yet**
+**Phase 1** · Elvis design · **Elvis design, no DEC yet**
 
 > **In plain terms.** Shake your phone while the app is open and the create screen slides up from the bottom, a shortcut to the same flow the + button opens. It is turned off automatically while you are typing and can be disabled in settings.
 
@@ -2613,7 +2648,7 @@ _Elvis pulled this into phase 1; DEC-015 still says deferred and no revised deci
 
 - Exact sensitivity; the exhaustive list of suppressing "active input" states (DM/chat screens, map view); whether to teach it via the tips/guides system (recommended, not confirmed with Elvis); whether shake logs as its own interaction event.
 
-**Status, in Elvis's file.** ELVIS DESIGN (introduced unprompted by Elvis, resolved 2026-08-26; no DEC) Phase, as stated: unstated.
+**Status, in Elvis's file.** DECIDED DEC-053 (shake-to-create gesture, phase 1). Phase, as stated: 1.
 
 **Sources per line.**
 
@@ -2639,6 +2674,76 @@ _Elvis pulled this into phase 1; DEC-015 still says deferred and no revised deci
   src: `shake-to-create-2026-08-26.md > "Technical considerations"`
 - (open) Exact sensitivity; the exhaustive list of suppressing "active input" states (DM/chat screens, map view); whether to teach it via the tips/guides system (recommended, not confirmed with Elvis); whether shake logs as its own interaction event.  
   src: `shake-to-create-2026-08-26.md > "Not yet decided"`
+
+### 4.32 Org membership and org-flagged content
+
+**Phase 1** · Elvis design · **Elvis design, no DEC yet**
+
+> **In plain terms.** How organisations work: you always have one personal account, and an organisation is a page you run or belong to, not a second login. Following an org and being a member of it are different things, and membership is either request-and-approve or invite-only. When a member makes an event or idea for the org it still shows the person's name as host, but it also appears on the org's page and counts toward the org's numbers, and an admin can remove that flag but cannot see a private event's contents.
+
+**What it is.** The org-membership model, resolved 2026-09-02: a persona model was worked through and withdrawn in favour of one individual account, with an org as a page a user administers or belongs to. Membership (request-and-approve or invite-only) is distinct from following, and content a member creates for the org is org-flagged but still hosted and attributed to the individual.
+
+**User flow.**
+
+1. A user has one individual account; an org is a page they may create and administer or belong to. Admins switch into the org account to reach analytics and management surfaces, while members never switch and stay in their personal account.
+2. Membership and following are two distinct relations: anyone may follow, while membership is granted by request-and-approve (the default) or invite-only at the admin's choice per org, and grants the org's discussion board, member-only content, and the Create as Member button when enabled.
+3. The org admin controls whether members may create events and ideas for the org; when enabled a Create as Member button on the org profile org-flags the content, and the ordinary create flow offers the same choice as a second door, listing only orgs where the user actually holds permission.
+4. Org-flagged content is still hosted and attributed to the individual who created it, not to the org; the flag makes it appear on the org page and count in the org's analytics but does not display the org as host and does not restrict the audience.
+5. An org admin gets general information about an org-flagged event plus the basic counts the org is entitled to; if they did not join it they see neither its details nor its Moments, and receive no read elevation.
+6. An admin may detach the org flag from an event or idea without ever having had access to its content, removing it from the org page and the org's analytics; detaching a past event moves that slice of analytics history.
+
+**Rules that govern it.**
+
+- The org's privacy setting shields members and member-only content, never the org's existence: a private org still appears in search by name.
+- The org profile shows an aggregate rating derived from its org-flagged events, while the individual host keeps their own rating unchanged from DEC-045 to DEC-047; both exist.
+- A persona model was worked through and withdrawn: it solved a business-account problem student orgs do not have and cost a linkage that must never be inferable from recommendations or mutual-contact counts, plus a ban model scoped across identities.
+
+**Build notes for Deepak.**
+
+- An event carries a nullable org reference set at creation and org analytics filters on it; there is no second account table and nothing to propagate.
+- Org admins receive no elevated read path on the event object, so existing visibility checks already produce the correct result and no admin bypass should be added; the analytics pipeline reads counts only and must not join to event details, Moment content or author identity.
+- The create-permission setting is per org and must filter the create flow's picker rather than merely hide it; org rating is derived at read time rather than stored.
+
+**Open items.**
+
+- Whether an org admin needs any moderation power beyond detaching, given they cannot see a members-only event's details.
+- Whether an org's analytics distinguish counts on member-only events from public ones.
+- Whether a suspended member's org-flagged upcoming events are auto-detached or left for an admin.
+
+**Status, in Elvis's file.** DECIDED DEC-066 (one account rather than personas; membership versus following; org-flagged content). Companion to DEC-050 and DEC-065. Phase, as stated: 1.
+
+**Sources per line.**
+
+- (flow) A user has one individual account; an org is a page they may create and administer or belong to. Admins switch into the org account to reach analytics and management surfaces, while members never switch and stay in their personal account.  
+  src: `org-membership-2026-09-02.md > "One account, RESOLVED 2026-09-02"`
+- (flow) Membership and following are two distinct relations: anyone may follow, while membership is granted by request-and-approve (the default) or invite-only at the admin's choice per org, and grants the org's discussion board, member-only content, and the Create as Member button when enabled.  
+  src: `org-membership-2026-09-02.md > "Membership is distinct from following, RESOLVED 2026-09-02"`
+- (flow) The org admin controls whether members may create events and ideas for the org; when enabled a Create as Member button on the org profile org-flags the content, and the ordinary create flow offers the same choice as a second door, listing only orgs where the user actually holds permission.  
+  src: `org-membership-2026-09-02.md > "Creating content for an org, RESOLVED 2026-09-02"`
+- (flow) Org-flagged content is still hosted and attributed to the individual who created it, not to the org; the flag makes it appear on the org page and count in the org's analytics but does not display the org as host and does not restrict the audience.  
+  src: `org-membership-2026-09-02.md > "The event is not created under the org's name, RESOLVED 2026-09-02"`
+- (flow) An org admin gets general information about an org-flagged event plus the basic counts the org is entitled to; if they did not join it they see neither its details nor its Moments, and receive no read elevation.  
+  src: `org-membership-2026-09-02.md > "Org admin access: no elevation, RESOLVED 2026-09-02"`
+- (flow) An admin may detach the org flag from an event or idea without ever having had access to its content, removing it from the org page and the org's analytics; detaching a past event moves that slice of analytics history.  
+  src: `org-membership-2026-09-02.md > "The detach lever, RESOLVED 2026-09-02"`
+- (rules) The org's privacy setting shields members and member-only content, never the org's existence: a private org still appears in search by name.  
+  src: `org-membership-2026-09-02.md > "Membership is distinct from following, RESOLVED 2026-09-02"`
+- (rules) The org profile shows an aggregate rating derived from its org-flagged events, while the individual host keeps their own rating unchanged from DEC-045 to DEC-047; both exist.  
+  src: `org-membership-2026-09-02.md > "Ratings, RESOLVED 2026-09-02"`
+- (rules) A persona model was worked through and withdrawn: it solved a business-account problem student orgs do not have and cost a linkage that must never be inferable from recommendations or mutual-contact counts, plus a ban model scoped across identities.  
+  src: `org-membership-2026-09-02.md > "The persona model was considered and withdrawn"`
+- (build) An event carries a nullable org reference set at creation and org analytics filters on it; there is no second account table and nothing to propagate.  
+  src: `org-membership-2026-09-02.md > "Flags for Deepak"`
+- (build) Org admins receive no elevated read path on the event object, so existing visibility checks already produce the correct result and no admin bypass should be added; the analytics pipeline reads counts only and must not join to event details, Moment content or author identity.  
+  src: `org-membership-2026-09-02.md > "Flags for Deepak"`
+- (build) The create-permission setting is per org and must filter the create flow's picker rather than merely hide it; org rating is derived at read time rather than stored.  
+  src: `org-membership-2026-09-02.md > "Flags for Deepak"`
+- (open) Whether an org admin needs any moderation power beyond detaching, given they cannot see a members-only event's details.  
+  src: `org-membership-2026-09-02.md > "Not decided here"`
+- (open) Whether an org's analytics distinguish counts on member-only events from public ones.  
+  src: `org-membership-2026-09-02.md > "Not decided here"`
+- (open) Whether a suspended member's org-flagged upcoming events are auto-detached or left for an admin.  
+  src: `org-membership-2026-09-02.md > "Not decided here"`
 
 ---
 
@@ -2674,8 +2779,8 @@ _Elvis pulled this into phase 1; DEC-015 still says deferred and no revised deci
 
 ## 7. Legal, privacy and compliance
 
-- **Blocking legal gates (HOTSHEET, 2026-08-31).** Korea 위치정보법 registration (위치기반서비스사업 신고 to the KCC) for the geofenced printed-poster check-in, blocking before P0 (R5; clean radius-drop fallback exists). The CSAM preserve-and-report runbook (TASK-039). Statutory 정보통신망법 / 임시조치 takedown duties that attach from day one.
-- **Pending counsel (DLG Law).** The age-gate mechanism and travel jurisdiction (DEC-012, R1); minors handling and PIPA under-14 guardian consent; PIPA personal-data basis; Korea PASS real-name verification and CI/DI handling (DEC-026); payments KYC and tax (1.5); the host-accountability retention model and whether a 부정이용 ban list survives an erasure request (DEC-044).
+- **Blocking legal gates (HOTSHEET, 2026-08-31).** Korea 위치정보법 registration (위치기반서비스사업 신고 to the KCC) for the geofenced printed-poster check-in, blocking before P0 (R5; clean radius-drop fallback exists), though DEC-046 likely defers the trigger with attendee self-scan, pending DLG confirmation. The CSAM preserve-and-report runbook (TASK-039). Statutory 정보통신망법 / 임시조치 takedown duties that attach from day one.
+- **Pending counsel (DLG Law).** The age-gate mechanism and travel jurisdiction (DEC-012, R1); minors handling and PIPA under-14 guardian consent; PIPA personal-data basis; Korea PASS real-name verification and CI/DI handling (DEC-026) and the redacted-ID human-review verification path (DEC-055); payments KYC and tax (1.5); the host-accountability retention model and whether a 부정이용 ban list survives an erasure request (DEC-044).
 - **The legal register L-1 to L-12, never yet routed.** To go to DLG as a single consult (TASK-040), with L-3 (위치정보법) as P0 and L-8 (under-14 consent) folded into the age/location consult. L-1 peer affinity as personal data; L-2 gender purpose limitation; L-4 EXIF/GPS stripping; L-5/L-11 takedown and 임시조치; L-6/L-7 subscription and IAP; L-9 FSC 선불전자지급수단; L-10 retention and deletion.
 - **Open (design / ops).** Behavioral-inference disclosure in the privacy policy (DEC-020); Free Now safety details; media-of-people moderation; the moderation launch blocker; the retention policy (now DEC-039).
 - **Mitigated (design covers it, verify in build).** OTP/email recovery (DEC-011); anti-stalking visibility (DEC-006/017/035); calendar minimization (DEC-013); attendee-contact-export exclusion and reimbursement invoicing (DEC-018).
@@ -2688,21 +2793,24 @@ _Elvis pulled this into phase 1; DEC-015 still says deferred and no revised deci
 - **R2 - Solo-founder blind spot** (Medium x Medium, owner Aakash, ACTIVE). Elvis designs alone; calls may go unchallenged. Mitigation: Aakash and Deepak give structured critique.
 - **R3 - OTP/SMS deliverability by geography** (Low x Medium, owner Aakash, ACTIVE). Blocked without an in-region business. Email magic-link now covers recovery; check regional messaging rules before a new market.
 - **R4 - Single-reviewer moderation** (Medium x High, owner Elvis, ACTIVE). One reviewer across eleven target types and five surfaces: no cover for sleep/travel/illness, no independent appeals, growth may outpace hiring. Mitigation: the designed load reducers plus the four day-one metrics as the hiring trigger.
-- **R5 - 위치정보법 registration exposure** (Medium x High, owner Aakash, ACTIVE). The check-in geofence may require KCC registration before shipping in Korea. Mitigation: DLG before the geofence ships; default to the radius-drop fallback; residual exposure limited by DEC-034 (a forged check-in unlocks only a badge).
+- **R5 - 위치정보법 registration exposure** (Medium x High, owner Aakash, ACTIVE). The printed-poster check-in geofence constrains scans to a location radius, which is location-data collection and may require 위치기반서비스사업 신고 to the KCC before it can ship in Korea. Near-term likelihood is expected to drop on DEC-046, since phase-1 check-in reverses to host-scans-attendee and the poster geofence defers with attendee self-scan, so phase 1 no longer collects the triggering location data. Mitigation: route to DLG before the geofence ships, re-rate once DLG confirms; a clean radius-drop fallback exists. Check-in now gates nothing (DEC-045/046).
 
 ---
 
 ## 9. Open items and decisions still pending
 
-- Moderation: the admin queue, urgent alerts and guideline (TASK-034); the CSAM runbook (TASK-039).
-- Legal: the L-1 to L-12 consult (TASK-040); the age/location consult (todos #4 closed as deprioritized 2026-08-31; TASK-013 still open and R1 stands).
-- Media: DEC-038's total-video-duration cap and org-paid video length; DEC-039's three refinements and per-uploader vs per-room scope.
-- Accountability: DEC-044's cooldown, ban-list retention, org-creation account age, transfer tenure and propagation-automation questions.
-- Discovery: the cohort softening trigger; behavioral-inference disclosure.
-- Free Now: standing threshold, duration cap, archival, org rooms, rounding method.
-- Payments: the commercial-structure channel and PROJECT_STRATEGY rewrite (TASK-037); the ticketing build scope and Korea non-Stripe path (TASK-036).
-- Ideas: un-archiving, detached-idea ownership, Explore surfacing of archived ideas, pause/archive notifications.
-- Housekeeping: the I-N invariant registry and the stale phone-OTP line in CLAUDE.md (TASK-041); refresh the product overview (spec-sync) and compliance register (compliance-watch) to the post-DEC-044 state.
+- Moderation: the admin queue, urgent alerts and guideline (TASK-034); the CSAM preserve-and-report runbook (TASK-039).
+- Legal: the L-1 to L-12 consult (TASK-040); the age/location consult (TASK-013, R1); 위치정보법 for check-in likely deferred by DEC-046, pending DLG confirmation (R5).
+- Media: org-paid Moment video length (DEC-018 never set it); the media-retention window (six vs twelve months, DEC-039), whose effect is deferred by the launch free trial (DEC-063); the three DEC-039 refinements (restore-from-cold Wrapped path, a general retrospective-surface capability, a 1080px mid-tier); whether org analytics distinguish Moment counts on member-only vs public events (DEC-065).
+- Accountability / org: DEC-044's cooldown, ban-list retention, org-creation account age, transfer tenure and propagation-automation questions; whether an org admin needs moderation power beyond detaching, and whether a suspended member's org-flagged upcoming events auto-detach (DEC-066).
+- Discovery: behavioral-inference disclosure in the privacy policy; cohort softening is now a manual call decided later, no auto logic in phase 1 (DEC-059).
+- Free Now: the concrete location-rounding method; the rest resolved as a deferred feature (individuals only, free, creator-set duration, per-neighborhood rooms; DEC-061).
+- Ideas: whether an archived idea can be un-archived and whether commenting on one is allowed (Elvis research); the auto-archive window conflict (DEC-040's 90 days vs DEC-060's roughly six months, 90 days standing until Elvis confirms).
+- Identity / auth: the held DEC-011 amendment adding an optional post-signup password (filed via DEC-052, not yet landed); username-change login continuity, multi-device sessions and the customer-service recovery workflow (DEC-049); the redacted-ID human-review queue and its PIPA basis (DEC-055).
+- Profile: whether MBTI and social energy are single-select while general vibe is multi-select (DEC-057).
+- Payments: the commercial-structure channel and PROJECT_STRATEGY rewrite (TASK-037); the ticketing build scope and Korea non-Stripe path (TASK-036); the extended free-trial length (DEC-063).
+- Map provider: the Korea map provider (Google vs Naver/Kakao) is now a decision because the zoom-precision picker depends on provider POI quality (DEC-054, HOTSHEET).
+- Housekeeping: the CLAUDE.md section 8 invite-first exceptions for founder-seed and org membership (DEC-050); refresh the product overview and compliance register to the post-DEC-066 state.
 
 ---
 
@@ -2903,6 +3011,8 @@ Verbatim from `shared/DECISIONS.md`. Superseded decisions are never deleted; the
 ### DEC-014: Post-event feedback (ratings and reviews)
 **Date:** 2026-08-19 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
 
+**Change history:** 2026-08-31 - amended (DEC-045): the star scale is 1 to 5, not 0 to 5, and an unrated field is NULL rather than 0. Eligibility for the flow is joined plus event completed (DEC-034 as corrected by DEC-045), no longer checked-in.
+
 **Decision:** After an event, checked-in attendees see a three-step feedback flow, every field optional and every step skippable: (1) rate the event 0-5 stars plus optional anonymous text with an everyone/host-only visibility toggle defaulting to everyone, (2) rate the host 0-5 plus a comment and give other attendees a thumbs up/down, all anonymous, (3) add moments. Attendee thumbs are an internal recommendation signal only, never shown to anyone.
 
 **Reasoning:** Resolves the draft conflict (Phase 1 Brief ships ratings, Moments spec v0.9 bans them) in favor of ratings, while keeping attendee peer-rating inside the DEC-006 reasoning by never surfacing it. Steps 1 and 2 feed host reputation and the recommendation engine.
@@ -3054,7 +3164,9 @@ Verbatim from `shared/DECISIONS.md`. Superseded decisions are never deleted; the
 
 **Reasoning:** DEC-027 set device-detection-plus-manual-switch but did not set the storage model, the initial-detection order, or notification behavior. A synced profile field avoids a lost-language-setting complaint on a new device or reinstall, and reusing the DEC-012 cascade keeps one pattern rather than inventing a second. Splitting WePop-copy from UGC scope stops the i18n requirement from silently expanding into content translation, which was deliberately deferred.
 
-**Impact:** Adds a profile-level language field and a first-launch cascade to auth/onboarding alongside DEC-012's cascade; the notification pipeline reads the field rather than inferring locale independently. Refines DEC-027 (does not change its core detect-plus-switch design). Open, not resolved here: fallback for a WePop-authored string with no Korean translation at ship (English fallback vs blocking launch on full coverage), and whether the field re-reads device signals after initial set or is captured once like DEC-012's age value. Relates to DEC-027, DEC-012. Source: `workspaces/elvis/internationalization-korea-2026-08-26.md`.
+**Impact:** Adds a profile-level language field and a first-launch cascade to auth/onboarding alongside DEC-012's cascade; the notification pipeline reads the field rather than inferring locale independently. Refines DEC-027 (does not change its core detect-plus-switch design). Relates to DEC-027, DEC-012. Source: `workspaces/elvis/internationalization-korea-2026-08-26.md`.
+
+**Change history:** 2026-09-02 - the two items previously flagged "Open, not resolved here" were stale; both are resolved in the source file. Full bilingual coverage is committed at launch, so there is no missing-string fallback to decide, and the language field is a one-time read at account setup, not re-checked as device signals change, matching DEC-012. Reconciled by the merger. Source: `workspaces/elvis/internationalization-korea-2026-08-26.md`.
 
 ### DEC-030: Cohort formula simplified to student-vs-not (location removed)
 **Date:** 2026-08-27 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
@@ -3096,6 +3208,8 @@ Verbatim from `shared/DECISIONS.md`. Superseded decisions are never deleted; the
 
 ### DEC-034: Peer feedback positive-only, no bulk-follow, check-in decoupled to a badge plus a scoring weight
 **Date:** 2026-08-29 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Change history:** 2026-08-31 - partially superseded (DEC-045): the verification badge and the 1.0/0.4 scoring weight are withdrawn in full, the public-average display gate becomes 3 ratings (not 3 verified) with unweighted Bayesian smoothing, and stars run 1 to 5 with unrated stored as NULL. The merge and Elvis's same-day revision crossed (merged 15:02, revised 18:52); nobody's error. The positive-only peer tap, the bulk-follow removal, and the decoupling of check-in from feedback and Moment eligibility stand.
 
 **Decision:** DEC-014's 0-5 star ratings on events and hosts are retained exactly as merged, including the optional anonymous text and its everyone/host-only visibility toggle, and their feed into host reputation. Three amendments. (1) Attendee-to-attendee thumbs up/down is replaced by a single positive-only tap; no negative peer record is created anywhere, and no negative peer table exists in the schema. (2) The "follow all" affordance is removed; individual follow taps only, nothing pre-selected. (3) Check-in is no longer a gate on feedback or on Moment authorship. A user who joined an event that completed may do both. Check-in instead grants a visible verification badge (on Moments per the existing 참석 인증 badge, and now also on feedback) and an invisible scoring weight: verified feedback is weighted 1.0, unverified feedback (joined and completed but never checked in, or self-attested and unresolved at the 7-day auto-close) is weighted 0.4. A host or org public star average does not display until at least 3 verified ratings exist, showing event count and rating count only below that threshold. The internal recommendation signal reads the same weighted rows through a Bayesian smoothing toward the global mean, R = (C·m + Σwᵢrᵢ) / (C + Σwᵢ) with C = 5.
 
@@ -3225,6 +3339,270 @@ Verbatim from `shared/DECISIONS.md`. Superseded decisions are never deleted; the
 
 **Relates to / Supersedes:** Extends DEC-024 (org ownership transfer, public track record) and DEC-026 (PASS/CI). Consistent with DEC-014 and with DEC-006/DEC-017. Source: `workspaces/elvis/host-accountability-2026-08-30.md`.
 
+### DEC-045: Check-in badge and scoring weight withdrawn; stars 1 to 5; public average gates at 3 ratings
+**Date:** 2026-08-31 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** DEC-034's verification badge and feedback scoring weight are withdrawn in full. Check-in awards no 참석 인증 badge, carries no scoring weight, and gates nothing; it produces an operational record surfaced in analytics only. Anyone who joined an event through the app may give feedback and post a Moment once the event completes; that is the whole eligibility rule. Two protections replace the weighting, neither depending on check-in: a public star average displays once a host has 3 ratings (not 3 verified ratings), showing event count and rating count only below that; and the internal recommendation signal applies Bayesian smoothing toward the global mean, now unweighted, R = (C·m + Σrᵢ) / (C + n) with C = 5. Separately, stars run 1 to 5, not 0 to 5, and an unrated field is NULL rather than 0.
+
+**Reasoning:** DEC-034 landed 2026-08-31 at 15:02 from the proposal as it stood when the merger reviewed it; work later the same day (items #9 and #10 of the phase-1/1.5 review) revised that proposal twice and then withdrew its central mechanism, committed at 18:52 after the merge. Nobody's error; this entry brings the decision log back into agreement with the working file. Three findings undid the weighting. (1) Check-in ceased to be universal (DEC-046): it runs only on ticketed events and on capacity-limited events whose host enables it, so at an open event nobody can be verified and every rating would weight 0.4 permanently, leaving a host who runs only open events with no public star average ever, including an org whose track record is a cold-start trust signal under DEC-024. (2) A three-state fix (verified / unverified / axis-not-applicable) solved that but introduced a perverse incentive: a host who turned check-in on would have some ratings discounted to 0.4 while a host with no check-in had all ratings at full weight, so the host who did more to verify attendance reached the display gate later. (3) The machinery was nearly inert at launch anyway, since ticketing is not live until phase 1.5 (DEC-010) and the individual paid tier is HELD (DEC-018), so it would have served org-tier capacity events and almost nothing else. On the star scale: a 0-star rating is not expressible in a star widget (tapping the first star yields 1, and not tapping is indistinguishable from skipping), DEC-014 makes every field skippable so a distinct sentinel for "did not answer" is required, and a 0 entering the average would count in the denominator and drag the numerator, penalising every host whose attendees skipped feedback.
+
+**Accepted cost:** a user who joined and never attended is now indistinguishable from a real attendee when rating. Judged acceptable because the motive is thin at a free casual meetup, the 3-rating gate stops one person establishing a public number alone, smoothing absorbs a single outlier, and a host can report a rating from someone who was not there, making it a moderation rather than a scoring problem.
+
+**Impact:** Supersedes DEC-034's badge and weighting provisions and its "0 to 5 stars" reading of DEC-014 (DEC-014 carries a matching change-history note). DEC-034's other provisions stand unchanged (positive-only peer tap, no bulk-follow, check-in decoupled from eligibility). Two `wepop-scope-matrix.md` rows need correcting, both currently describing the withdrawn model: the "Ratings + post-event feedback" row (verified 1.0 / unverified 0.4, gate at 3 verified) and the "QR check-in (verification badge + weight)" row, titled for a badge that is not shipping. Deepak flags: no weight column, no badge surfaces, aggregates recomputed from rows rather than accumulated, and `attendance(event_id, user_id, method, verified_at, approved_by)` stays a first-class transactional table so that reinstating weighting later is a config change plus a runnable backfill rather than a rebuild, which is the condition making this a deferral rather than a deletion.
+
+**Relates to / Supersedes:** Supersedes DEC-034 in part; amends DEC-014's star scale. Prerequisite for DEC-046. Interacts with DEC-018 (min-sample precedent) and DEC-020 (new-host boost, which the smoothing protects). Source: `workspaces/elvis/ratings-checkin-2026-08-31.md`.
+
+### DEC-046: Check-in reverses to host-scans-attendee, an operations tool on a defined subset of events; self-service mode deferred
+**Date:** 2026-08-31 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** Phase 1 follows the ticketing industry standard: the host scans the attendee, reversing handoff spec §4.2, where the host displays a rotating QR that attendees scan. Check-in produces an operational record only: it is recorded and surfaces in analytics, awards no badge, carries no scoring weight, and gates nothing. The 참석 인증 badge is removed and does not ship. Check-in is not universal: required on ticketed events; a host choice on capacity-limited events via a "Check-In Required" toggle shown when capacity is set, available to every host, free and paid; and not available in phase 1 on open events with neither ticketing nor capacity. What is paid is the analytics built on check-in data, not the ability to record it, inside DEC-018's existing split of per-event operational numbers free and aggregate rollups paid. Attendees scanning a displayed QR or typing a numeric code becomes self-service mode, deferred to a later phase, possibly paid. Attendance data is retained deliberately for later use: no-show and punctuality behaviour is tracked from launch, nothing acts on it in phase 1. Attendance is recorded as two independent axes, not one enum. Observed attendance exists only where check-in ran, with four states: attended (host-scanned or self-attested and host-approved), claimed-unconfirmed (self-attested, host never acted before §4.3's 7-day auto-close), no-show (joined, then nothing), and not tracked (the event ran no check-in, a property of the event rather than the person); neither "not tracked" nor "claimed, unconfirmed" may collapse into no-show. Self-reported intent exists on every event including those with no check-in: as the event approaches the attendee receives a notification, an in-app pop-up, and a button on the event detail page offering on my way / running late / cannot make it. Because check-in coverage in phase 1 is narrow while self-report reaches every event, self-report is the primary reliability source at launch and check-in the secondary one. The host check-in timestamp is recorded but is not an arrival time, since a host who batch-scans twenty minutes in makes everyone look late. Design rule attached to the data, holding from day one: declining in advance must not be scored like a silent no-show; the two states stay distinct in the data now or the choice is gone.
+
+**Reasoning:** Staff scanning the attendee is universal in ticketing; the stated operational reason is throughput, the structural reason is enforcement: a gate must be able to deny entry, and denial only works if the venue controls the decision, since an attendee who scans their own phone has already walked in. WePop is committed to paid ticketing (DEC-010, TASK-036), so building the direction that supports enforcement now avoids inverting the whole attendance surface later. Check-in is not universal because a host of an open event may not want the hassle and should not have to. Reducing check-in to an operational record follows: once it is optional and rare, a badge and a scoring weight hanging off it created more problems than they solved (DEC-045), and check-in becomes honestly what it now is, the door at a ticketed event and a headcount at a capacity event. Self-service is deferred because it serves the low-stakes case that no longer needs it. Two problems were being conflated and are now separated: rating integrity (mitigation withdrawn as an accepted cost, DEC-045) and attendee reliability (a behavioural problem, significant in the event space, which the retained attendance data is for).
+
+**Impact:** Corrects the scope-matrix row "QR check-in (required)" on two counts, since check-in is neither required of all events nor load-bearing. Dissolves a governance escalation that was about to be filed: paid-gating check-in brushed against DEC-018's "never gate marketplace actions" rule and I-16, because the attendee could never earn a badge purely because their host did not pay; with no badge there is no degradation and nothing to escalate. Likely de-blocks L-3: the 위치정보법 exposure attaches to the printed-poster mode, whose static token needs a location radius to resist forgery, and printed posters exist to support attendee self-scan; with self-scan deferred, the poster and its geofence defer with it and L-3 becomes a later-phase legal question rather than a gate before P0. Confirm with DLG rather than assuming (TASK-040; HOTSHEET entry kept Blocking until confirmed). Anti-forgery simplifies: once a host scans a person standing in front of them the host's own eyes are the strongest available control, so a static per-attendee credential suffices and the 60-second rotating QR is no longer needed; the handoff's rejection of SafeTix-class rotating attendee credentials still holds. The co-host `run_checkin` permission flag (§8.1) becomes more useful. Deepak flags: `attendance.method` stays an open discriminator (phase 1 adds a host-scan method, deferred self-service adds another later), nothing hard-codes the assumption that the attendee initiates, and an event carries a boolean for whether check-in runs. Naming correction preserved: the deferred mode is self-service, not offline, since it needs every attendee's device online; the genuinely offline-capable path is the ticketing one (host's device caches the roster before doors). Corrects the I-12 drafting error rather than requiring a carve-out: the 2026-08-29 replacement wording widened §13's "visible to anyone" to "whether visible or internal", which was not asked for and contradicts DEC-014's internal-only attendee signal. Reverted to the visibility scope, keeping the host carve-out: I-12 prohibits a persistent peer rating of a participant that is visible to anyone; internal signals are permitted, and making one visible or using it to gate event access is a separate decision requiring its own review. Retained no-show data then needs no exception. For the DLG register: a reliability score is personal data of the same character as L-1's peer affinity records and belongs in the same consult (TASK-040).
+
+**Open, not decided here:** what "surfaces in analytics" means concretely (which surface, per-event or rollup); how and when no-show and punctuality data is eventually used, and whether any of it is surfaced to users; whether the claimed-but-unconfirmed state is visible to the attendee or the host is nudged to resolve the queue before auto-close; self-reported intent detail (individual host notification vs roster view, whether "running late" carries an estimate, attachment to a DEC-025 schedule stop). Documentation gap: self-reported intent exists in Elvis's design files but is defined nowhere in this repo; the work is documenting it, not designing it. Future direction, noted not designed: self-check-in on open events tied to a rewards mechanic (deferred gamification thread, DEC-025); geo-located arrival time, which would need its own privacy pass against DEC-016, DEC-012, and 위치정보법.
+
+**Relates to / Supersedes:** Reverses handoff spec §4.2; reverts the 2026-08-29 I-12 wording to visibility-scoped (TASK-041). Depends on DEC-045. Relates to DEC-010 and TASK-036 (ticketing), DEC-024 (capacity and waitlist). Source: `workspaces/elvis/ratings-checkin-2026-08-31.md`.
+
+### DEC-047: Feedback uniformly anonymous; 7-day edit and withdraw window; author-visible only in the profile
+**Date:** 2026-08-31 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** Post-event feedback is uniformly anonymous, with no option for a user to attach their name. A user may edit or withdraw their own feedback for 7 days after submitting it, measured from submission rather than from the event; after that, removal goes through moderation. A user can see all feedback they have given via a menu entry in their profile ("My feedback / 내가 남긴 후기") listing what they wrote, which event it was for, and whether the 7-day window is still open, with edit and withdraw living there.
+
+**Reasoning:** Optional attribution would destroy anonymity for the people who used it: if most attendees sign and a few do not, the few are identifiable as the ones with something to hide, which on a ten-person event is close to naming them. It would also create pressure, since a host asking who said what puts everyone in a position where declining reads as hostile. Structurally, anonymity is doing the work that Airbnb needs double-blind simultaneous publication to do; WePop needs none of that machinery because a host cannot identify a rater, and optional attribution trades that away for nothing. The signed channel already exists and is the follow button, which DEC-014 deliberately places on the feedback screen separated from the rating controls. On the window: 7 days from submission rather than from the event, because Airbnb's edit window works only by being tied to a review period that closes, and §5.2 says WePop's feedback window never closes, so the same pattern would mean editable forever. Not indefinite, because ratings feed host reputation and the recommendation engine, so a rating that can change forever means the aggregate never stabilises and opens a coercion vector where a host pressures someone months later to revise a score. 7 days also matches the self-attest auto-resolve window in §4.3, giving the product one "we wait a week" period rather than two competing ones.
+
+**Impact:** Deepak flags, one easy to build wrong first: weighted aggregates must be recomputed from rows rather than accumulated as a running sum, since an incremental aggregate is silently corrupted by the first edit or withdrawal. The "My feedback" screen is the only place the author-to-feedback link ever surfaces to a human: private to that user, never to a host, never in an admin UI that could leak it, never in an export; anonymity is doing structural work here and this linkage is the single point at which it could be undone. The screen slots into the profile three-tab restructure already scheduled in the handoff's P1.1 wave rather than being added separately.
+
+**Open, not decided here:** whether an edited rating shows as edited to viewers or changes silently within the window; where feedback aggregates surface to the host and in what form.
+
+**Relates to / Supersedes:** Extends DEC-014 and DEC-034 as corrected by DEC-045. Source: `workspaces/elvis/ratings-checkin-2026-08-31.md`.
+
+### DEC-048: Amend DEC-015: private accounts pulled into phase 1 (Elvis confirmed 2026-09-02)
+**Date:** 2026-09-02 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** Private accounts ship in phase 1, reversing DEC-015's deferral. A private account restricts the whole profile (moments, events attended, upcoming RSVPs) to approved followers, not just moments. Following a private account creates a pending follow-request that the owner accepts or declines; only accepted followers see restricted content. Accounts are public by default with private an opt-in toggle; switching to private grandfathers existing followers, and only new follow attempts after the switch require approval. A private account is distinct from a private event: the account setting gates the profile view, not an event's own visibility. Composes with DEC-015's most-restrictive-wins rule.
+
+**Reasoning:** Private accounts were deferred only because the follow-request/approval machinery was new scope; Elvis has decided that machinery is worth building for phase 1.
+
+**Impact:** Amends DEC-015. Needs a follow-request state (pending/accepted/declined), an approval queue, and bidirectional notifications. Sub-items: what a stranger sees on a private profile and whether the user stays findable are answered by Elvis's 2026-09-02 Moments/org proposals (a non-mutual sees name, username, cover and background photo; mutual followers see the full profile including Moments; the account stays findable by name and username, not suppressed from search). Two remain open (agenda Q1): the approval-queue UX and whether declining a follow request notifies the requester. The pre-join anti-stalking logic (DEC-006/DEC-017) needs a consistency check against this.
+
+**Relates to / Supersedes:** Amends DEC-015; interacts with DEC-006, DEC-017, DEC-020. Source: workspaces/elvis/private-accounts-2026-08-26.md; confirmed by Elvis on the 2026-09-02 call (comms/meeting-notes/2026-09-02_Wepop_open-questions-and-repo-migration.md).
+
+### DEC-049: Auth login, session, and account-linking model
+**Date:** 2026-09-02 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** The returning-login and session layer, never previously decided, is set. Any valid credential (Kakao/Apple/Google, phone OTP, or username-or-email plus password when set) resolves to the user's one account, with the verified phone number as the account anchor. Biometric quick-unlock (Face ID / Touch ID / Android equivalent) gates an already-active session locally via the OS API and is not a server credential. The session is always active (Instagram-style), ending only on explicit logout or app deletion, via a secure long-lived refresh token. Account linking across providers is consent-based, not silent: a new-provider signup on an already-registered phone completes phone verification, logs the user into their existing account, then explicitly asks before adding the new provider as a credential.
+
+**Reasoning:** Adding a password made the login/session side a real gap; Elvis resolved it to the consumer-social-app standard rather than inventing bespoke behavior.
+
+**Impact:** Deepak flags: first-launch-after-install check to wipe a leftover iOS Keychain session, and a server-side revocation capability held in reserve. Open and parked: username-change login continuity, multi-device concurrent sessions, and the customer-service recovery workflow.
+
+**Relates to / Supersedes:** Extends DEC-011; relates to DEC-026. Source: workspaces/elvis/auth-flow-2026-08-26.md (RESOLVED 2026-08-26, confirmed by Elvis).
+
+### DEC-050: Founder-seed invite and the invite-first invariant exceptions
+**Date:** 2026-09-02 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** Records that two invite types are scoped exceptions to the invite-first invariant (CLAUDE.md section 8: invites always tie to a specific event or idea). (1) Founder-seed invites: at launch Elvis personally invites an initial batch of users with WePop itself as the inviter, no org and no event/idea, landing on the home feed. (2) Org membership grants are the second exception (a user joins the org itself, not an event/idea); their mechanics are set by Elvis's org-membership proposal (membership by request-and-approve or invite-only per org, distinct from following), which this defers to rather than re-deciding. The 2026-08-26 org-invite details remain valid and consistent: the invite shows inviter and org identity for credibility, and an invited member lands on the org discussion board. Individual person-to-person invites stay event/idea-tied and unchanged.
+
+**Reasoning:** The invite-first rule exists to give the invitee a credible, non-spam reason to trust the invite; WePop's own identity (founder-seed) and an org's identity (membership) supply that credibility without an event.
+
+**Impact:** Modifies the CLAUDE.md section 8 invariant, which needs the two exceptions recorded. Org-invite and membership mechanics are owned by Elvis's 2026-09-02 org-membership proposal; this proposal adds the founder-seed type and the invariant-exception framing only, to avoid duplicating that model.
+
+**Relates to / Supersedes:** Scoped exception to CLAUDE.md section 8; defers org-membership mechanics to Elvis's 2026-09-02 org-membership proposal; relates to DEC-009, DEC-013, DEC-019, DEC-024. Source: workspaces/elvis/onboarding-flow-2026-08-26.md; workspaces/elvis/org-invites-2026-08-26.md; reconciled with Elvis's 2026-09-02 org-membership proposal (org-membership-2026-09-02.md).
+
+### DEC-051: Categories and taxonomy v2.0 adopted
+**Date:** 2026-09-02 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** Adopt the v2.0 taxonomy: eight real top-level categories plus Other, 85 canonical subcategories, each node paired EN/KO under one canonical ID, colors respecified as 3-token sets (brand-palette AA conformance waived for small text). Selection limits are up to 5 subcategories from at most 3 categories for events, and up to 8 subcategories from at most 5 categories for profiles, enforced in the UI and validated server-side. Selecting a subcategory auto-selects its parent. "Other" is locked with zero user-submitted subcategories. "Casino & poker night" is removed for 도박죄 (gambling-offence) exposure. "travel_companion" is excluded from the initial set pending trust infrastructure, re-addable later via the Other-review promotion path.
+
+**Reasoning:** Coverage over minimalism (every unfound node becomes a permanent hole in discovery data); the taxonomy gives concrete shape to DEC-020's previously-abstract internal keyword layer and to onboarding step 11.
+
+**Impact:** Gives DEC-020's hidden keyword layer real content. Companion tasks: add gambling to the moderation blocklist (compliance) and a Korean-label review (owned by role, name withheld per Elvis). Backend needs a tag layer with canonical IDs and server-side limit validation.
+
+**Relates to / Supersedes:** Gives shape to DEC-020; relates to DEC-005. Source: workspaces/elvis/categories-taxonomy-2026-08-27.md (adapted into repo 2026-08-27, confirmed with Elvis).
+
+### DEC-052: Onboarding sequence adopted; profile completion moved out of onboarding
+**Date:** 2026-09-02 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** Adopt the assembled 15-step account-creation sequence as the build reference, with one Get Started entry screen for all branches (individual, org, founder-seed, promoted-waitlist) differing only in landing destination. Profile completion (optional email, optional password, profile description) moves out of the onboarding sequence into editable profile fields with periodic completion-nudge reminders. A distinct "languages I speak" profile field is added, separate in name and storage from the display-language field (DEC-027). Campus affiliation is optional, verified by school-email code with a suggest-a-school fallback. A device-permissions review screen presents location, notifications, camera, gallery, contacts, and calendar together as explanation only, firing no native OS dialogs (generalizing DEC-016's contextual-permission stance).
+
+**Reasoning:** The full sequence had never been assembled; moving profile completion out keeps onboarding short and non-blocking.
+
+**Impact:** The optional-password move is the same one in the DEC-011 amendment above. Cohort computation (DEC-019) must degrade gracefully to city plus age bucket when campus affiliation is skipped. Open/parked: nudge cadence and founder-seed invite copy.
+
+**Relates to / Supersedes:** Assembles DEC-011, DEC-012, DEC-016, DEC-019, DEC-005, DEC-024, DEC-026, DEC-027; relates to the invite-model proposal. Source: workspaces/elvis/onboarding-flow-2026-08-26.md (RESOLVED 2026-08-26).
+
+### DEC-053: Shake-to-create gesture (phase 1)
+**Date:** 2026-09-02 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** Shaking the phone while the app is foregrounded opens the standard creation flow in a bottom tray, a second entry point to the same flow as the primary create button (no separate quick-create variant). The gesture is suppressed during active input (focused text field, open form/modal, active call/video/camera), and the creation flow already being open is explicitly one of those suppression states. The gesture is open-only: it never closes anything, and the listener stays off while the creation flow is open, re-arming only on dismiss or completion. A settings toggle (default on) fully disables it.
+
+**Reasoning:** A secondary physical entry point to creation; suppression and open-only behavior guard against the real false-positive risk (a phone in a bag or on rough transit).
+
+**Impact:** Deepak flags: foreground-only motion listener torn down on background, on-device sensitivity tuning, distinct interaction-logging tag. Open/parked: exact suppression-state list, sensitivity threshold, whether it is taught via tips/guides.
+
+**Relates to / Supersedes:** New phase-1 feature; relates to DEC-020 (interaction logging). Source: workspaces/elvis/shake-to-create-2026-08-26.md (RESOLVED 2026-08-26).
+
+### DEC-054: Event-location map picker extends DEC-003; location poll scoped
+**Date:** 2026-09-02 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** One map-plus-search component serves three surfaces: event/idea location capture, a newly-scoped location poll (creator adds options, attendees vote, host confirms the final location after voting), and Explore's browse map. Zoom determines precision with no minimum floor: a tap zoomed in resolves to a POI/address, zoomed out to a neighborhood, extending DEC-003 (which implied always-specific capture). An event's top-level location need not be its exact meeting point; the host supplies the findable spot separately, so no precision floor is forced. Each capture stores a canonical ID, centroid/boundary, and display name at the resolved tier, plus DEC-003's optional per-location comment, applied uniformly across all three surfaces and event-schedule stops.
+
+**Reasoning:** Reuses one component rather than three; Elvis's correction that an event's headline location is not its meeting point removes the need for a precision floor that QR check-in seemed to require.
+
+**Impact:** Extends DEC-003; reuses across DEC-025 schedule stops. Zoom-to-precision thresholds are tunable, not locked, and depend on the map-provider decision (raised separately on the HOTSHEET). Location-poll sub-mechanics (min/max options, vote changeability, anonymity, close condition, placement in the create flow) are open and go to the meeting.
+
+**Relates to / Supersedes:** Extends DEC-003; relates to DEC-025, TASK-016. Source: workspaces/elvis/event-location-map-picker-2026-08-27.md (RESOLVED 2026-08-27, confirmed by Elvis).
+
+### DEC-055: Redacted-ID verification fallback (Korea); feedback channel; flexible name field
+**Date:** 2026-09-02 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** Three resolved items captured. (1) A Korea-based user without a Korean phone number gets a redacted-ID fallback (government photo ID, user self-redacts the ID number, name/DOB/photo/expiry visible, reviewed by a trained human, no facial recognition or biometrics), following Bumble's Korea flow, covering DEC-012's international-in-Korea and visiting cases without a Korean phone as a hard gate. (2) A single "Give Feedback" profile menu item (issues, general feedback, comments to WePop) lands in a distinct Admin Portal table, separate from the content-moderation queue and reusing existing Admin Portal access control. (3) The name field is a single flexible full-name field, not a Western first/last split, per Korean naming convention.
+
+**Reasoning:** Each closes a real gap DEC-026 (which covered only PASS-for-Korean-numbers plus standard OTP) left open, without expanding scope.
+
+**Impact:** Adds a human-review verification path (PIPA implications, its own review queue and tooling, open) and a feedback table. Extends DEC-026/DEC-012.
+
+**Relates to / Supersedes:** Extends DEC-026, DEC-012. Source: workspaces/elvis/internationalization-korea-2026-08-26.md (RESOLVED 2026-08-26).
+
+### DEC-056: Apply-to-join placed in phase 1.5
+**Date:** 2026-09-02 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** Apply-to-join (host screening questions on join) is placed in phase 1.5. This is the placement proposal that DEC-033 (the screening-question quota) explicitly depends on and that was lost in the 2026-08-28 queue-clear.
+
+**Reasoning:** DEC-033 set the quota but references a phase placement that never landed, leaving a live decision resting on an unrecorded dependency.
+
+**Impact:** Closes the DEC-033 dangling dependency. Scope-matrix apply-to-join row gets a confirmed phase.
+
+**Relates to / Supersedes:** Completes a dependency of DEC-033; relates to DEC-024. Source: workspaces/elvis/session_log_2026-08-26_session2.md; DEC-033 (which notes the placement is still unmerged).
+
+### DEC-057: Personality-tags catalog restructures DEC-005
+**Date:** 2026-09-02 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** DEC-005's flat "top 10-20 tags" picker is restructured into three named sections: MBTI (closed set, 16 values), social energy (closed set, 3 values), and general vibe/self-descriptors (open, searchable, user-addable, the section DEC-005's original design maps to). The self-reported nature and searchable/user-extensible behavior from DEC-005 are unchanged; only the flat list becomes sectioned, which supersedes the "10-20 tags" figure (MBTI alone is 16). Zodiac and Enneagram are considered and not included in the initial catalog.
+
+**Reasoning:** Onboarding needs real seed content, and named sections make the picker scannable rather than one long list.
+
+**Impact:** Refines DEC-005. Open and going to the meeting: whether MBTI and social energy are single-select while general vibe is multi-select, or all three allow multiple (onboarding step 10 says multiple at the step level, written before sections existed).
+
+**Relates to / Supersedes:** Refines DEC-005. Source: workspaces/elvis/personality-tags-catalog-2026-08-27.md.
+
+### DEC-058: Explore filters are free, not a paid tier
+**Date:** 2026-09-02 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** Standard Explore filters are free functionality, not a paid tier, applying DEC-018's "never gate marketplace/discovery actions" bucket. This confirms filters stay out of the individual premium tier.
+
+**Reasoning:** Gating discovery filters would contradict DEC-018's rule that marketplace and discovery actions are never gated.
+
+**Impact:** Confirms and applies DEC-018; a scope note so filters are not later mistaken for a paid lever.
+
+**Relates to / Supersedes:** Applies DEC-018. Source: workspaces/elvis/paid-tier-features-2026-08-27.md (RESOLVED 2026-08-27, confirmed by Elvis).
+
+### DEC-059: Cohort is a soft ranking signal, not a hard filter (amends DEC-019/DEC-020)
+**Date:** 2026-09-02 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** The cohort is a ranking signal, not a hard retrieval gate. Recommendations combine cohort, the user's direct network (people they follow, for example a parent or older sibling), and location/distance. Events from people in the user's network surface even when those people are outside the user's cohort. Location remains a hard constraint: far-away events are searchable but never recommended. There is no automatic density-based de-hardening logic in phase 1; whether to loosen the cohort emphasis further is a manual decision made later, and the naturally growing network is expected to address density on its own.
+
+**Reasoning:** A student may invite older family members who then host events; hard-gating those out of the student's feed would be wrong once the two are connected. The follow graph should cut across cohorts.
+
+**Impact:** Amends DEC-019 (hard retrieval filter at launch) and the retrieval framing in DEC-020; the previously flagged density-transition open item resolves to "manual, decided later, no auto logic." Deepak: cohort, network proximity, and geo_distance are ranking inputs, not a pre-filter that removes out-of-cohort events a network edge would have surfaced.
+
+**Relates to / Supersedes:** Amends DEC-019, DEC-020; relates to DEC-030, DEC-031. Source: 2026-09-02 call (comms/meeting-notes/2026-09-02_Wepop_open-questions-and-repo-migration.md).
+
+### DEC-060: Ideas lifecycle: ownerless survival, auto-archive, quiet
+**Date:** 2026-09-02 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** An idea survives with no owner once its creator leaves; there is no owner-takeover mechanism in phase 1 (deferred to a future phase, because a taker could hijack an active idea's topic). Archiving is automatic, driven by inactivity of roughly six months, not a user action. An archived idea is not recommended or shown in feed but stays reachable by direct link or save, and nothing is deleted. Interested users are not notified when an idea is archived; it happens quietly.
+
+**Reasoning:** Ideas are meant to be independent of a single owner; notifying on a six-month-inactive archive would be noise. Starting a fresh idea is easier than reviving a dead one, so archived ideas leave the feed while staying reachable.
+
+**Impact:** Answers three of DEC-040's open items (detached idea does not need a new owner in phase 1; archived ideas surface by direct link only, not in recommendations; no notify on archive). Two remain open, now Elvis research: whether an archived idea can be un-archived, and whether commenting on an archived idea is allowed (commenting would effectively revive it). Deepak: inactivity-driven archive sweep with an archived_at plus last-activity timestamp (already flagged under DEC-040). RECONCILE: DEC-040 sets the auto-archive window at 90 days while this decision says roughly six months (Elvis's phrasing on the 2026-09-02 call); the two conflict, so treat 90 days as the standing value until Elvis confirms the change.
+
+**Relates to / Supersedes:** Answers open items in DEC-040; relates to DEC-042. Source: 2026-09-02 call (comms/meeting-notes/2026-09-02_Wepop_open-questions-and-repo-migration.md).
+
+### DEC-061: Free Now design direction (deferred feature)
+**Date:** 2026-09-02 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** Free Now is not phase 1; this records its direction. Individuals only, not organizations. It is a free feature with no account-standing gate to create a room. The creator sets how long they are free when creating the room; a timer runs, and the room auto-closes at the end of that window and also on inactivity. Rooms are per-area chat rooms keyed to a location tier (a sub-city neighborhood, since a whole city is too large to meet across); a user marking themselves free with no theme joins their area's open room, or can set a theme and pin a meeting location.
+
+**Reasoning:** Free Now is a sudden, short-lived "who wants to meet now" chat, not an event, so it should not require event search. Knowing how long someone is free is what makes it worth traveling to meet them, so duration must be asked (Aakash's point, accepted). The feature is more useful once there is a real free-user density, hence deferred.
+
+**Impact:** Answers the DEC-025 Free Now open items (creation standing, duration cap, auto-archival, org-created rooms). Still a deferred feature; build later, possibly built-but-not-enabled.
+
+**Relates to / Supersedes:** Answers open items in DEC-025. Source: 2026-09-02 call (comms/meeting-notes/2026-09-02_Wepop_open-questions-and-repo-migration.md).
+
+### DEC-062: Live stories are ephemeral and uncapped (deferred feature)
+**Date:** 2026-09-02 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** Live stories are not phase 1; this records the direction. A live story is an ephemeral 24-hour post (Instagram-story style, in the moment, not live streaming), archived after 24 hours and then visible only to its owner. Live stories do not count against the organization 50-item media cap and are not capped in number for now.
+
+**Reasoning:** A live story is not a durable upload and expires on its own, so a per-event or per-account count cap does not fit it. Live streaming proper is out of scope for cost and infrastructure reasons.
+
+**Impact:** Answers the DEC-025 live-stories open item (separate allowance, uncapped, not counted against the org media cap). Deferred feature.
+
+**Relates to / Supersedes:** Answers an open item in DEC-025. Source: 2026-09-02 call (comms/meeting-notes/2026-09-02_Wepop_open-questions-and-repo-migration.md).
+
+### DEC-063: Extended paid-plan free trial at launch
+**Date:** 2026-09-02 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** At launch every user is given the paid plan for free as an extended trial (likely around six months, exact length to be set later), after which they choose to continue paid or move to the free tier. Paid-tier limits (including media retention downgrade) do not apply during the trial.
+
+**Reasoning:** The product is new and the team wants users to experience paid features and give feedback before any gating bites; a long trial defers the retention and cap decisions past the launch window.
+
+**Impact:** Defers the practical effect of the media-retention window (six vs twelve months, DEC-039) and other paid gates until the trial ends. Financials owner (Aakash) territory; interacts with DEC-018 and the retention window, which stays undecided.
+
+**Relates to / Supersedes:** Relates to DEC-018, DEC-039. Source: 2026-09-02 call (comms/meeting-notes/2026-09-02_Wepop_open-questions-and-repo-migration.md).
+
+### DEC-064: Multiple Moments per event; card anchor loses the badge; DEC-015's stale video and cap text
+**Date:** 2026-09-02 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** Three amendments to DEC-015. (1) **A user may post multiple Moments to a completed event**, replacing "one post per user per event". The motivation is structural rather than volumetric: a long event may warrant the afternoon and the evening as separate posts instead of a false choice about which half to keep. **There is no count limit on Moments.** A user may create as many as they want for an event; what is bounded is their total media across all of them, per the clarification below. The constraint is on volume of media rather than on number of posts, so someone who wants ten Moments of one photo each may have them. (2) **The Moment card's event anchor frame is three elements, not four.** Handoff spec §3.5 defines the anchor as structurally part of the Moment card and lists name, date, org and the attendance badge; DEC-045 withdrew that badge, so the component needs redesigning rather than shipping with an empty slot. (3) **DEC-015's text on video length and media caps is corrected**, having been overtaken twice: its "flat 15-second cap and flat 10-media-item cap for everyone" was written while the paid tier was deferred, and video is now 15 seconds free / 30 seconds paid at 720p H.264 on both Moments and event cover media, as DEC-038 already asserts as standing.
+
+**Clarification carried with this, not a change:** DEC-018's media caps are enforced **per attendee per event**, summed across that attendee's Moments for the event, not per Moment. `freemium-model-2026-08-19.md` states them that way in as many words ("50 media items per attendee, per event") and gives the reason: per-user rather than a shared total, so every attendee independently gets their allowance regardless of how many others already posted, with no blocked-after-the-cap-fills dynamic. The cap only looked per-Moment because one Moment per event made the two the same object. **Recap grid: every Moment is its own tile.** No grouping by author. The tradeoff is accepted rather than overlooked and is recorded so it is not later filed as a bug: someone who posts eight Moments occupies roughly eight times the grid space of someone who posts one, and at a twenty-person event a single prolific poster can take a visible share of the recap page. Grouping by author was considered and rejected in favour of the simpler flat treatment.
+
+**Reasoning:** On the caps, moving to per-Moment would be a departure from what is decided rather than a continuation, and it would remove any per-event bound: five Moments at ten items each is fifty items for a free user, running straight through DEC-018's tiering and DEC-039's retention economics, which model 8 to 30 items per attendee per event. Holding the cap per attendee per event is also what makes an unlimited post count safe, since the bound that matters is already enforced elsewhere and a second limit on post count would constrain nothing that the media cap does not. Comparable practice supports the per-attendee shape for this product specifically: Apple Shared Albums caps a shared album at 5,000 items **combined across all contributors**, with per-contributor limits acting only as anti-abuse rate limits, which works at 5,000 because nobody reaches it but would bite constantly at 10 or 20 or 50, letting an enthusiastic early poster consume the budget before other attendees get home. On the anchor frame, the denormalized fields are unaffected and this is worth stating so nobody "fixes" it: `event_name`, `event_date` and `org_name` are copied at creation so the card survives event deletion, and the badge was always derived at render time rather than stored.
+
+**Impact:** Amends DEC-015 on three points. Deepak flags: media caps are enforced per attendee per event, summed across that attendee's Moments; the anchor component drops to three elements with no change to the denormalized fields or the tombstone path. The recap page grid previously never had to render more than one Moment per person and now does, as flat tiles with no author grouping.
+
+**Relates to / Supersedes:** Amends DEC-015. Consistent with DEC-018 and DEC-038 (caps and video), DEC-039 (retention economics), and DEC-045 (badge withdrawal, which forces the anchor change).
+
+**Source:** `workspaces/elvis/moments-2026-09-02.md`, phase-1/1.5 review item #11; amends DEC-015
+
+### DEC-065: Moment visibility composes two gates; org scope is not a special case; comments; org analytics
+**Date:** 2026-09-02 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** **Moment visibility caps at its source event's audience, whatever that audience is.** A public event lets the author publish anywhere; a private event caps at that event's attendees; an org event restricted to members caps at that event's attendees, who are the members. One rule with three instances rather than three policies, which **closes handoff open item O-4** (organization-scoped Moment visibility) rather than deferring it. The Moment row still carries the source event's scope from day one. **Profile privacy and item visibility are two independent gates that compose, and both must pass.** A private profile shows only name, username, cover photo and background photo to non-mutuals, while mutual followers see the full profile including Moments; the Moment's own visibility is capped as above. Most-restrictive-wins across both. **Comments are governed by two orthogonal controls, and separating them removes a class of special case.** **Moment visibility** (only me / attendees / public) governs who can *see* the Moment and therefore who is able to comment at all. A separate **comments toggle** (on / off) governs whether comments are *displayed*: when off, only the author sees them and no new ones can be added. Consequences of keeping the two separate: visibility changes need no special handling, so an only-me Moment simply behaves normally (it has exactly one viewer, who is therefore the only possible commenter, and a note to self is harmless); **setting a public Moment to only-me does not hide its comments**, since nobody else can reach the Moment at all and the author continues to see them. Hiding is the toggle's job and only the toggle's job. The toggle **defaults on for public and attendees-only Moments**; off hides existing comments from everyone except the author and prevents new ones; on restores them and allows new ones. Copy at the point of turning it back on: **"Turning on comments will restore 8 comments."** Comments are never deleted by either control. **The toggle's state is stored on the Moment as its own field rather than derived from visibility**, since the two controls are fully orthogonal and deriving one from the other would silently discard a choice the author already made. Comments continue to inherit the Moment's visibility, so a commenter can never be seen by someone who cannot see the Moment. **Org analytics never include Moment content, and there is no org exception to the attendee cap.** An org event restricted to its attendees keeps its Moments capped to those attendees. **An org admin receives no elevation**: they see exactly what any user in their position would see, plus the counts the org is entitled to because the event carries its flag. An admin who did not join a members-only event sees general information and counts, meaning how many Moments, how many media items and how much engagement, and no content, meaning no images, no captions and no author names. An admin who did join sees the Moments the ordinary way through the event page, as any attendee would.
+
+**Reasoning:** Both gates are needed because **a Moment is reachable from two places**, the author's profile and the event page. Someone who cannot see a private profile may still legitimately reach that person's Moment through an event they both attended, so profile privacy alone would wrongly hide it and item visibility alone would wrongly expose the profile. Meetup composes the same two gates the same way and is worth recording as precedent: a member can independently hide their group membership from their profile, while in a public group member details stay visible to outsiders regardless of that setting, so the item's context governs the item and the profile setting governs the profile. Meetup also keeps private groups **discoverable** in search, shielding membership data rather than the group's existence, which is the reason a private WePop profile should stay findable by name and username rather than becoming invisible. On comments, the handoff's "hidden entirely when private" line is tagged [D] (derived, never confirmed) and does not survive the two-control model: it conflates who may see a Moment with whether its comments are displayed, and once those are separate controls the private case needs no rule of its own. On org analytics, granting content access through the analytics surface would quietly make "capped to that event's attendees" untrue whenever an org hosts, because an admin who was not there would reach the content through a side door. Counts give the org the operational figure it is paying for without touching the cap, and the split matches DEC-018's own line between operational numbers and content. A stronger version giving admins full access to org-flagged events was considered and withdrawn, since honouring it would have required disclosing at join time and in the composer that club officers who did not attend can see attendees' photos.
+
+**Impact:** Closes handoff open item O-4. Deepak flags: visibility checks compose two gates and must both be evaluated at render time, since the same Moment is reachable from a profile and from an event page by different viewers; the comment toggle is a stored field rather than a function of visibility; comment hiding is a visibility filter and never a delete, and restoring must bring back the original rows; the org analytics pipeline reads counts only and must not join to Moment content, including author identity. Org admins get no elevated read path, so no admin bypass should be written on the event object.
+
+**Also filed here, since the handoff carries them but no decision does:** the Moment composer is the sole media intake path, with one uploader, one EXIF and GPS stripping pipeline and one moderation queue, and the Event Media tab and recap grid are filtered views with no upload of their own (§6.1); tagging requires opt-in consent as a request the tagged person accepts (§12.6); Moments never display a private venue's exact address (§12.6); host takedown is a request routed to review rather than an instant delete (§12.6); and a Moment under review is hidden from public surfaces with a neutral owner-facing status (§12.6). **What counts as an org event** is settled by the companion proposal below: an event is an org event when it was explicitly org-flagged at creation, not by virtue of who created it. That prevents a member's personal events from appearing in the dashboards of every org they belong to.
+
+**Not resolved by this proposal:** whether an org's analytics distinguish Moment counts on member-only events from those on public events, or report them together.
+
+**Relates to / Supersedes:** Extends DEC-015's most-restrictive-wins principle. Closes handoff O-4. Relates to DEC-006 and DEC-017 (the anti-stalking reasoning these gates serve), and to DEC-018 (the operational numbers versus content line that the org analytics rule follows).
+
+**Source:** `workspaces/elvis/moments-2026-09-02.md`, phase-1/1.5 review item #11; closes handoff open item
+
+### DEC-066: One account rather than personas; membership versus following; org-flagged content and what the
+**Date:** 2026-09-02 · **Status:** ACTIVE · **Participants:** Elvis (design), Aakash (merger)
+
+**Decision:** **A user has one individual account.** An org is a page they may create and administer, or belong to, never a second identity. Admins switch from their personal account into the org account to reach analytics and management surfaces, so the org account is an administration console; **members do not switch at all** and stay in their personal account. **Membership and following are two distinct relations.** Anyone may follow. Membership is granted by **request-and-approve (the default) or invite-only, at the admin's choice per org**, and it grants the org's discussion board, member-only content, and the "Create as Member" button when enabled. **The org's privacy setting shields members and member-only content, never the org's existence**: a private org still appears in search by name. **The org admin controls whether members may create events and ideas for the org.** When enabled, a **"Create as Member"** button exists on the org's profile and content created through it is **org-flagged**. The ordinary create flow offers the same choice as a second door, listing only orgs where the user actually holds permission. Content not created that way is an ordinary personal event or idea, absent from the org page and discoverable normally through search, home feed and the creator's profile. **Org-flagged content is still hosted and attributed to the individual who created it, not to the org.** The flag makes content appear on the org's page and count in the org's analytics. It does **not** display the org as host, and it does **not** restrict the audience, since audience scope stays the separate per-event control from item #11 and an org event open to the public is a normal thing a club wants. **An org admin gets general information about an org-flagged event, and if they did not join it they see neither its details nor its Moments.** Stated as implementation rather than policy: **the admin receives no elevation.** They see exactly what any user in their position would see, plus the basic counts the org is entitled to because the event carries its flag. A public event's page looks the same to an admin as to anyone; attendee-gated content stays gated; counts are the org's, never content. **An org admin may detach the org flag from an event or idea without ever having had access to its content**, which removes it from the org page and from the org's analytics. **The org profile shows an aggregate rating derived from its org-flagged events**, while the individual host keeps their own rating unchanged from DEC-045 to DEC-047; both exist. **A creator leaving the org triggers no host takeover**, since the event was always theirs: past events keep the flag so analytics history does not rewrite itself, and upcoming ones may be detached.
+
+**Enforcement, restated for this model:** a **conduct sanction** (spam, no-shows, rudeness, low-grade policy violations) means the org removes the member and they keep using WePop, while a **safety ban** on a short **closed** list (violence or credible threats, sexual misconduct, CSAM, fraud, stalking or doxxing) suspends the account, with DEC-044's propagation carrying it to any org that person operates (corrected from DEC-041, a cross-reference typo; DEC-044 is the enforcement-propagation decision). The list is enumerated rather than left to reviewer discretion on severity.
+
+**Reasoning:** A persona model was worked through and withdrawn. It solves a business-account problem student orgs do not have, and it costs a linkage that must never be inferable from recommendations or mutual-contact counts, a persistent mode with its own class of posting-to-the-wrong-account errors, a double-join problem on capacity-limited events, and a ban model scoped across identities. Withdrawing it also keeps DEC-041 to DEC-044 as written rather than extending them. Attribution to the individual reads better than org-as-host for an in-person product, since someone deciding whether to meet strangers wants a human name attached, and it keeps host accountability pointed at an account that can be sanctioned. Placing the create entry point on the org's own page means location supplies the context, removing any persistent global mode to lose track of. On admin access, a stronger version was drafted and withdrawn in which admins saw everything on an org-flagged event including its Moments, on the reasoning that a club must be able to moderate what appears under its name. It would have made item #11's attendee cap untrue whenever an org is involved, and honouring it would have required telling attendees at join time and again in the composer that club officers who did not attend can see their photos. Framing the result as no-elevation rather than as a carve-out also matters for implementation, since there is no special admin path to write and therefore none to get wrong. The accepted cost is that detach is the only moderation tool an admin holds over a member's event, which for student orgs is proportionate, with the create-permission toggle covering a member who should not be posting under the club's name at all. Membership defaults follow Meetup, which keeps private groups discoverable and shields membership data rather than the group, since invisible orgs cannot be found in order to be joined.
+
+**Impact:** Answers what an org event is, which item #11's analytics rule depended on. Deepak flags: an event carries a nullable org reference set at creation and org analytics filters on it, with no second account table and nothing to propagate; the create-permission setting is per org and must filter the create flow's picker rather than merely hide it; org admins receive no elevated read path on the event object, so existing visibility checks already produce the correct result and no admin bypass should be added; the org's entitlement from the flag is counts only, and the analytics pipeline must not join to event details, Moment content or author identity; the detach lever mutates only the org reference and must neither require nor grant read access to content, and detaching a past event moves that slice of analytics history; org rating is derived at read time rather than stored; membership and following are separate relations; a private org stays indexed for search by name.
+
+**Not resolved by this proposal:** whether an org admin needs any moderation power beyond detaching, given they cannot see a members-only event's details; whether org analytics distinguish counts on member-only events from public ones; and whether a suspended member's org-flagged upcoming events are auto-detached or left for an admin.
+
+**Relates to / Supersedes:** Consistent with DEC-041 to DEC-044 (host accountability, suspension propagation, admin transfer) and DEC-045 to DEC-047 (host rating). Supplies the org-event definition the companion item #11 visibility proposal depends on. Extends DEC-018's operational-numbers-versus-content line.
+
+**Source:** `workspaces/elvis/org-membership-2026-09-02.md`; arose from phase-1/1.5 review item #11
+
 ---
 
 ## 12. Glossary of Korean terms
@@ -3242,4 +3620,4 @@ Verbatim from `shared/DECISIONS.md`. Superseded decisions are never deleted; the
 
 ---
 
-_Generated 2026-08-31. When this document and shared/DECISIONS.md disagree, DECISIONS.md wins._
+_Generated 2026-09-02. When this document and shared/DECISIONS.md disagree, DECISIONS.md wins._
