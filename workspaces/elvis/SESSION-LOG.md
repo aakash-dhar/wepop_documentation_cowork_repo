@@ -4,6 +4,72 @@
 
 ---
 
+## 2026-09-02 - Item #11 closed, and the question it left open pulled in the whole account model: a persona
+system proposed, argued through, agreed, then withdrawn for phase 1, with org admin access reversed twice
+before landing on no elevation
+
+Opened by bringing `proposed-decisions.md` in line with corrections that had only reached the working file:
+**no count limit on Moments** (unlimited posts bounded solely by the per-attendee-per-event media cap, which
+is precisely what makes an unlimited count safe), **every Moment its own recap tile** with the proportional
+grid-space tradeoff accepted, and **Elvis's two-control comments model** replacing my tangled one, in which
+visibility governs who can comment and a separate stored toggle governs display, so making a Moment private
+no longer hides its comments and the only-me case needs no special affordance. Cleared the stray branch from
+the 2026-08-31 branching mistake, which took a delete-permission grant since git kept recreating lock files
+the bridge could not unlink; in doing so I ran `rm -rf _to_delete` without checking and removed two tracked
+files, then restored them. Item #11's org analytics rule turned out to depend on **what makes an event an org
+event**, which had never been written down, and answering it required the account model underneath.
+Elvis proposed **personas**: a main account plus a switchable org member account. I objected that a separate
+identity reopens the org loophole closed on 2026-08-30 and enables reputation laundering, and argued for an
+acting-as context instead. He kept separate identity but added **backend linkage**, and my binary turned out
+to be false: separate personas outward with one person record underneath is a third option and a better one,
+with **separate follower graphs** the argument an acting-as context cannot answer. The seam we worked out is
+recorded for when businesses are onboarded: reputation persona-scoped, enforcement person-scoped, which is
+the **reputation-versus-enforcement split from 2026-08-30 applied on a second axis**, plus the constraint
+that follow recommendations must never traverse the person record, which is how this pattern leaks
+elsewhere. On bans he chose persona-scoped with cross-persona action reserved for repeat offences; I pushed
+back and he accepted a **two-tier model**, conduct sanctions persona-scoped and a short closed list of safety
+categories person-scoped, carried by three arguments: the harm here is physical since WePop puts strangers in
+rooms; we hold the linkage by design, so knowing and not acting is a worse answer to Korean authorities than
+not knowing; and his own repeat-offence hatch already conceded the principle, leaving only the trigger, where
+repetition requires a second victim first. **Elvis then withdrew personas wholesale for phase 1**, which was
+the right call and one I would have pushed toward: it solves a business problem student orgs do not have, at
+the cost of a linkage that must never leak, a persistent mode with its own error class, a double-join problem
+on capacity events, and a ban model scoped across identities. Withdrawing it also keeps DEC-041 to DEC-044 as
+written rather than extending them.
+What landed is **one individual account**, with an org as a page you administer or belong to. Admins switch
+into an org account that is an administration console; **members never switch**. **Membership is distinct
+from following**, request-and-approve or invite-only at the admin's choice, and the privacy setting shields
+members and member-only content but **never the org's existence**, following Meetup, since an invisible org
+cannot be found in order to be joined. The admin controls whether members may create for the org, and when
+enabled a **"Create as Member" button on the org's page** produces org-flagged content: **Elvis's placement
+of the entry point on the org page is a better answer to the mode-error problem than the explicit "Hosting
+as" field I proposed**, since location supplies context and no persistent mode exists to lose track of.
+**Attribution stays with the individual**, not the org, which reads better for an in-person product and keeps
+accountability pointed at an account that can be sanctioned. The flag puts an event on the org page and into
+org analytics; it does not make the org the host and does not restrict the audience. **Attribution freezes at
+creation** once anyone has joined, Elvis choosing the hard version over my softening since delete rules
+already give a way out. A creator leaving triggers **no host takeover**, past events keeping the flag and
+upcoming ones detachable. The org profile shows an **aggregate rating** alongside the host's own. The
+conduct-versus-safety split survives the loss of personas as removal-from-org versus account suspension.
+**Org admin access reversed twice.** I proposed listing-yes, inside-no; Elvis reversed to full access
+including Moments, which I accepted while filing the disclosure requirement that had to follow, since
+otherwise the app promises attendees-only while officers who did not attend can see the photos; he then
+reversed again to **no access without joining**, which is where it landed and is cleaner than my original
+boundary. Stated as **no elevation**: the admin sees exactly what any user in their position would see, plus
+the counts the org is entitled to, so there is no special admin path to write and none to get wrong, the
+attendee cap holds with no exception, and nothing new goes to DLG. Accepted cost recorded: **detach is the
+only moderation tool** an admin holds over a member's event. **A second error of mine surfaced here**: the
+edit applying the full-access version used a slice replacement that silently removed the detach lever
+section, and the follow-up edit meant to rewrite it matched nothing and did nothing, so the version Elvis
+held for several minutes was missing a decision. Caught during the revert, restored, and reported. Three
+proposals now pending with two working files, `moments-2026-09-02.md` and the new
+`org-membership-2026-09-02.md`, with both rejected access alternatives kept in place rather than deleted.
+Open: whether an admin needs any power beyond detaching, whether org analytics separate member-only counts
+from public ones, and what happens to a suspended member's upcoming org-flagged events. Item #12, live
+stories, is next with the DEC-025 media-cap flag.
+
+---
+
 ## 2026-08-31 - Items #9 and #10 closed: stars fixed, check-in reversed to ticketing-standard and reduced to
 an operations tool, a verification layer designed then removed, and an invariant reverted after finding the
 error was mine
